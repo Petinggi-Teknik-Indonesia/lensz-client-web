@@ -12,7 +12,11 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedEyeglassesRouteImport } from './routes/_authenticated/eyeglasses'
+import { Route as AuthenticatedDrawersRouteImport } from './routes/_authenticated/drawers'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedCompaniesRouteImport } from './routes/_authenticated/companies'
+import { Route as AuthenticatedBrandsRouteImport } from './routes/_authenticated/brands'
 
 const ProfileRoute = ProfileRouteImport.update({
   id: '/profile',
@@ -28,40 +32,90 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedEyeglassesRoute = AuthenticatedEyeglassesRouteImport.update({
+  id: '/eyeglasses',
+  path: '/eyeglasses',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedDrawersRoute = AuthenticatedDrawersRouteImport.update({
+  id: '/drawers',
+  path: '/drawers',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedCompaniesRoute = AuthenticatedCompaniesRouteImport.update({
+  id: '/companies',
+  path: '/companies',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedBrandsRoute = AuthenticatedBrandsRouteImport.update({
+  id: '/brands',
+  path: '/brands',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/profile': typeof ProfileRoute
+  '/brands': typeof AuthenticatedBrandsRoute
+  '/companies': typeof AuthenticatedCompaniesRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/drawers': typeof AuthenticatedDrawersRoute
+  '/eyeglasses': typeof AuthenticatedEyeglassesRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/profile': typeof ProfileRoute
+  '/brands': typeof AuthenticatedBrandsRoute
+  '/companies': typeof AuthenticatedCompaniesRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/drawers': typeof AuthenticatedDrawersRoute
+  '/eyeglasses': typeof AuthenticatedEyeglassesRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/profile': typeof ProfileRoute
+  '/_authenticated/brands': typeof AuthenticatedBrandsRoute
+  '/_authenticated/companies': typeof AuthenticatedCompaniesRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/drawers': typeof AuthenticatedDrawersRoute
+  '/_authenticated/eyeglasses': typeof AuthenticatedEyeglassesRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/profile' | '/dashboard'
+  fullPaths:
+    | '/'
+    | '/profile'
+    | '/brands'
+    | '/companies'
+    | '/dashboard'
+    | '/drawers'
+    | '/eyeglasses'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/profile' | '/dashboard'
+  to:
+    | '/'
+    | '/profile'
+    | '/brands'
+    | '/companies'
+    | '/dashboard'
+    | '/drawers'
+    | '/eyeglasses'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/profile'
+    | '/_authenticated/brands'
+    | '/_authenticated/companies'
     | '/_authenticated/dashboard'
+    | '/_authenticated/drawers'
+    | '/_authenticated/eyeglasses'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -93,6 +147,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/eyeglasses': {
+      id: '/_authenticated/eyeglasses'
+      path: '/eyeglasses'
+      fullPath: '/eyeglasses'
+      preLoaderRoute: typeof AuthenticatedEyeglassesRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/drawers': {
+      id: '/_authenticated/drawers'
+      path: '/drawers'
+      fullPath: '/drawers'
+      preLoaderRoute: typeof AuthenticatedDrawersRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
       path: '/dashboard'
@@ -100,15 +168,37 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/companies': {
+      id: '/_authenticated/companies'
+      path: '/companies'
+      fullPath: '/companies'
+      preLoaderRoute: typeof AuthenticatedCompaniesRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/brands': {
+      id: '/_authenticated/brands'
+      path: '/brands'
+      fullPath: '/brands'
+      preLoaderRoute: typeof AuthenticatedBrandsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
   }
 }
 
 interface AuthenticatedRouteChildren {
+  AuthenticatedBrandsRoute: typeof AuthenticatedBrandsRoute
+  AuthenticatedCompaniesRoute: typeof AuthenticatedCompaniesRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedDrawersRoute: typeof AuthenticatedDrawersRoute
+  AuthenticatedEyeglassesRoute: typeof AuthenticatedEyeglassesRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+  AuthenticatedBrandsRoute: AuthenticatedBrandsRoute,
+  AuthenticatedCompaniesRoute: AuthenticatedCompaniesRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedDrawersRoute: AuthenticatedDrawersRoute,
+  AuthenticatedEyeglassesRoute: AuthenticatedEyeglassesRoute,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
