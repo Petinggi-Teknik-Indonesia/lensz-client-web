@@ -38,8 +38,8 @@ function RouteComponent() {
 
               <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
                 <Button asChild size="lg" className="w-full sm:w-auto">
-                  <a href="/sign-in" aria-label="Sign in to LeNS'Z">
-                    Sign in
+                  <a href="/login" aria-label="Sign in to LeNS'Z">
+                    Login
                   </a>
                 </Button>
                 <Button
