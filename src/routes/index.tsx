@@ -13,6 +13,15 @@ function RouteComponent() {
             <Button>
                 Testing
             </Button>
+            <Button variant="secondary">
+                Testing
+            </Button>
+            <Button variant="outline">
+                Testing
+            </Button>
+            <Button variant="ghost">
+                Testing
+            </Button>
         </div>
     </>
   )
