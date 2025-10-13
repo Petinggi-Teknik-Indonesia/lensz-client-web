@@ -33,7 +33,7 @@ export function SidebarApp() {
     <Sidebar>
       <SidebarContent className="bg-[#0138C8] text-white">
         <SidebarGroup>
-          <SidebarGroupLabel>Application</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-white">Application</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => {
