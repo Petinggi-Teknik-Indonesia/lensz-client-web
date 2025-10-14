@@ -1,11 +1,9 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-
-
-export const Route = createFileRoute('/_authenticated/brands')({
+export const Route = createFileRoute('/_authenticated/laci-c')({
   component: RouteComponent,
 })
 
 function RouteComponent() {
-  return <div>Hello "/_authenticated/brands"!</div>
+  return <div>Hello "/_authenticated/laci-c"!</div>
 }
