@@ -1,0 +1,14 @@
+// api/users.js
+import type { Glasses } from "@/types/glasses";
+import axios from "./axios";
+
+export const getAllGlasses = async (): Promise<Glasses[]> => {
+  const resp  = await axios.get<Glasses[]>("/glasses/");
+  console.log(resp.data)
+  return resp.data;
+};
+
+export const getGlasses = async (id: number): Promise<Glasses> => {
+  const { data } = await axios.get<Glasses>(`/glasses/${id}`);
+  return data;
+};
