@@ -1,15 +1,6 @@
 import { faker } from "@faker-js/faker";
+import type { Glasses } from "@/types/glasses";
 
-export type Glasses = {
-  rfid: string;
-  name: string;
-  type: string;
-  color: string;
-  status: string;
-  drawer: string;
-  company: string;
-  brand: string;
-};
 
 const createGlasses = (numGlasses: number) => {
   const glasses: Glasses[] = [];
