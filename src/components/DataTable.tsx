@@ -35,7 +35,7 @@ export function DataTable<TData, TValue>({
     <div className="w-full h-dvh flex flex-col gap-4">
     <div className="h-[76%] overflow-hidden rounded-md border flex flex-col">
       <Table>
-        <TableHeader>
+        <TableHeader className="sticky top-0 z-10 bg-background shadow-md">
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => {
