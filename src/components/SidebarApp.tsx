@@ -137,7 +137,7 @@ export function SidebarApp() {
                       <ChevronRight size={16} className="transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
                     </SidebarMenuButton>
                   </CollapsibleTrigger>
-                  <CollapsibleContent className="pl-4 ">
+                  <CollapsibleContent className="overflow-hidden transition-all data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down">
                     <SidebarMenuSub>
                       {["Laci A", "Laci B", "Laci C", "Laci D"].map((drawer) => (
                         <SidebarMenuSubItem key={drawer}>
