@@ -1,24 +1,34 @@
-import { SidebarApp } from "@/components/SidebarApp";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { createFileRoute, Outlet } from "@tanstack/react-router";
+import { SidebarApp } from "@/components/SidebarApp"
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
+import { createFileRoute, Outlet } from "@tanstack/react-router"
 
 export const Route = createFileRoute("/_authenticated")({
   beforeLoad: () => {},
   component: RouteComponent,
-});
+})
 
 function RouteComponent() {
   return (
-    <div>
+    <div className="flex h-screen w-full overflow-hidden">
       <SidebarProvider>
         <SidebarApp />
-        <main>
-          <SidebarTrigger />
-          <div className="px-6">
-            <Outlet />
+
+        {/* Main area */}
+        <main className="flex flex-col flex-1 h-full overflow-hidden">
+          {/* Header (fixed height) */}
+          <div className="px-4 py-2 shadow-md bg-secondary flex items-center shrink-0 sticky top-0 z-10">
+            <SidebarTrigger className="border-2" />
+          </div>
+
+          {/* Content area (strict remaining height) */}
+          <div className="grow min-h-0 overflow-hidden">
+            {/* Inner scrollable area */}
+            <div className="h-full overflow-auto px-4 py-2">
+              <Outlet/>
+            </div>
           </div>
         </main>
       </SidebarProvider>
     </div>
-  );
+  )
 }

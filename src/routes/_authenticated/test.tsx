@@ -29,7 +29,7 @@ function RouteComponent() {
   ] 
   console.log(data)
 
-  return <div>
+  return <div className='h-full'>
     <DataTable<Glasses, any> columns={columns} data={data}/>
       
   </div>

@@ -1,4 +1,5 @@
 export type Glasses = {
+  id: number;
   rfid: string;
   name: string;
   type: string;

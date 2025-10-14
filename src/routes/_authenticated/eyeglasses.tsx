@@ -10,48 +10,48 @@ export const Route = createFileRoute("/_authenticated/eyeglasses")({
   component: RouteComponent,
 });
 
-const kacamatas = [
-  {
-    id: "K001",
-    tipe: "Sport",
-    warna: "Hitam",
-    status: "Available",
-    description: "Kacamata sport dengan frame ringan dan lensa anti-UV.",
-    log: "Added 2 days ago",
-  },
-  {
-    id: "K002",
-    tipe: "Casual",
-    warna: "Coklat",
-    status: "Rented",
-    description: "Model klasik untuk penggunaan harian.",
-    log: "Last rented yesterday",
-  },
-  {
-    id: "K003",
-    tipe: "Fashion",
-    warna: "Putih",
-    status: "Available",
-    description: "Kacamata gaya modern cocok untuk acara formal.",
-    log: "Added last week",
-  },
-  {
-    id: "K004",
-    tipe: "Outdoor",
-    warna: "Abu-abu",
-    status: "Maintenance",
-    description: "Lensa polarized untuk aktivitas luar ruangan.",
-    log: "Under maintenance",
-  },
-  {
-    id: "K005",
-    tipe: "Reading",
-    warna: "Hitam",
-    status: "Available",
-    description: "Kacamata baca dengan frame kuat dan ringan.",
-    log: "Updated 3 hours ago",
-  },
-]
+// const kacamatas = [
+//   {
+//     id: "K001",
+//     tipe: "Sport",
+//     warna: "Hitam",
+//     status: "Available",
+//     description: "Kacamata sport dengan frame ringan dan lensa anti-UV.",
+//     log: "Added 2 days ago",
+//   },
+//   {
+//     id: "K002",
+//     tipe: "Casual",
+//     warna: "Coklat",
+//     status: "Rented",
+//     description: "Model klasik untuk penggunaan harian.",
+//     log: "Last rented yesterday",
+//   },
+//   {
+//     id: "K003",
+//     tipe: "Fashion",
+//     warna: "Putih",
+//     status: "Available",
+//     description: "Kacamata gaya modern cocok untuk acara formal.",
+//     log: "Added last week",
+//   },
+//   {
+//     id: "K004",
+//     tipe: "Outdoor",
+//     warna: "Abu-abu",
+//     status: "Maintenance",
+//     description: "Lensa polarized untuk aktivitas luar ruangan.",
+//     log: "Under maintenance",
+//   },
+//   {
+//     id: "K005",
+//     tipe: "Reading",
+//     warna: "Hitam",
+//     status: "Available",
+//     description: "Kacamata baca dengan frame kuat dan ringan.",
+//     log: "Updated 3 hours ago",
+//   },
+// ]
 
 function RouteComponent() {
   const { data, isLoading, isError, error } = useQuery({
@@ -61,20 +61,20 @@ function RouteComponent() {
   const columnHelper = createColumnHelper<Glasses>();
 
   const columns = [
-    columnHelper.accessor("Rfid", {
-      header: () => "RFID",
+    columnHelper.accessor("id", {
+      header: () => "ID",
     }),
-    columnHelper.accessor("Name", {
+    columnHelper.accessor("name", {
       header: () => "Name",
     }),
-    columnHelper.accessor("Type", {
-      header: () => "type",
-    }),
-    columnHelper.accessor("Drawer", {
+    columnHelper.accessor("drawer", {
       header: () => "Drawers",
     }),
-    columnHelper.accessor("Company", {
-      header: () => "Companies",
+    columnHelper.accessor("status", {
+      header: () => "Status",
+    }),
+    columnHelper.accessor("color", {
+      header: () => "Color",
     }),
   ];
 
@@ -82,8 +82,8 @@ function RouteComponent() {
   if (isError) return <p>Error: {error.message}</p>;
 
   return (
-    <>
+    <div className="h-full">
       <DataTable<Glasses, any> columns={columns} data={data ?? []} />
-    </>
+    </div>
   );
 }

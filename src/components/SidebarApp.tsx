@@ -8,7 +8,7 @@ import {
   Sheet,
   Table2Icon,
   Trash2Icon,
-} from "lucide-react"
+} from "lucide-react";
 
 import {
   Sidebar,
@@ -21,55 +21,52 @@ import {
   SidebarMenuItem,
   SidebarMenuSub,
   SidebarMenuSubItem,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
 
 import {
   Collapsible,
   CollapsibleTrigger,
   CollapsibleContent,
-} from "@/components/ui/collapsible"
+} from "@/components/ui/collapsible";
 
-import { Link, useRouterState } from "@tanstack/react-router"
-import { ChevronRight } from "lucide-react" 
+import { Link, useRouterState } from "@tanstack/react-router";
+import { ChevronRight } from "lucide-react";
 
-const generalItems = [
-  { title: "Dashboard", url: "/dashboard", icon: Home },
-  { title: "Trash", url: "/trash", icon: Trash2Icon },
-]
+const generalItems = [{ title: "Dashboard", url: "/dashboard", icon: Home }];
 
 const glassesItems = [
   { title: "Eyeglasses", url: "/eyeglasses", icon: Glasses },
   { title: "Brands", url: "/brands", icon: Sheet },
   { title: "Companies", url: "/companies", icon: Sheet },
-]
+];
 
 const managementItems = [
   { title: "Drawers", url: "/drawers", icon: Sheet },
   { title: "Glasses Table", url: "/glasses-table", icon: Table2Icon },
   { title: "Add New Glasses", url: "/add-glasses", icon: PlusIcon },
   { title: "Glasses Status", url: "/glasses-status", icon: Clock10Icon },
-]
+];
 
 const profileItems = [
   { title: "Profile", url: "/profile", icon: PersonStandingIcon },
   { title: "Logout", url: "/logout", icon: ArrowLeftIcon },
   { title: "Test", url: "/test", icon: Sheet },
-]
+];
 
 export function SidebarApp() {
-  const routerState = useRouterState()
-  const currentPath = routerState.location.pathname
+  const routerState = useRouterState();
+  const currentPath = routerState.location.pathname;
 
   return (
     <Sidebar>
-      <SidebarContent className="bg-[#0138C8] text-white overflow-y-hidden">
+      <SidebarContent className="bg-[#0138C8] text-white overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
         {/* General */}
         <SidebarGroup>
           <SidebarGroupLabel className="text-white">General</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {generalItems.map((item) => {
-                const isActive = currentPath.startsWith(item.url)
+                const isActive = currentPath.startsWith(item.url);
                 return (
                   <SidebarMenuItem key={item.title}>
                     <SidebarMenuButton asChild>
@@ -86,7 +83,7 @@ export function SidebarApp() {
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
-                )
+                );
               })}
             </SidebarMenu>
           </SidebarGroupContent>
@@ -98,7 +95,7 @@ export function SidebarApp() {
           <SidebarGroupContent>
             <SidebarMenu>
               {glassesItems.map((item) => {
-                const isActive = currentPath.startsWith(item.url)
+                const isActive = currentPath.startsWith(item.url);
                 return (
                   <SidebarMenuItem key={item.title}>
                     <SidebarMenuButton asChild>
@@ -115,7 +112,7 @@ export function SidebarApp() {
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
-                )
+                );
               })}
             </SidebarMenu>
           </SidebarGroupContent>
@@ -123,7 +120,9 @@ export function SidebarApp() {
 
         {/* Management */}
         <SidebarGroup>
-          <SidebarGroupLabel className="text-white">Management</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-white">
+            Management
+          </SidebarGroupLabel>
           <SidebarGroupContent>
             {/* Drawers Dropdown */}
             <SidebarMenu>
@@ -135,32 +134,37 @@ export function SidebarApp() {
                         <Sheet size={18} />
                         <span>Drawers</span>
                       </div>
-                      <ChevronRight size={16} className="transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                      <ChevronRight
+                        size={16}
+                        className="transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90"
+                      />
                     </SidebarMenuButton>
                   </CollapsibleTrigger>
                   <CollapsibleContent className="overflow-hidden transition-all duration-300 ease-in-out data-[state=closed]:max-h-0 data-[state=open]:max-h-64">
                     <SidebarMenuSub>
-                      {["Laci A", "Laci B", "Laci C", "Laci D"].map((drawer) => {
-                        const url = `/${drawer.toLowerCase().replace(" ", "-")}`
-                        const isActive = currentPath.startsWith(url)
+                      {["Laci A", "Laci B", "Laci C", "Laci D"].map(
+                        (drawer) => {
+                          const url = `/${drawer.toLowerCase().replace(" ", "-")}`;
+                          const isActive = currentPath.startsWith(url);
 
-                        return (
-                          <SidebarMenuSubItem key={drawer}>
-                            <SidebarMenuButton asChild>
-                              <Link
-                                to={url as any}
-                                className={`flex items-center gap-2 rounded-md px-2 py-1 transition-colors ${
-                                  isActive
-                                    ? "bg-[#B1F70B] text-black"
-                                    : "hover:bg-[#B1F70B] hover:text-black"
-                                } ${isActive ? "pointer-events-none" : ""}`}
-                              >
-                                <span>{drawer}</span>
-                              </Link>
-                            </SidebarMenuButton>
-                          </SidebarMenuSubItem>
-                        )
-                      })}
+                          return (
+                            <SidebarMenuSubItem key={drawer}>
+                              <SidebarMenuButton asChild>
+                                <Link
+                                  to={url as any}
+                                  className={`flex items-center gap-2 rounded-md px-2 py-1 transition-colors ${
+                                    isActive
+                                      ? "bg-[#B1F70B] text-black"
+                                      : "hover:bg-[#B1F70B] hover:text-black"
+                                  } ${isActive ? "pointer-events-none" : ""}`}
+                                >
+                                  <span>{drawer}</span>
+                                </Link>
+                              </SidebarMenuButton>
+                            </SidebarMenuSubItem>
+                          );
+                        }
+                      )}
                     </SidebarMenuSub>
                   </CollapsibleContent>
                 </SidebarMenuItem>
@@ -170,7 +174,7 @@ export function SidebarApp() {
               {managementItems
                 .filter((item) => item.title !== "Drawers")
                 .map((item) => {
-                  const isActive = currentPath.startsWith(item.url)
+                  const isActive = currentPath.startsWith(item.url);
                   return (
                     <SidebarMenuItem key={item.title}>
                       <SidebarMenuButton asChild>
@@ -187,7 +191,7 @@ export function SidebarApp() {
                         </Link>
                       </SidebarMenuButton>
                     </SidebarMenuItem>
-                  )
+                  );
                 })}
             </SidebarMenu>
           </SidebarGroupContent>
@@ -199,7 +203,7 @@ export function SidebarApp() {
           <SidebarGroupContent>
             <SidebarMenu>
               {profileItems.map((item) => {
-                const isActive = currentPath.startsWith(item.url)
+                const isActive = currentPath.startsWith(item.url);
                 return (
                   <SidebarMenuItem key={item.title}>
                     <SidebarMenuButton asChild>
@@ -216,12 +220,12 @@ export function SidebarApp() {
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
-                )
+                );
               })}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
     </Sidebar>
-  )
+  );
 }
