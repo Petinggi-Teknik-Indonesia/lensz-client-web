@@ -61,7 +61,7 @@ export function SidebarApp() {
 
   return (
     <Sidebar>
-      <SidebarContent className="bg-[#0138C8] text-white">
+      <SidebarContent className="bg-[#0138C8] text-white overflow-y-hidden">
         {/* General */}
         <SidebarGroup>
           <SidebarGroupLabel className="text-white">General</SidebarGroupLabel>
@@ -137,22 +137,29 @@ export function SidebarApp() {
                       <ChevronRight size={16} className="transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
                     </SidebarMenuButton>
                   </CollapsibleTrigger>
-                  <CollapsibleContent className="overflow-hidden transition-all data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down">
+                  <CollapsibleContent className="overflow-hidden transition-all duration-300 ease-in-out data-[state=closed]:max-h-0 data-[state=open]:max-h-64">
                     <SidebarMenuSub>
-                      {["Laci A", "Laci B", "Laci C", "Laci D"].map((drawer) => (
-                        <SidebarMenuSubItem key={drawer}>
-                          <SidebarMenuButton asChild>
-                            <Link
-                              to={`/${drawer
-                                .toLowerCase()
-                                .replace(" ", "-")}` as any}
-                              className="flex items-center gap-2 rounded-md px-2 py-1 hover:bg-[#B1F70B] hover:text-black"
-                            >
-                              <span>{drawer}</span>
-                            </Link>
-                          </SidebarMenuButton>
-                        </SidebarMenuSubItem>
-                      ))}
+                      {["Laci A", "Laci B", "Laci C", "Laci D"].map((drawer) => {
+                        const url = `/${drawer.toLowerCase().replace(" ", "-")}`
+                        const isActive = currentPath.startsWith(url)
+
+                        return (
+                          <SidebarMenuSubItem key={drawer}>
+                            <SidebarMenuButton asChild>
+                              <Link
+                                to={url as any}
+                                className={`flex items-center gap-2 rounded-md px-2 py-1 transition-colors ${
+                                  isActive
+                                    ? "bg-[#B1F70B] text-black"
+                                    : "hover:bg-[#B1F70B] hover:text-black"
+                                } ${isActive ? "pointer-events-none" : ""}`}
+                              >
+                                <span>{drawer}</span>
+                              </Link>
+                            </SidebarMenuButton>
+                          </SidebarMenuSubItem>
+                        )
+                      })}
                     </SidebarMenuSub>
                   </CollapsibleContent>
                 </SidebarMenuItem>
