@@ -1,18 +1,14 @@
-import { createFileRoute } from '@tanstack/react-router'
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableFooter,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
+import { getAllGlasses } from "@/api/glasses";
+import { DataTable } from "@/components/DataTable";
+import type { Glasses } from "@/types/glasses";
+import { useQuery } from "@tanstack/react-query";
+import { createFileRoute } from "@tanstack/react-router";
+import { createColumnHelper } from '@tanstack/react-table'
 
-export const Route = createFileRoute('/_authenticated/eyeglasses')({
+
+export const Route = createFileRoute("/_authenticated/eyeglasses")({
   component: RouteComponent,
-})
+});
 
 const kacamatas = [
   {
@@ -58,44 +54,36 @@ const kacamatas = [
 ]
 
 function RouteComponent() {
+  const { data, isLoading, isError, error } = useQuery({
+    queryKey: ["glasses"],
+    queryFn: getAllGlasses,
+  });
+  const columnHelper = createColumnHelper<Glasses>();
+
+  const columns = [
+    columnHelper.accessor("Rfid", {
+      header: () => "RFID",
+    }),
+    columnHelper.accessor("Name", {
+      header: () => "Name",
+    }),
+    columnHelper.accessor("Type", {
+      header: () => "type",
+    }),
+    columnHelper.accessor("Drawer", {
+      header: () => "Drawers",
+    }),
+    columnHelper.accessor("Company", {
+      header: () => "Companies",
+    }),
+  ];
+
+  if (isLoading) return <p>Loading...</p>;
+  if (isError) return <p>Error: {error.message}</p>;
+
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-semibold mb-4">Data Kacamata</h1>
-
-      <Table>
-        <TableCaption>List of all registered kacamata items.</TableCaption>
-        <TableHeader>
-          <TableRow>
-            <TableHead className="w-[120px]">Kacamata</TableHead>
-            <TableHead>ID</TableHead>
-            <TableHead>Tipe</TableHead>
-            <TableHead>Warna</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Description</TableHead>
-            <TableHead>Log</TableHead>
-          </TableRow>
-        </TableHeader>
-
-        <TableBody>
-          {kacamatas.map((item, index) => (
-            <TableRow key={item.id}>
-              <TableCell className="font-medium">{`Kacamata ${index + 1}`}</TableCell>
-              <TableCell>{item.id}</TableCell>
-              <TableCell>{item.tipe}</TableCell>
-              <TableCell>{item.warna}</TableCell>
-              <TableCell>{item.status}</TableCell>
-              <TableCell>{item.description}</TableCell>
-              <TableCell>{item.log}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-
-        <TableFooter>
-          <TableRow>
-            <TableCell colSpan={7}>Total: {kacamatas.length} items</TableCell>
-          </TableRow>
-        </TableFooter>
-      </Table>
-    </div>
-  )
+    <>
+      <DataTable<Glasses, any> columns={columns} data={data ?? []} />
+    </>
+  );
 }

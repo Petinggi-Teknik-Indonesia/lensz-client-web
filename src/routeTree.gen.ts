@@ -12,13 +12,23 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedTrashRouteImport } from './routes/_authenticated/trash'
+import { Route as AuthenticatedLogoutRouteImport } from './routes/_authenticated/logout'
+import { Route as AuthenticatedLaciDRouteImport } from './routes/_authenticated/laci-d'
+import { Route as AuthenticatedLaciCRouteImport } from './routes/_authenticated/laci-c'
+import { Route as AuthenticatedLaciBRouteImport } from './routes/_authenticated/laci-b'
+import { Route as AuthenticatedGlassesTableRouteImport } from './routes/_authenticated/glasses-table'
+import { Route as AuthenticatedGlassesStatusRouteImport } from './routes/_authenticated/glasses-status'
+import { Route as AuthenticatedTestRouteImport } from './routes/_authenticated/test'
 import { Route as AuthenticatedEyeglassesRouteImport } from './routes/_authenticated/eyeglasses'
 import { Route as AuthenticatedDrawersRouteImport } from './routes/_authenticated/drawers'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedCompaniesRouteImport } from './routes/_authenticated/companies'
 import { Route as AuthenticatedBrandsRouteImport } from './routes/_authenticated/brands'
+import { Route as AuthenticatedAddGlassesRouteImport } from './routes/_authenticated/add-glasses'
 import { Route as preAuthRegisterRouteImport } from './routes/(preAuth)/register'
 import { Route as preAuthLoginRouteImport } from './routes/(preAuth)/login'
+import { Route as AuthenticatedLaciARouteImport } from './routes/_authenticated/laci-a.'
 
 const ProfileRoute = ProfileRouteImport.update({
   id: '/profile',
@@ -33,6 +43,48 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedTrashRoute = AuthenticatedTrashRouteImport.update({
+  id: '/trash',
+  path: '/trash',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedLogoutRoute = AuthenticatedLogoutRouteImport.update({
+  id: '/logout',
+  path: '/logout',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedLaciDRoute = AuthenticatedLaciDRouteImport.update({
+  id: '/laci-d',
+  path: '/laci-d',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedLaciCRoute = AuthenticatedLaciCRouteImport.update({
+  id: '/laci-c',
+  path: '/laci-c',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedLaciBRoute = AuthenticatedLaciBRouteImport.update({
+  id: '/laci-b',
+  path: '/laci-b',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedGlassesTableRoute =
+  AuthenticatedGlassesTableRouteImport.update({
+    id: '/glasses-table',
+    path: '/glasses-table',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedGlassesStatusRoute =
+  AuthenticatedGlassesStatusRouteImport.update({
+    id: '/glasses-status',
+    path: '/glasses-status',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedTestRoute = AuthenticatedTestRouteImport.update({
+  id: '/test',
+  path: '/test',
+  getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedEyeglassesRoute = AuthenticatedEyeglassesRouteImport.update({
   id: '/eyeglasses',
@@ -59,6 +111,11 @@ const AuthenticatedBrandsRoute = AuthenticatedBrandsRouteImport.update({
   path: '/brands',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedAddGlassesRoute = AuthenticatedAddGlassesRouteImport.update({
+  id: '/add-glasses',
+  path: '/add-glasses',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const preAuthRegisterRoute = preAuthRegisterRouteImport.update({
   id: '/(preAuth)/register',
   path: '/register',
@@ -69,28 +126,53 @@ const preAuthLoginRoute = preAuthLoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedLaciARoute = AuthenticatedLaciARouteImport.update({
+  id: '/laci-a/',
+  path: '/laci-a/',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/profile': typeof ProfileRoute
   '/login': typeof preAuthLoginRoute
   '/register': typeof preAuthRegisterRoute
+  '/add-glasses': typeof AuthenticatedAddGlassesRoute
   '/brands': typeof AuthenticatedBrandsRoute
   '/companies': typeof AuthenticatedCompaniesRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/drawers': typeof AuthenticatedDrawersRoute
   '/eyeglasses': typeof AuthenticatedEyeglassesRoute
+  '/glasses-status': typeof AuthenticatedGlassesStatusRoute
+  '/glasses-table': typeof AuthenticatedGlassesTableRoute
+  '/laci-b': typeof AuthenticatedLaciBRoute
+  '/laci-c': typeof AuthenticatedLaciCRoute
+  '/laci-d': typeof AuthenticatedLaciDRoute
+  '/logout': typeof AuthenticatedLogoutRoute
+  '/trash': typeof AuthenticatedTrashRoute
+  '/laci-a': typeof AuthenticatedLaciARoute
+  '/test': typeof AuthenticatedTestRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/profile': typeof ProfileRoute
   '/login': typeof preAuthLoginRoute
   '/register': typeof preAuthRegisterRoute
+  '/add-glasses': typeof AuthenticatedAddGlassesRoute
   '/brands': typeof AuthenticatedBrandsRoute
   '/companies': typeof AuthenticatedCompaniesRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/drawers': typeof AuthenticatedDrawersRoute
   '/eyeglasses': typeof AuthenticatedEyeglassesRoute
+  '/glasses-status': typeof AuthenticatedGlassesStatusRoute
+  '/glasses-table': typeof AuthenticatedGlassesTableRoute
+  '/laci-b': typeof AuthenticatedLaciBRoute
+  '/laci-c': typeof AuthenticatedLaciCRoute
+  '/laci-d': typeof AuthenticatedLaciDRoute
+  '/logout': typeof AuthenticatedLogoutRoute
+  '/trash': typeof AuthenticatedTrashRoute
+  '/laci-a': typeof AuthenticatedLaciARoute
+  '/test': typeof AuthenticatedTestRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -99,11 +181,21 @@ export interface FileRoutesById {
   '/profile': typeof ProfileRoute
   '/(preAuth)/login': typeof preAuthLoginRoute
   '/(preAuth)/register': typeof preAuthRegisterRoute
+  '/_authenticated/add-glasses': typeof AuthenticatedAddGlassesRoute
   '/_authenticated/brands': typeof AuthenticatedBrandsRoute
   '/_authenticated/companies': typeof AuthenticatedCompaniesRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/drawers': typeof AuthenticatedDrawersRoute
   '/_authenticated/eyeglasses': typeof AuthenticatedEyeglassesRoute
+  '/_authenticated/glasses-status': typeof AuthenticatedGlassesStatusRoute
+  '/_authenticated/glasses-table': typeof AuthenticatedGlassesTableRoute
+  '/_authenticated/laci-b': typeof AuthenticatedLaciBRoute
+  '/_authenticated/laci-c': typeof AuthenticatedLaciCRoute
+  '/_authenticated/laci-d': typeof AuthenticatedLaciDRoute
+  '/_authenticated/logout': typeof AuthenticatedLogoutRoute
+  '/_authenticated/trash': typeof AuthenticatedTrashRoute
+  '/_authenticated/laci-a/': typeof AuthenticatedLaciARoute
+  '/_authenticated/test': typeof AuthenticatedTestRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -112,22 +204,42 @@ export interface FileRouteTypes {
     | '/profile'
     | '/login'
     | '/register'
+    | '/add-glasses'
     | '/brands'
     | '/companies'
     | '/dashboard'
     | '/drawers'
     | '/eyeglasses'
+    | '/glasses-status'
+    | '/glasses-table'
+    | '/laci-b'
+    | '/laci-c'
+    | '/laci-d'
+    | '/logout'
+    | '/trash'
+    | '/laci-a'
+    | '/test'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/profile'
     | '/login'
     | '/register'
+    | '/add-glasses'
     | '/brands'
     | '/companies'
     | '/dashboard'
     | '/drawers'
     | '/eyeglasses'
+    | '/glasses-status'
+    | '/glasses-table'
+    | '/laci-b'
+    | '/laci-c'
+    | '/laci-d'
+    | '/logout'
+    | '/trash'
+    | '/laci-a'
+    | '/test'
   id:
     | '__root__'
     | '/'
@@ -135,11 +247,21 @@ export interface FileRouteTypes {
     | '/profile'
     | '/(preAuth)/login'
     | '/(preAuth)/register'
+    | '/_authenticated/add-glasses'
     | '/_authenticated/brands'
     | '/_authenticated/companies'
     | '/_authenticated/dashboard'
     | '/_authenticated/drawers'
     | '/_authenticated/eyeglasses'
+    | '/_authenticated/glasses-status'
+    | '/_authenticated/glasses-table'
+    | '/_authenticated/laci-b'
+    | '/_authenticated/laci-c'
+    | '/_authenticated/laci-d'
+    | '/_authenticated/logout'
+    | '/_authenticated/trash'
+    | '/_authenticated/laci-a/'
+    | '/_authenticated/test'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -172,6 +294,60 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/trash': {
+      id: '/_authenticated/trash'
+      path: '/trash'
+      fullPath: '/trash'
+      preLoaderRoute: typeof AuthenticatedTrashRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/logout': {
+      id: '/_authenticated/logout'
+      path: '/logout'
+      fullPath: '/logout'
+      preLoaderRoute: typeof AuthenticatedLogoutRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/laci-d': {
+      id: '/_authenticated/laci-d'
+      path: '/laci-d'
+      fullPath: '/laci-d'
+      preLoaderRoute: typeof AuthenticatedLaciDRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/laci-c': {
+      id: '/_authenticated/laci-c'
+      path: '/laci-c'
+      fullPath: '/laci-c'
+      preLoaderRoute: typeof AuthenticatedLaciCRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/laci-b': {
+      id: '/_authenticated/laci-b'
+      path: '/laci-b'
+      fullPath: '/laci-b'
+      preLoaderRoute: typeof AuthenticatedLaciBRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/glasses-table': {
+      id: '/_authenticated/glasses-table'
+      path: '/glasses-table'
+      fullPath: '/glasses-table'
+      preLoaderRoute: typeof AuthenticatedGlassesTableRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/glasses-status': {
+      id: '/_authenticated/glasses-status'
+      path: '/glasses-status'
+      fullPath: '/glasses-status'
+      preLoaderRoute: typeof AuthenticatedGlassesStatusRouteImport
+    '/_authenticated/test': {
+      id: '/_authenticated/test'
+      path: '/test'
+      fullPath: '/test'
+      preLoaderRoute: typeof AuthenticatedTestRouteImport
+      parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/eyeglasses': {
       id: '/_authenticated/eyeglasses'
@@ -208,6 +384,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedBrandsRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/add-glasses': {
+      id: '/_authenticated/add-glasses'
+      path: '/add-glasses'
+      fullPath: '/add-glasses'
+      preLoaderRoute: typeof AuthenticatedAddGlassesRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/(preAuth)/register': {
       id: '/(preAuth)/register'
       path: '/register'
@@ -222,23 +405,50 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof preAuthLoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/laci-a/': {
+      id: '/_authenticated/laci-a/'
+      path: '/laci-a'
+      fullPath: '/laci-a'
+      preLoaderRoute: typeof AuthenticatedLaciARouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
   }
 }
 
 interface AuthenticatedRouteChildren {
+  AuthenticatedAddGlassesRoute: typeof AuthenticatedAddGlassesRoute
   AuthenticatedBrandsRoute: typeof AuthenticatedBrandsRoute
   AuthenticatedCompaniesRoute: typeof AuthenticatedCompaniesRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedDrawersRoute: typeof AuthenticatedDrawersRoute
   AuthenticatedEyeglassesRoute: typeof AuthenticatedEyeglassesRoute
+  AuthenticatedGlassesStatusRoute: typeof AuthenticatedGlassesStatusRoute
+  AuthenticatedGlassesTableRoute: typeof AuthenticatedGlassesTableRoute
+  AuthenticatedLaciBRoute: typeof AuthenticatedLaciBRoute
+  AuthenticatedLaciCRoute: typeof AuthenticatedLaciCRoute
+  AuthenticatedLaciDRoute: typeof AuthenticatedLaciDRoute
+  AuthenticatedLogoutRoute: typeof AuthenticatedLogoutRoute
+  AuthenticatedTrashRoute: typeof AuthenticatedTrashRoute
+  AuthenticatedLaciARoute: typeof AuthenticatedLaciARoute
+  AuthenticatedTestRoute: typeof AuthenticatedTestRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+  AuthenticatedAddGlassesRoute: AuthenticatedAddGlassesRoute,
   AuthenticatedBrandsRoute: AuthenticatedBrandsRoute,
   AuthenticatedCompaniesRoute: AuthenticatedCompaniesRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedDrawersRoute: AuthenticatedDrawersRoute,
   AuthenticatedEyeglassesRoute: AuthenticatedEyeglassesRoute,
+  AuthenticatedGlassesStatusRoute: AuthenticatedGlassesStatusRoute,
+  AuthenticatedGlassesTableRoute: AuthenticatedGlassesTableRoute,
+  AuthenticatedLaciBRoute: AuthenticatedLaciBRoute,
+  AuthenticatedLaciCRoute: AuthenticatedLaciCRoute,
+  AuthenticatedLaciDRoute: AuthenticatedLaciDRoute,
+  AuthenticatedLogoutRoute: AuthenticatedLogoutRoute,
+  AuthenticatedTrashRoute: AuthenticatedTrashRoute,
+  AuthenticatedLaciARoute: AuthenticatedLaciARoute,
+  AuthenticatedTestRoute: AuthenticatedTestRoute,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
