@@ -53,6 +53,7 @@ const managementItems = [
 const profileItems = [
   { title: "Profile", url: "/profile", icon: PersonStandingIcon },
   { title: "Logout", url: "/logout", icon: ArrowLeftIcon },
+  { title: "Test", url: "/test", icon: Sheet },
 ]
 
 export function SidebarApp() {

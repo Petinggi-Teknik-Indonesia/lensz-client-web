@@ -19,6 +19,7 @@ import { Route as AuthenticatedLaciCRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedLaciBRouteImport } from './routes/_authenticated/laci-b'
 import { Route as AuthenticatedGlassesTableRouteImport } from './routes/_authenticated/glasses-table'
 import { Route as AuthenticatedGlassesStatusRouteImport } from './routes/_authenticated/glasses-status'
+import { Route as AuthenticatedTestRouteImport } from './routes/_authenticated/test'
 import { Route as AuthenticatedEyeglassesRouteImport } from './routes/_authenticated/eyeglasses'
 import { Route as AuthenticatedDrawersRouteImport } from './routes/_authenticated/drawers'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
@@ -80,6 +81,11 @@ const AuthenticatedGlassesStatusRoute =
     path: '/glasses-status',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedTestRoute = AuthenticatedTestRouteImport.update({
+  id: '/test',
+  path: '/test',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedEyeglassesRoute = AuthenticatedEyeglassesRouteImport.update({
   id: '/eyeglasses',
   path: '/eyeglasses',
@@ -145,6 +151,7 @@ export interface FileRoutesByFullPath {
   '/logout': typeof AuthenticatedLogoutRoute
   '/trash': typeof AuthenticatedTrashRoute
   '/laci-a': typeof AuthenticatedLaciARoute
+  '/test': typeof AuthenticatedTestRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -165,6 +172,7 @@ export interface FileRoutesByTo {
   '/logout': typeof AuthenticatedLogoutRoute
   '/trash': typeof AuthenticatedTrashRoute
   '/laci-a': typeof AuthenticatedLaciARoute
+  '/test': typeof AuthenticatedTestRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -187,6 +195,7 @@ export interface FileRoutesById {
   '/_authenticated/logout': typeof AuthenticatedLogoutRoute
   '/_authenticated/trash': typeof AuthenticatedTrashRoute
   '/_authenticated/laci-a/': typeof AuthenticatedLaciARoute
+  '/_authenticated/test': typeof AuthenticatedTestRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -209,6 +218,7 @@ export interface FileRouteTypes {
     | '/logout'
     | '/trash'
     | '/laci-a'
+    | '/test'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -229,6 +239,7 @@ export interface FileRouteTypes {
     | '/logout'
     | '/trash'
     | '/laci-a'
+    | '/test'
   id:
     | '__root__'
     | '/'
@@ -250,6 +261,7 @@ export interface FileRouteTypes {
     | '/_authenticated/logout'
     | '/_authenticated/trash'
     | '/_authenticated/laci-a/'
+    | '/_authenticated/test'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -330,6 +342,11 @@ declare module '@tanstack/react-router' {
       path: '/glasses-status'
       fullPath: '/glasses-status'
       preLoaderRoute: typeof AuthenticatedGlassesStatusRouteImport
+    '/_authenticated/test': {
+      id: '/_authenticated/test'
+      path: '/test'
+      fullPath: '/test'
+      preLoaderRoute: typeof AuthenticatedTestRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/eyeglasses': {
@@ -413,6 +430,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedLogoutRoute: typeof AuthenticatedLogoutRoute
   AuthenticatedTrashRoute: typeof AuthenticatedTrashRoute
   AuthenticatedLaciARoute: typeof AuthenticatedLaciARoute
+  AuthenticatedTestRoute: typeof AuthenticatedTestRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
@@ -430,6 +448,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedLogoutRoute: AuthenticatedLogoutRoute,
   AuthenticatedTrashRoute: AuthenticatedTrashRoute,
   AuthenticatedLaciARoute: AuthenticatedLaciARoute,
+  AuthenticatedTestRoute: AuthenticatedTestRoute,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
