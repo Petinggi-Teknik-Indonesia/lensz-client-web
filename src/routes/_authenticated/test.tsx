@@ -27,8 +27,10 @@ function RouteComponent() {
       header: () =>"Companies"
     }),
   ] 
+  console.log(data)
 
   return <div>
     <DataTable<Glasses, any> columns={columns} data={data}/>
+      
   </div>
 }

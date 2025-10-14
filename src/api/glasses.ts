@@ -1,12 +1,14 @@
 // api/users.js
-import axios from './axios';
+import type { Glasses } from "@/types/glasses";
+import axios from "./axios";
 
-export const getAllGlasses = async () => {
-    const response = await axios.get('/glasses');
-    return response.data
-}
+export const getAllGlasses = async (): Promise<Glasses[]> => {
+  const resp  = await axios.get<Glasses[]>("/glasses/");
+  console.log(resp.data)
+  return resp.data;
+};
 
-export const getGlasses = async (id: number) => {
-      const response = await axios.get(`/glasses/${id}`);
-  return response.data;
-}
+export const getGlasses = async (id: number): Promise<Glasses> => {
+  const { data } = await axios.get<Glasses>(`/glasses/${id}`);
+  return data;
+};
