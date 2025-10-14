@@ -14,6 +14,9 @@ import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedTrashRouteImport } from './routes/_authenticated/trash'
 import { Route as AuthenticatedLogoutRouteImport } from './routes/_authenticated/logout'
+import { Route as AuthenticatedLaciDRouteImport } from './routes/_authenticated/laci-d'
+import { Route as AuthenticatedLaciCRouteImport } from './routes/_authenticated/laci-c'
+import { Route as AuthenticatedLaciBRouteImport } from './routes/_authenticated/laci-b'
 import { Route as AuthenticatedGlassesTableRouteImport } from './routes/_authenticated/glasses-table'
 import { Route as AuthenticatedGlassesStatusRouteImport } from './routes/_authenticated/glasses-status'
 import { Route as AuthenticatedEyeglassesRouteImport } from './routes/_authenticated/eyeglasses'
@@ -24,6 +27,7 @@ import { Route as AuthenticatedBrandsRouteImport } from './routes/_authenticated
 import { Route as AuthenticatedAddGlassesRouteImport } from './routes/_authenticated/add-glasses'
 import { Route as preAuthRegisterRouteImport } from './routes/(preAuth)/register'
 import { Route as preAuthLoginRouteImport } from './routes/(preAuth)/login'
+import { Route as AuthenticatedLaciARouteImport } from './routes/_authenticated/laci-a.'
 
 const ProfileRoute = ProfileRouteImport.update({
   id: '/profile',
@@ -47,6 +51,21 @@ const AuthenticatedTrashRoute = AuthenticatedTrashRouteImport.update({
 const AuthenticatedLogoutRoute = AuthenticatedLogoutRouteImport.update({
   id: '/logout',
   path: '/logout',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedLaciDRoute = AuthenticatedLaciDRouteImport.update({
+  id: '/laci-d',
+  path: '/laci-d',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedLaciCRoute = AuthenticatedLaciCRouteImport.update({
+  id: '/laci-c',
+  path: '/laci-c',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedLaciBRoute = AuthenticatedLaciBRouteImport.update({
+  id: '/laci-b',
+  path: '/laci-b',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedGlassesTableRoute =
@@ -101,6 +120,11 @@ const preAuthLoginRoute = preAuthLoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedLaciARoute = AuthenticatedLaciARouteImport.update({
+  id: '/laci-a/',
+  path: '/laci-a/',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -115,8 +139,12 @@ export interface FileRoutesByFullPath {
   '/eyeglasses': typeof AuthenticatedEyeglassesRoute
   '/glasses-status': typeof AuthenticatedGlassesStatusRoute
   '/glasses-table': typeof AuthenticatedGlassesTableRoute
+  '/laci-b': typeof AuthenticatedLaciBRoute
+  '/laci-c': typeof AuthenticatedLaciCRoute
+  '/laci-d': typeof AuthenticatedLaciDRoute
   '/logout': typeof AuthenticatedLogoutRoute
   '/trash': typeof AuthenticatedTrashRoute
+  '/laci-a': typeof AuthenticatedLaciARoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -131,8 +159,12 @@ export interface FileRoutesByTo {
   '/eyeglasses': typeof AuthenticatedEyeglassesRoute
   '/glasses-status': typeof AuthenticatedGlassesStatusRoute
   '/glasses-table': typeof AuthenticatedGlassesTableRoute
+  '/laci-b': typeof AuthenticatedLaciBRoute
+  '/laci-c': typeof AuthenticatedLaciCRoute
+  '/laci-d': typeof AuthenticatedLaciDRoute
   '/logout': typeof AuthenticatedLogoutRoute
   '/trash': typeof AuthenticatedTrashRoute
+  '/laci-a': typeof AuthenticatedLaciARoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -149,8 +181,12 @@ export interface FileRoutesById {
   '/_authenticated/eyeglasses': typeof AuthenticatedEyeglassesRoute
   '/_authenticated/glasses-status': typeof AuthenticatedGlassesStatusRoute
   '/_authenticated/glasses-table': typeof AuthenticatedGlassesTableRoute
+  '/_authenticated/laci-b': typeof AuthenticatedLaciBRoute
+  '/_authenticated/laci-c': typeof AuthenticatedLaciCRoute
+  '/_authenticated/laci-d': typeof AuthenticatedLaciDRoute
   '/_authenticated/logout': typeof AuthenticatedLogoutRoute
   '/_authenticated/trash': typeof AuthenticatedTrashRoute
+  '/_authenticated/laci-a/': typeof AuthenticatedLaciARoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -167,8 +203,12 @@ export interface FileRouteTypes {
     | '/eyeglasses'
     | '/glasses-status'
     | '/glasses-table'
+    | '/laci-b'
+    | '/laci-c'
+    | '/laci-d'
     | '/logout'
     | '/trash'
+    | '/laci-a'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -183,8 +223,12 @@ export interface FileRouteTypes {
     | '/eyeglasses'
     | '/glasses-status'
     | '/glasses-table'
+    | '/laci-b'
+    | '/laci-c'
+    | '/laci-d'
     | '/logout'
     | '/trash'
+    | '/laci-a'
   id:
     | '__root__'
     | '/'
@@ -200,8 +244,12 @@ export interface FileRouteTypes {
     | '/_authenticated/eyeglasses'
     | '/_authenticated/glasses-status'
     | '/_authenticated/glasses-table'
+    | '/_authenticated/laci-b'
+    | '/_authenticated/laci-c'
+    | '/_authenticated/laci-d'
     | '/_authenticated/logout'
     | '/_authenticated/trash'
+    | '/_authenticated/laci-a/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -247,6 +295,27 @@ declare module '@tanstack/react-router' {
       path: '/logout'
       fullPath: '/logout'
       preLoaderRoute: typeof AuthenticatedLogoutRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/laci-d': {
+      id: '/_authenticated/laci-d'
+      path: '/laci-d'
+      fullPath: '/laci-d'
+      preLoaderRoute: typeof AuthenticatedLaciDRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/laci-c': {
+      id: '/_authenticated/laci-c'
+      path: '/laci-c'
+      fullPath: '/laci-c'
+      preLoaderRoute: typeof AuthenticatedLaciCRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/laci-b': {
+      id: '/_authenticated/laci-b'
+      path: '/laci-b'
+      fullPath: '/laci-b'
+      preLoaderRoute: typeof AuthenticatedLaciBRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/glasses-table': {
@@ -319,6 +388,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof preAuthLoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/laci-a/': {
+      id: '/_authenticated/laci-a/'
+      path: '/laci-a'
+      fullPath: '/laci-a'
+      preLoaderRoute: typeof AuthenticatedLaciARouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
   }
 }
 
@@ -331,8 +407,12 @@ interface AuthenticatedRouteChildren {
   AuthenticatedEyeglassesRoute: typeof AuthenticatedEyeglassesRoute
   AuthenticatedGlassesStatusRoute: typeof AuthenticatedGlassesStatusRoute
   AuthenticatedGlassesTableRoute: typeof AuthenticatedGlassesTableRoute
+  AuthenticatedLaciBRoute: typeof AuthenticatedLaciBRoute
+  AuthenticatedLaciCRoute: typeof AuthenticatedLaciCRoute
+  AuthenticatedLaciDRoute: typeof AuthenticatedLaciDRoute
   AuthenticatedLogoutRoute: typeof AuthenticatedLogoutRoute
   AuthenticatedTrashRoute: typeof AuthenticatedTrashRoute
+  AuthenticatedLaciARoute: typeof AuthenticatedLaciARoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
@@ -344,8 +424,12 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedEyeglassesRoute: AuthenticatedEyeglassesRoute,
   AuthenticatedGlassesStatusRoute: AuthenticatedGlassesStatusRoute,
   AuthenticatedGlassesTableRoute: AuthenticatedGlassesTableRoute,
+  AuthenticatedLaciBRoute: AuthenticatedLaciBRoute,
+  AuthenticatedLaciCRoute: AuthenticatedLaciCRoute,
+  AuthenticatedLaciDRoute: AuthenticatedLaciDRoute,
   AuthenticatedLogoutRoute: AuthenticatedLogoutRoute,
   AuthenticatedTrashRoute: AuthenticatedTrashRoute,
+  AuthenticatedLaciARoute: AuthenticatedLaciARoute,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
