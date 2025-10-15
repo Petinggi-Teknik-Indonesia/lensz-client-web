@@ -10,13 +10,13 @@ export const Route = createFileRoute("/_authenticated/eyeglasses")({
   component: RouteComponent,
 });
 
-const kacamatas = [
+const Glassess = [
   {
     id: "K001",
     tipe: "Sport",
     warna: "Hitam",
     status: "Available",
-    description: "Kacamata sport dengan frame ringan dan lensa anti-UV.",
+    description: "Glasses sport dengan frame ringan dan lensa anti-UV.",
     log: "Added 2 days ago",
   },
   {
@@ -32,7 +32,7 @@ const kacamatas = [
     tipe: "Fashion",
     warna: "Putih",
     status: "Available",
-    description: "Kacamata gaya modern cocok untuk acara formal.",
+    description: "Glasses gaya modern cocok untuk acara formal.",
     log: "Added last week",
   },
   {
@@ -48,7 +48,7 @@ const kacamatas = [
     tipe: "Reading",
     warna: "Hitam",
     status: "Available",
-    description: "Kacamata baca dengan frame kuat dan ringan.",
+    description: "Glasses baca dengan frame kuat dan ringan.",
     log: "Updated 3 hours ago",
   },
 ]

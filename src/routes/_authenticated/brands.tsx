@@ -15,29 +15,29 @@ import {
 } from "@/components/ui/table"
 
 const items = [
-  { kacamata: "Oakley Radar EV", brand: "Oakley" },
-  { kacamata: "Ray-Ban Wayfarer", brand: "Ray-Ban" },
-  { kacamata: "Gucci GG0061S", brand: "Gucci" },
-  { kacamata: "Prada Linea Rossa", brand: "Prada" },
-  { kacamata: "Nike Trainer", brand: "Nike" },
-  { kacamata: "Versace VE2166", brand: "Versace" },
-  { kacamata: "Police SPL872", brand: "Police" },
+  { Glasses: "Oakley Radar EV", brand: "Oakley" },
+  { Glasses: "Ray-Ban Wayfarer", brand: "Ray-Ban" },
+  { Glasses: "Gucci GG0061S", brand: "Gucci" },
+  { Glasses: "Prada Linea Rossa", brand: "Prada" },
+  { Glasses: "Nike Trainer", brand: "Nike" },
+  { Glasses: "Versace VE2166", brand: "Versace" },
+  { Glasses: "Police SPL872", brand: "Police" },
 ]
 
 export function TableDemo() {
   return (
     <Table>
-      <TableCaption>Daftar koleksi kacamata dan merek.</TableCaption>
+      <TableCaption>Daftar koleksi Glasses dan merek.</TableCaption>
       <TableHeader>
         <TableRow>
-          <TableHead className="w-[200px]">Kacamata</TableHead>
+          <TableHead className="w-[200px]">Glasses</TableHead>
           <TableHead>Brand</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         {items.map((item) => (
-          <TableRow key={item.kacamata}>
-            <TableCell className="font-medium">{item.kacamata}</TableCell>
+          <TableRow key={item.Glasses}>
+            <TableCell className="font-medium">{item.Glasses}</TableCell>
             <TableCell>{item.brand}</TableCell>
           </TableRow>
         ))}
@@ -54,7 +54,7 @@ export function TableDemo() {
 function RouteComponent() {
   return (
     <div className="p-4">
-      <h1 className="mb-4 text-lg font-semibold">Brands & Kacamata</h1>
+      <h1 className="mb-4 text-lg font-semibold">Brands & Glasses</h1>
       <TableDemo />
     </div>
   )

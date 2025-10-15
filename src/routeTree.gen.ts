@@ -13,13 +13,13 @@ import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedTrashRouteImport } from './routes/_authenticated/trash'
+import { Route as AuthenticatedTestRouteImport } from './routes/_authenticated/test'
 import { Route as AuthenticatedLogoutRouteImport } from './routes/_authenticated/logout'
 import { Route as AuthenticatedLaciDRouteImport } from './routes/_authenticated/laci-d'
 import { Route as AuthenticatedLaciCRouteImport } from './routes/_authenticated/laci-c'
 import { Route as AuthenticatedLaciBRouteImport } from './routes/_authenticated/laci-b'
 import { Route as AuthenticatedGlassesTableRouteImport } from './routes/_authenticated/glasses-table'
 import { Route as AuthenticatedGlassesStatusRouteImport } from './routes/_authenticated/glasses-status'
-import { Route as AuthenticatedTestRouteImport } from './routes/_authenticated/test'
 import { Route as AuthenticatedEyeglassesRouteImport } from './routes/_authenticated/eyeglasses'
 import { Route as AuthenticatedDrawersRouteImport } from './routes/_authenticated/drawers'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
@@ -47,6 +47,11 @@ const IndexRoute = IndexRouteImport.update({
 const AuthenticatedTrashRoute = AuthenticatedTrashRouteImport.update({
   id: '/trash',
   path: '/trash',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedTestRoute = AuthenticatedTestRouteImport.update({
+  id: '/test',
+  path: '/test',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedLogoutRoute = AuthenticatedLogoutRouteImport.update({
@@ -81,11 +86,6 @@ const AuthenticatedGlassesStatusRoute =
     path: '/glasses-status',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
-const AuthenticatedTestRoute = AuthenticatedTestRouteImport.update({
-  id: '/test',
-  path: '/test',
-  getParentRoute: () => AuthenticatedRoute,
-} as any)
 const AuthenticatedEyeglassesRoute = AuthenticatedEyeglassesRouteImport.update({
   id: '/eyeglasses',
   path: '/eyeglasses',
@@ -149,9 +149,9 @@ export interface FileRoutesByFullPath {
   '/laci-c': typeof AuthenticatedLaciCRoute
   '/laci-d': typeof AuthenticatedLaciDRoute
   '/logout': typeof AuthenticatedLogoutRoute
+  '/test': typeof AuthenticatedTestRoute
   '/trash': typeof AuthenticatedTrashRoute
   '/laci-a': typeof AuthenticatedLaciARoute
-  '/test': typeof AuthenticatedTestRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -170,9 +170,9 @@ export interface FileRoutesByTo {
   '/laci-c': typeof AuthenticatedLaciCRoute
   '/laci-d': typeof AuthenticatedLaciDRoute
   '/logout': typeof AuthenticatedLogoutRoute
+  '/test': typeof AuthenticatedTestRoute
   '/trash': typeof AuthenticatedTrashRoute
   '/laci-a': typeof AuthenticatedLaciARoute
-  '/test': typeof AuthenticatedTestRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -193,9 +193,9 @@ export interface FileRoutesById {
   '/_authenticated/laci-c': typeof AuthenticatedLaciCRoute
   '/_authenticated/laci-d': typeof AuthenticatedLaciDRoute
   '/_authenticated/logout': typeof AuthenticatedLogoutRoute
+  '/_authenticated/test': typeof AuthenticatedTestRoute
   '/_authenticated/trash': typeof AuthenticatedTrashRoute
   '/_authenticated/laci-a/': typeof AuthenticatedLaciARoute
-  '/_authenticated/test': typeof AuthenticatedTestRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -216,9 +216,9 @@ export interface FileRouteTypes {
     | '/laci-c'
     | '/laci-d'
     | '/logout'
+    | '/test'
     | '/trash'
     | '/laci-a'
-    | '/test'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -237,9 +237,9 @@ export interface FileRouteTypes {
     | '/laci-c'
     | '/laci-d'
     | '/logout'
+    | '/test'
     | '/trash'
     | '/laci-a'
-    | '/test'
   id:
     | '__root__'
     | '/'
@@ -259,9 +259,9 @@ export interface FileRouteTypes {
     | '/_authenticated/laci-c'
     | '/_authenticated/laci-d'
     | '/_authenticated/logout'
+    | '/_authenticated/test'
     | '/_authenticated/trash'
     | '/_authenticated/laci-a/'
-    | '/_authenticated/test'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -300,6 +300,13 @@ declare module '@tanstack/react-router' {
       path: '/trash'
       fullPath: '/trash'
       preLoaderRoute: typeof AuthenticatedTrashRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/test': {
+      id: '/_authenticated/test'
+      path: '/test'
+      fullPath: '/test'
+      preLoaderRoute: typeof AuthenticatedTestRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/logout': {
@@ -342,11 +349,6 @@ declare module '@tanstack/react-router' {
       path: '/glasses-status'
       fullPath: '/glasses-status'
       preLoaderRoute: typeof AuthenticatedGlassesStatusRouteImport
-    '/_authenticated/test': {
-      id: '/_authenticated/test'
-      path: '/test'
-      fullPath: '/test'
-      preLoaderRoute: typeof AuthenticatedTestRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/eyeglasses': {
@@ -428,9 +430,9 @@ interface AuthenticatedRouteChildren {
   AuthenticatedLaciCRoute: typeof AuthenticatedLaciCRoute
   AuthenticatedLaciDRoute: typeof AuthenticatedLaciDRoute
   AuthenticatedLogoutRoute: typeof AuthenticatedLogoutRoute
+  AuthenticatedTestRoute: typeof AuthenticatedTestRoute
   AuthenticatedTrashRoute: typeof AuthenticatedTrashRoute
   AuthenticatedLaciARoute: typeof AuthenticatedLaciARoute
-  AuthenticatedTestRoute: typeof AuthenticatedTestRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
@@ -446,9 +448,9 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedLaciCRoute: AuthenticatedLaciCRoute,
   AuthenticatedLaciDRoute: AuthenticatedLaciDRoute,
   AuthenticatedLogoutRoute: AuthenticatedLogoutRoute,
+  AuthenticatedTestRoute: AuthenticatedTestRoute,
   AuthenticatedTrashRoute: AuthenticatedTrashRoute,
   AuthenticatedLaciARoute: AuthenticatedLaciARoute,
-  AuthenticatedTestRoute: AuthenticatedTestRoute,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
