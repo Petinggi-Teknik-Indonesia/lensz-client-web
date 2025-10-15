@@ -30,9 +30,9 @@ export default function AddGlassesModal({ children }: { children: ReactNode }) {
         <AddGlassesForm onSuccess={() => setOpen(false)} onCancel={() => setOpen(false)} />
 
         <DialogFooter>
-          <Button variant="ghost" onClick={() => setOpen(false)}>
+          {/* <Button variant="ghost" onClick={() => setOpen(false)}>
             Cancel
-          </Button>
+          </Button> */}
         </DialogFooter>
       </DialogContent>
     </Dialog>

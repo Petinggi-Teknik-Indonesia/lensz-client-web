@@ -1,4 +1,3 @@
-import * as React from "react";
 import { useForm } from "@tanstack/react-form";
 import { toast } from "sonner";
 import * as z from "zod";
@@ -11,6 +10,8 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { useMutation } from "@tanstack/react-query";
+import { addGlasses } from "@/api/glasses";
 
 type AddGlassesFormProps = {
   onSuccess: () => void;
@@ -22,7 +23,7 @@ const formSchema = z.object({
   name: z.string().min(1, "Name cannot be empty"),
   type: z.string().min(1, "Type cannot be empty"),
   color: z.string().min(1, "Color cannot be empty"),
-  status: z.string().min(1, "Status cannot be empty"),
+  status: z.number(),
   drawer: z.object({
     name: z.string().optional(),
     id: z.number().optional(),
@@ -38,13 +39,14 @@ const formSchema = z.object({
 });
 
 function AddGlassesForm(props: AddGlassesFormProps) {
-  const form = useForm({
+  const mutation = useMutation({mutationFn: addGlasses})
+    const form = useForm({
     defaultValues: {
       rfid: "xxxxxxxxx",
       name: "",
       type: "",
       color: "",
-      status: "",
+      status: 0,
       drawer: {},
       company: {},
       brand: {},
@@ -53,22 +55,24 @@ function AddGlassesForm(props: AddGlassesFormProps) {
       onSubmit: formSchema,
     },
     onSubmit: async ({ value }) => {
-      toast("Glasses added successfully!", {
-        description: (
-          <pre className="bg-code text-primary mt-2 w-[320px] overflow-x-auto rounded-md p-4">
-            <code>{JSON.stringify(value, null, 2)}</code>
-          </pre>
-        ),
-        position: "bottom-right",
-        classNames: {
-          content: "flex flex-col gap-2",
-        },
-        style: {
-          "--border-radius": "calc(var(--radius) + 4px)",
-        } as React.CSSProperties,
-      });
+      try {
+        await mutation.mutateAsync(value);
 
-      props.onSuccess();
+        toast.success("Glasses added successfully!", {
+          description: (
+            <pre className="bg-code text-primary mt-2 w-[320px] overflow-x-auto rounded-md p-4">
+              <code>{JSON.stringify(value, null, 2)}</code>
+            </pre>
+          ),
+          position: "bottom-right",
+        });
+
+        props.onSuccess();
+      } catch (error) {
+        toast.error("Failed to add glasses", {
+          description: (error as Error).message,
+        });
+      }
     },
   });
 
@@ -80,9 +84,8 @@ function AddGlassesForm(props: AddGlassesFormProps) {
         form.handleSubmit();
       }}
     >
-      <FieldGroup>
-        {/* RFID */}
-        {/* <form.Field
+      {/* RFID */}
+      {/* <form.Field
           name="rfid"
           children={(field) => {
             const isInvalid =
@@ -106,105 +109,109 @@ function AddGlassesForm(props: AddGlassesFormProps) {
           }}
         /> */}
 
-        {/* Name */}
-        <form.Field
-          name="name"
-          children={(field) => {
-            const isInvalid =
-              field.state.meta.isTouched && !field.state.meta.isValid;
-            return (
-              <Field data-invalid={isInvalid}>
-                <FieldLabel htmlFor={field.name}>Name</FieldLabel>
-                <Input
-                  id={field.name}
-                  name={field.name}
-                  value={field.state.value}
-                  onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                  aria-invalid={isInvalid}
-                  placeholder="Eyeglasses name"
-                  autoComplete="off"
-                />
-                {isInvalid && <FieldError errors={field.state.meta.errors} />}
-              </Field>
-            );
-          }}
-        />
+      {/* Name */}
+      <form.Field
+        name="name"
+        children={(field) => {
+          const isInvalid =
+            field.state.meta.isTouched && !field.state.meta.isValid;
+          return (
+            <Field data-invalid={isInvalid}>
+              <FieldLabel htmlFor={field.name}>Name</FieldLabel>
+              <Input
+                id={field.name}
+                name={field.name}
+                value={field.state.value}
+                onBlur={field.handleBlur}
+                onChange={(e) => field.handleChange(e.target.value)}
+                aria-invalid={isInvalid}
+                placeholder="Eyeglasses name"
+                autoComplete="off"
+              />
+              {isInvalid && <FieldError errors={field.state.meta.errors} />}
+            </Field>
+          );
+        }}
+      />
 
-        {/* Type */}
-        <form.Field
-          name="type"
-          children={(field) => {
-            const isInvalid =
-              field.state.meta.isTouched && !field.state.meta.isValid;
-            return (
-              <Field data-invalid={isInvalid}>
-                <FieldLabel htmlFor={field.name}>Type</FieldLabel>
-                <Input
-                  id={field.name}
-                  name={field.name}
-                  value={field.state.value}
-                  onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                  aria-invalid={isInvalid}
-                  placeholder="e.g. Sunglasses, Optical"
-                  autoComplete="off"
-                />
-                {isInvalid && <FieldError errors={field.state.meta.errors} />}
-              </Field>
-            );
-          }}
-        />
+      {/* HORIZONTAL FIELDSET */}
+      <FieldGroup className="mt-4 border-t pt-4">
+        {/* Make fields align in a row */}
+          {/* Type */}
+          <form.Field
+            name="type"
+            children={(field) => {
+              const isInvalid =
+                field.state.meta.isTouched && !field.state.meta.isValid;
+              return (
+                <Field data-invalid={isInvalid}>
+                  <FieldLabel htmlFor={field.name}>Type</FieldLabel>
+                  <Input
+                    id={field.name}
+                    name={field.name}
+                    value={field.state.value}
+                    onBlur={field.handleBlur}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                    aria-invalid={isInvalid}
+                    placeholder="e.g. Sunglasses, Optical"
+                    autoComplete="off"
+                  />
+                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                </Field>
+              );
+            }}
+          />
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
 
-        {/* Color */}
-        <form.Field
-          name="color"
-          children={(field) => {
-            const isInvalid =
-              field.state.meta.isTouched && !field.state.meta.isValid;
-            return (
-              <Field data-invalid={isInvalid}>
-                <FieldLabel htmlFor={field.name}>Color</FieldLabel>
-                <Input
-                  id={field.name}
-                  name={field.name}
-                  value={field.state.value}
-                  onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                  aria-invalid={isInvalid}
-                  placeholder="Frame color"
-                  autoComplete="off"
-                />
-                {isInvalid && <FieldError errors={field.state.meta.errors} />}
-              </Field>
-            );
-          }}
-        />
+          {/* Color */}
+          <form.Field
+            name="color"
+            children={(field) => {
+              const isInvalid =
+                field.state.meta.isTouched && !field.state.meta.isValid;
+              return (
+                <Field data-invalid={isInvalid}>
+                  <FieldLabel htmlFor={field.name}>Color</FieldLabel>
+                  <Input
+                    id={field.name}
+                    name={field.name}
+                    value={field.state.value}
+                    onBlur={field.handleBlur}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                    aria-invalid={isInvalid}
+                    placeholder="Frame color"
+                    autoComplete="off"
+                  />
+                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                </Field>
+              );
+            }}
+          />
 
-        {/* Status */}
-        <form.Field
-          name="status"
-          children={(field) => {
-            const isInvalid =
-              field.state.meta.isTouched && !field.state.meta.isValid;
-            return (
-              <Field data-invalid={isInvalid}>
-                <FieldLabel htmlFor={field.name}>Status</FieldLabel>
-                <Input
-                  id={field.name}
-                  name={field.name}
-                  value={field.state.value}
-                  onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                  aria-invalid={isInvalid}
-                  placeholder="Available / Sold / Reserved"
-                  autoComplete="off"
-                />
-                {isInvalid && <FieldError errors={field.state.meta.errors} />}
-              </Field>
-            );
-          }}
-        />
+          {/* Status */}
+          {/* <form.Field
+            name="status"
+            children={(field) => {
+              const isInvalid =
+                field.state.meta.isTouched && !field.state.meta.isValid;
+              return (
+                <Field data-invalid={isInvalid}>
+                  <FieldLabel htmlFor={field.name}>Status</FieldLabel>
+                  <Input
+                    id={field.name}
+                    name={field.name}
+                    value={field.state.value}
+                    onBlur={field.handleBlur}
+                    aria-invalid={isInvalid}
+                    placeholder="Available / Sold / Reserved"
+                    autoComplete="off"
+                  />
+                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                </Field>
+              );
+            }}
+          /> */}
+        </div>
       </FieldGroup>
 
       {/* HORIZONTAL FIELDSET */}
@@ -264,7 +271,7 @@ function AddGlassesForm(props: AddGlassesFormProps) {
         </div>
       </FieldGroup>
 
-      <Field orientation="horizontal" className="mt-6">
+      <Field orientation="horizontal" className="mt-6 flex flex-row justify-end">
         <Button type="button" variant="outline" onClick={props.onCancel}>
           Cancel
         </Button>
