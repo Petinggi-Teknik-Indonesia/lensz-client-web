@@ -25,7 +25,6 @@ import { Route as AuthenticatedDrawersRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedCompaniesRouteImport } from './routes/_authenticated/companies'
 import { Route as AuthenticatedBrandsRouteImport } from './routes/_authenticated/brands'
-import { Route as AuthenticatedAddGlassesRouteImport } from './routes/_authenticated/add-glasses'
 import { Route as preAuthRegisterRouteImport } from './routes/(preAuth)/register'
 import { Route as preAuthLoginRouteImport } from './routes/(preAuth)/login'
 import { Route as AuthenticatedLaciARouteImport } from './routes/_authenticated/laci-a.'
@@ -111,11 +110,6 @@ const AuthenticatedBrandsRoute = AuthenticatedBrandsRouteImport.update({
   path: '/brands',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
-const AuthenticatedAddGlassesRoute = AuthenticatedAddGlassesRouteImport.update({
-  id: '/add-glasses',
-  path: '/add-glasses',
-  getParentRoute: () => AuthenticatedRoute,
-} as any)
 const preAuthRegisterRoute = preAuthRegisterRouteImport.update({
   id: '/(preAuth)/register',
   path: '/register',
@@ -137,7 +131,6 @@ export interface FileRoutesByFullPath {
   '/profile': typeof ProfileRoute
   '/login': typeof preAuthLoginRoute
   '/register': typeof preAuthRegisterRoute
-  '/add-glasses': typeof AuthenticatedAddGlassesRoute
   '/brands': typeof AuthenticatedBrandsRoute
   '/companies': typeof AuthenticatedCompaniesRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
@@ -158,7 +151,6 @@ export interface FileRoutesByTo {
   '/profile': typeof ProfileRoute
   '/login': typeof preAuthLoginRoute
   '/register': typeof preAuthRegisterRoute
-  '/add-glasses': typeof AuthenticatedAddGlassesRoute
   '/brands': typeof AuthenticatedBrandsRoute
   '/companies': typeof AuthenticatedCompaniesRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
@@ -181,7 +173,6 @@ export interface FileRoutesById {
   '/profile': typeof ProfileRoute
   '/(preAuth)/login': typeof preAuthLoginRoute
   '/(preAuth)/register': typeof preAuthRegisterRoute
-  '/_authenticated/add-glasses': typeof AuthenticatedAddGlassesRoute
   '/_authenticated/brands': typeof AuthenticatedBrandsRoute
   '/_authenticated/companies': typeof AuthenticatedCompaniesRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
@@ -204,7 +195,6 @@ export interface FileRouteTypes {
     | '/profile'
     | '/login'
     | '/register'
-    | '/add-glasses'
     | '/brands'
     | '/companies'
     | '/dashboard'
@@ -225,7 +215,6 @@ export interface FileRouteTypes {
     | '/profile'
     | '/login'
     | '/register'
-    | '/add-glasses'
     | '/brands'
     | '/companies'
     | '/dashboard'
@@ -247,7 +236,6 @@ export interface FileRouteTypes {
     | '/profile'
     | '/(preAuth)/login'
     | '/(preAuth)/register'
-    | '/_authenticated/add-glasses'
     | '/_authenticated/brands'
     | '/_authenticated/companies'
     | '/_authenticated/dashboard'
@@ -386,13 +374,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedBrandsRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
-    '/_authenticated/add-glasses': {
-      id: '/_authenticated/add-glasses'
-      path: '/add-glasses'
-      fullPath: '/add-glasses'
-      preLoaderRoute: typeof AuthenticatedAddGlassesRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
     '/(preAuth)/register': {
       id: '/(preAuth)/register'
       path: '/register'
@@ -418,7 +399,6 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedRouteChildren {
-  AuthenticatedAddGlassesRoute: typeof AuthenticatedAddGlassesRoute
   AuthenticatedBrandsRoute: typeof AuthenticatedBrandsRoute
   AuthenticatedCompaniesRoute: typeof AuthenticatedCompaniesRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
@@ -436,7 +416,6 @@ interface AuthenticatedRouteChildren {
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
-  AuthenticatedAddGlassesRoute: AuthenticatedAddGlassesRoute,
   AuthenticatedBrandsRoute: AuthenticatedBrandsRoute,
   AuthenticatedCompaniesRoute: AuthenticatedCompaniesRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,

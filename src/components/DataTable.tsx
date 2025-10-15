@@ -11,6 +11,7 @@ import {
   Table,
   TableBody,
   TableCell,
+  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
@@ -31,30 +32,33 @@ export function DataTable<TData, TValue>({
     getCoreRowModel: getCoreRowModel(),
   });
 
+  const totalRows = table.getRowModel().rows.length;
+
   return (
     <div className="w-full h-full flex flex-col gap-4">
-      <div className="overflow-hidden rounded-md border flex flex-col">
+      <div className="overflow-hidden rounded-md border flex flex-col relative">
         <Table className="h-full">
-          <TableHeader className="sticky top-0 z-10 bg-accent shadow-lg">
+          {/* Sticky header */}
+          <TableHeader className="sticky top-0 z-10 bg-primary shadow-lg">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableHead>
-                  );
-                })}
+                {headerGroup.headers.map((header) => (
+                  <TableHead className="text-white" key={header.id}>
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                  </TableHead>
+                ))}
               </TableRow>
             ))}
           </TableHeader>
+
+          {/* Table body */}
           <TableBody className="bg-white">
-            {table.getRowModel().rows?.length ? (
+            {totalRows ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
@@ -81,6 +85,18 @@ export function DataTable<TData, TValue>({
               </TableRow>
             )}
           </TableBody>
+
+          {/* Sticky footer */}
+          <TableFooter className="sticky -bottom-1 z-10 bg-gradient-to-r from-accent to-white shadow-xl">
+            <TableRow>
+              <TableCell
+                colSpan={columns.length}
+                className="text-left font-medium"
+              >
+                Total: {totalRows} {totalRows === 1 ? "item" : "items"}
+              </TableCell>
+            </TableRow>
+          </TableFooter>
         </Table>
       </div>
     </div>

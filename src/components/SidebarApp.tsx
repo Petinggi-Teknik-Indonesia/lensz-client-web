@@ -1,13 +1,9 @@
 import {
   ArrowLeftIcon,
-  Clock10Icon,
   Glasses,
   Home,
   PersonStandingIcon,
-  PlusIcon,
   Sheet,
-  Table2Icon,
-  Trash2Icon,
 } from "lucide-react";
 
 import {
@@ -42,9 +38,6 @@ const glassesItems = [
 
 const managementItems = [
   { title: "Drawers", url: "/drawers", icon: Sheet },
-  { title: "Glasses Table", url: "/glasses-table", icon: Table2Icon },
-  { title: "Add New Glasses", url: "/add-glasses", icon: PlusIcon },
-  { title: "Glasses Status", url: "/glasses-status", icon: Clock10Icon },
 ];
 
 const profileItems = [

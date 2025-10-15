@@ -1,89 +1,120 @@
+import { useState, useMemo } from "react";
 import { getAllGlasses } from "@/api/glasses";
 import { DataTable } from "@/components/DataTable";
+import { Button } from "@/components/ui/button";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupButton,
+  InputGroupInput,
+} from "@/components/ui/input-group";
 import type { Glasses } from "@/types/glasses";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { createColumnHelper } from '@tanstack/react-table'
-
+import { createColumnHelper } from "@tanstack/react-table";
+import { SearchIcon } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export const Route = createFileRoute("/_authenticated/eyeglasses")({
   component: RouteComponent,
 });
-
-// const kacamatas = [
-//   {
-//     id: "K001",
-//     tipe: "Sport",
-//     warna: "Hitam",
-//     status: "Available",
-//     description: "Kacamata sport dengan frame ringan dan lensa anti-UV.",
-//     log: "Added 2 days ago",
-//   },
-//   {
-//     id: "K002",
-//     tipe: "Casual",
-//     warna: "Coklat",
-//     status: "Rented",
-//     description: "Model klasik untuk penggunaan harian.",
-//     log: "Last rented yesterday",
-//   },
-//   {
-//     id: "K003",
-//     tipe: "Fashion",
-//     warna: "Putih",
-//     status: "Available",
-//     description: "Kacamata gaya modern cocok untuk acara formal.",
-//     log: "Added last week",
-//   },
-//   {
-//     id: "K004",
-//     tipe: "Outdoor",
-//     warna: "Abu-abu",
-//     status: "Maintenance",
-//     description: "Lensa polarized untuk aktivitas luar ruangan.",
-//     log: "Under maintenance",
-//   },
-//   {
-//     id: "K005",
-//     tipe: "Reading",
-//     warna: "Hitam",
-//     status: "Available",
-//     description: "Kacamata baca dengan frame kuat dan ringan.",
-//     log: "Updated 3 hours ago",
-//   },
-// ]
 
 function RouteComponent() {
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["glasses"],
     queryFn: getAllGlasses,
   });
-  const columnHelper = createColumnHelper<Glasses>();
 
+  const [search, setSearch] = useState("");
+  // use a non-empty sentinel value for "All"
+  const [statusFilter, setStatusFilter] = useState<string>("all");
+
+  const columnHelper = createColumnHelper<Glasses>();
   const columns = [
-    columnHelper.accessor("id", {
-      header: () => "ID",
-    }),
-    columnHelper.accessor("name", {
-      header: () => "Name",
-    }),
-    columnHelper.accessor("drawer", {
-      header: () => "Drawers",
-    }),
-    columnHelper.accessor("status", {
-      header: () => "Status",
-    }),
-    columnHelper.accessor("color", {
-      header: () => "Color",
-    }),
+    columnHelper.accessor("id", { header: () => "ID" }),
+    columnHelper.accessor("name", { header: () => "Name" }),
+    columnHelper.accessor("drawer", { header: () => "Drawers" }),
+    columnHelper.accessor("status", { header: () => "Status" }),
+    columnHelper.accessor("color", { header: () => "Color" }),
   ];
+
+  // Collect unique statuses for dropdown
+  const statusOptions = useMemo(() => {
+    if (!data) return [];
+    const unique = new Set(data.map((item) => item.status).filter(Boolean));
+    return Array.from(unique);
+  }, [data]);
+
+  // Filter data by search and status
+  const filteredData = useMemo(() => {
+    if (!data) return [];
+    const lower = search.toLowerCase();
+
+    return data.filter((item) => {
+      const matchesSearch = [item.id, item.name, item.drawer, item.status, item.color]
+        .filter(Boolean)
+        .some((field) => String(field).toLowerCase().includes(lower));
+
+      const matchesStatus =
+        statusFilter === "all" ||
+        item.status?.toLowerCase() === statusFilter.toLowerCase();
+
+      return matchesSearch && matchesStatus;
+    });
+  }, [data, search, statusFilter]);
 
   if (isLoading) return <p>Loading...</p>;
   if (isError) return <p>Error: {error.message}</p>;
 
   return (
-    <div className="h-full">
-      <DataTable<Glasses, any> columns={columns} data={data ?? []} />
+    <div className="h-full flex flex-col gap-2 mt-2">
+      {/* 🔍 Search Bar + Filter + Add Button */}
+      <div className="flex flex-row gap-2 justify-end">
+        {/* Search */}
+        <InputGroup>
+          <InputGroupInput
+            placeholder="Search..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+          <InputGroupAddon>
+            <SearchIcon />
+          </InputGroupAddon>
+          <InputGroupAddon align="inline-end">
+            <InputGroupButton onClick={() => setSearch("")}>
+              Clear
+            </InputGroupButton>
+          </InputGroupAddon>
+        </InputGroup>
+
+        {/* Status Filter */}
+        <Select value={statusFilter} onValueChange={setStatusFilter}>
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Filter by Status" />
+          </SelectTrigger>
+          <SelectContent>
+            {/* use non-empty value */}
+            <SelectItem value="all">Status</SelectItem>
+            {statusOptions.map((status) => (
+              <SelectItem key={status} value={status}>
+                {status}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
+        {/* Add Button */}
+        <Button>+ Add Glasses</Button>
+      </div>
+
+      {/* 📋 Data Table */}
+      <DataTable<Glasses, any> columns={columns} data={filteredData} />
     </div>
   );
 }
