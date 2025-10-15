@@ -20,6 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import AddGlassesModal from "@/components/modals/AddGlassesModal";
 
 export const Route = createFileRoute("/_authenticated/eyeglasses")({
   component: RouteComponent,
@@ -110,7 +111,9 @@ function RouteComponent() {
         </Select>
 
         {/* Add Button */}
-        <Button>+ Add Glasses</Button>
+        <AddGlassesModal>
+          + Add Glasses
+        </AddGlassesModal>
       </div>
 
       {/* 📋 Data Table */}

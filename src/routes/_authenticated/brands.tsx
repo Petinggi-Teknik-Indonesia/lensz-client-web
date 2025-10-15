@@ -39,7 +39,7 @@ export function TableDemo() {
           </TableRow>
         ))}
       </TableBody>
-      <TableFooter>
+      <TableFooter >
         <TableRow>
           <TableCell colSpan={2}>Total: {items.length} items</TableCell>
         </TableRow>
