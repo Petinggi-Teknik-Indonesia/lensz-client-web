@@ -78,8 +78,8 @@ function RouteComponent() {
   const columns = [
     columnHelper.accessor("id", { header: () => "ID" }),
     columnHelper.accessor("name", { header: () => "Name" }),
-    columnHelper.accessor("createdAt", { header: () => "Drawers" }),
-    columnHelper.accessor("updatedAt", { header: () => "Status" }),
+    columnHelper.accessor("createdAt", { header: () => "Created At" }),
+    columnHelper.accessor("updatedAt", { header: () => "Updated At" }),
   ];
 
 
