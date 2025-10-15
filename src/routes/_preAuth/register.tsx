@@ -13,7 +13,7 @@ export default function RegisterPage() {
 }
 
 
-export const Route = createFileRoute('/(preAuth)/register')({
+export const Route = createFileRoute('/_preAuth/register')({
   component: RegisterPage,
 })
 

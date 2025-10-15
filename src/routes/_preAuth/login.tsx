@@ -12,7 +12,7 @@ function LoginPage() {
   )
 }
 
-export const Route = createFileRoute("/(preAuth)/login")({
+export const Route = createFileRoute("/_preAuth/login")({
   component: LoginPage,
 })
 

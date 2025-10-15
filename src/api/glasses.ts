@@ -9,6 +9,12 @@ export const getAllGlasses = async (): Promise<Glasses[]> => {
 };
 
 export const getGlasses = async (id: number): Promise<Glasses> => {
-  const { data } = await axios.get<Glasses>(`/glasses/${id}`);
+  const { data } = await axios.get<Glasses>(`/glasses/${id}/`);
   return data;
 };
+
+export async function addGlasses(newGlasses: Omit<Glasses, "id">) {
+  const { data } = await axios.post(`/api/glasses/`, newGlasses);
+  return data;
+}
+

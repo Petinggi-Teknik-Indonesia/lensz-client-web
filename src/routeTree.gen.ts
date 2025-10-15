@@ -12,6 +12,8 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as PreAuthRegisterRouteImport } from './routes/_preAuth/register'
+import { Route as PreAuthLoginRouteImport } from './routes/_preAuth/login'
 import { Route as AuthenticatedTrashRouteImport } from './routes/_authenticated/trash'
 import { Route as AuthenticatedTestRouteImport } from './routes/_authenticated/test'
 import { Route as AuthenticatedLogoutRouteImport } from './routes/_authenticated/logout'
@@ -25,8 +27,6 @@ import { Route as AuthenticatedDrawersRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedCompaniesRouteImport } from './routes/_authenticated/companies'
 import { Route as AuthenticatedBrandsRouteImport } from './routes/_authenticated/brands'
-import { Route as preAuthRegisterRouteImport } from './routes/(preAuth)/register'
-import { Route as preAuthLoginRouteImport } from './routes/(preAuth)/login'
 import { Route as AuthenticatedLaciARouteImport } from './routes/_authenticated/laci-a.'
 
 const ProfileRoute = ProfileRouteImport.update({
@@ -41,6 +41,16 @@ const AuthenticatedRoute = AuthenticatedRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PreAuthRegisterRoute = PreAuthRegisterRouteImport.update({
+  id: '/_preAuth/register',
+  path: '/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PreAuthLoginRoute = PreAuthLoginRouteImport.update({
+  id: '/_preAuth/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedTrashRoute = AuthenticatedTrashRouteImport.update({
@@ -110,16 +120,6 @@ const AuthenticatedBrandsRoute = AuthenticatedBrandsRouteImport.update({
   path: '/brands',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
-const preAuthRegisterRoute = preAuthRegisterRouteImport.update({
-  id: '/(preAuth)/register',
-  path: '/register',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const preAuthLoginRoute = preAuthLoginRouteImport.update({
-  id: '/(preAuth)/login',
-  path: '/login',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AuthenticatedLaciARoute = AuthenticatedLaciARouteImport.update({
   id: '/laci-a/',
   path: '/laci-a/',
@@ -129,8 +129,6 @@ const AuthenticatedLaciARoute = AuthenticatedLaciARouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/profile': typeof ProfileRoute
-  '/login': typeof preAuthLoginRoute
-  '/register': typeof preAuthRegisterRoute
   '/brands': typeof AuthenticatedBrandsRoute
   '/companies': typeof AuthenticatedCompaniesRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
@@ -144,13 +142,13 @@ export interface FileRoutesByFullPath {
   '/logout': typeof AuthenticatedLogoutRoute
   '/test': typeof AuthenticatedTestRoute
   '/trash': typeof AuthenticatedTrashRoute
+  '/login': typeof PreAuthLoginRoute
+  '/register': typeof PreAuthRegisterRoute
   '/laci-a': typeof AuthenticatedLaciARoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/profile': typeof ProfileRoute
-  '/login': typeof preAuthLoginRoute
-  '/register': typeof preAuthRegisterRoute
   '/brands': typeof AuthenticatedBrandsRoute
   '/companies': typeof AuthenticatedCompaniesRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
@@ -164,6 +162,8 @@ export interface FileRoutesByTo {
   '/logout': typeof AuthenticatedLogoutRoute
   '/test': typeof AuthenticatedTestRoute
   '/trash': typeof AuthenticatedTrashRoute
+  '/login': typeof PreAuthLoginRoute
+  '/register': typeof PreAuthRegisterRoute
   '/laci-a': typeof AuthenticatedLaciARoute
 }
 export interface FileRoutesById {
@@ -171,8 +171,6 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/profile': typeof ProfileRoute
-  '/(preAuth)/login': typeof preAuthLoginRoute
-  '/(preAuth)/register': typeof preAuthRegisterRoute
   '/_authenticated/brands': typeof AuthenticatedBrandsRoute
   '/_authenticated/companies': typeof AuthenticatedCompaniesRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
@@ -186,6 +184,8 @@ export interface FileRoutesById {
   '/_authenticated/logout': typeof AuthenticatedLogoutRoute
   '/_authenticated/test': typeof AuthenticatedTestRoute
   '/_authenticated/trash': typeof AuthenticatedTrashRoute
+  '/_preAuth/login': typeof PreAuthLoginRoute
+  '/_preAuth/register': typeof PreAuthRegisterRoute
   '/_authenticated/laci-a/': typeof AuthenticatedLaciARoute
 }
 export interface FileRouteTypes {
@@ -193,8 +193,6 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/profile'
-    | '/login'
-    | '/register'
     | '/brands'
     | '/companies'
     | '/dashboard'
@@ -208,13 +206,13 @@ export interface FileRouteTypes {
     | '/logout'
     | '/test'
     | '/trash'
+    | '/login'
+    | '/register'
     | '/laci-a'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/profile'
-    | '/login'
-    | '/register'
     | '/brands'
     | '/companies'
     | '/dashboard'
@@ -228,14 +226,14 @@ export interface FileRouteTypes {
     | '/logout'
     | '/test'
     | '/trash'
+    | '/login'
+    | '/register'
     | '/laci-a'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/profile'
-    | '/(preAuth)/login'
-    | '/(preAuth)/register'
     | '/_authenticated/brands'
     | '/_authenticated/companies'
     | '/_authenticated/dashboard'
@@ -249,6 +247,8 @@ export interface FileRouteTypes {
     | '/_authenticated/logout'
     | '/_authenticated/test'
     | '/_authenticated/trash'
+    | '/_preAuth/login'
+    | '/_preAuth/register'
     | '/_authenticated/laci-a/'
   fileRoutesById: FileRoutesById
 }
@@ -256,8 +256,8 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   ProfileRoute: typeof ProfileRoute
-  preAuthLoginRoute: typeof preAuthLoginRoute
-  preAuthRegisterRoute: typeof preAuthRegisterRoute
+  PreAuthLoginRoute: typeof PreAuthLoginRoute
+  PreAuthRegisterRoute: typeof PreAuthRegisterRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -281,6 +281,20 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_preAuth/register': {
+      id: '/_preAuth/register'
+      path: '/register'
+      fullPath: '/register'
+      preLoaderRoute: typeof PreAuthRegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_preAuth/login': {
+      id: '/_preAuth/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof PreAuthLoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/trash': {
@@ -374,20 +388,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedBrandsRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
-    '/(preAuth)/register': {
-      id: '/(preAuth)/register'
-      path: '/register'
-      fullPath: '/register'
-      preLoaderRoute: typeof preAuthRegisterRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/(preAuth)/login': {
-      id: '/(preAuth)/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof preAuthLoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/_authenticated/laci-a/': {
       id: '/_authenticated/laci-a/'
       path: '/laci-a'
@@ -440,8 +440,8 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
   ProfileRoute: ProfileRoute,
-  preAuthLoginRoute: preAuthLoginRoute,
-  preAuthRegisterRoute: preAuthRegisterRoute,
+  PreAuthLoginRoute: PreAuthLoginRoute,
+  PreAuthRegisterRoute: PreAuthRegisterRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
