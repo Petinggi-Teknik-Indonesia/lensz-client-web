@@ -8,7 +8,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import AddGlassesForm from "../forms/AddGlassesForm";
+import AddCompanyForm from "../forms/AddCompanyForm";
 import type { ReactNode } from "react";
 
 export default function AddCompanyModal({ children }: { children: ReactNode }) {
@@ -27,7 +27,7 @@ export default function AddCompanyModal({ children }: { children: ReactNode }) {
           <DialogTitle>Add New Company</DialogTitle>
         </DialogHeader>
 
-        <AddGlassesForm onSuccess={() => setOpen(false)} onCancel={() => setOpen(false)} />
+        <AddCompanyForm onSuccess={() => setOpen(false)} onCancel={() => setOpen(false)} />
 
         <DialogFooter>
           {/* <Button variant="ghost" onClick={() => setOpen(false)}>

@@ -38,6 +38,7 @@ const glassesItems = [
 
 const managementItems = [
   { title: "Drawers", url: "/drawers", icon: Sheet },
+  { title: "Add Drawer", url: "/drawers-table", icon: Sheet },
 ];
 
 const profileItems = [

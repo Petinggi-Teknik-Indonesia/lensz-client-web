@@ -23,6 +23,7 @@ import { Route as AuthenticatedLaciBRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedGlassesTableRouteImport } from './routes/_authenticated/glasses-table'
 import { Route as AuthenticatedGlassesStatusRouteImport } from './routes/_authenticated/glasses-status'
 import { Route as AuthenticatedEyeglassesRouteImport } from './routes/_authenticated/eyeglasses'
+import { Route as AuthenticatedDrawersTableRouteImport } from './routes/_authenticated/drawers-table'
 import { Route as AuthenticatedDrawersRouteImport } from './routes/_authenticated/drawers'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedCompaniesRouteImport } from './routes/_authenticated/companies'
@@ -100,6 +101,12 @@ const AuthenticatedEyeglassesRoute = AuthenticatedEyeglassesRouteImport.update({
   path: '/eyeglasses',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedDrawersTableRoute =
+  AuthenticatedDrawersTableRouteImport.update({
+    id: '/drawers-table',
+    path: '/drawers-table',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedDrawersRoute = AuthenticatedDrawersRouteImport.update({
   id: '/drawers',
   path: '/drawers',
@@ -133,6 +140,7 @@ export interface FileRoutesByFullPath {
   '/companies': typeof AuthenticatedCompaniesRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/drawers': typeof AuthenticatedDrawersRoute
+  '/drawers-table': typeof AuthenticatedDrawersTableRoute
   '/eyeglasses': typeof AuthenticatedEyeglassesRoute
   '/glasses-status': typeof AuthenticatedGlassesStatusRoute
   '/glasses-table': typeof AuthenticatedGlassesTableRoute
@@ -153,6 +161,7 @@ export interface FileRoutesByTo {
   '/companies': typeof AuthenticatedCompaniesRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/drawers': typeof AuthenticatedDrawersRoute
+  '/drawers-table': typeof AuthenticatedDrawersTableRoute
   '/eyeglasses': typeof AuthenticatedEyeglassesRoute
   '/glasses-status': typeof AuthenticatedGlassesStatusRoute
   '/glasses-table': typeof AuthenticatedGlassesTableRoute
@@ -175,6 +184,7 @@ export interface FileRoutesById {
   '/_authenticated/companies': typeof AuthenticatedCompaniesRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/drawers': typeof AuthenticatedDrawersRoute
+  '/_authenticated/drawers-table': typeof AuthenticatedDrawersTableRoute
   '/_authenticated/eyeglasses': typeof AuthenticatedEyeglassesRoute
   '/_authenticated/glasses-status': typeof AuthenticatedGlassesStatusRoute
   '/_authenticated/glasses-table': typeof AuthenticatedGlassesTableRoute
@@ -197,6 +207,7 @@ export interface FileRouteTypes {
     | '/companies'
     | '/dashboard'
     | '/drawers'
+    | '/drawers-table'
     | '/eyeglasses'
     | '/glasses-status'
     | '/glasses-table'
@@ -217,6 +228,7 @@ export interface FileRouteTypes {
     | '/companies'
     | '/dashboard'
     | '/drawers'
+    | '/drawers-table'
     | '/eyeglasses'
     | '/glasses-status'
     | '/glasses-table'
@@ -238,6 +250,7 @@ export interface FileRouteTypes {
     | '/_authenticated/companies'
     | '/_authenticated/dashboard'
     | '/_authenticated/drawers'
+    | '/_authenticated/drawers-table'
     | '/_authenticated/eyeglasses'
     | '/_authenticated/glasses-status'
     | '/_authenticated/glasses-table'
@@ -360,6 +373,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedEyeglassesRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/drawers-table': {
+      id: '/_authenticated/drawers-table'
+      path: '/drawers-table'
+      fullPath: '/drawers-table'
+      preLoaderRoute: typeof AuthenticatedDrawersTableRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/drawers': {
       id: '/_authenticated/drawers'
       path: '/drawers'
@@ -403,6 +423,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedCompaniesRoute: typeof AuthenticatedCompaniesRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedDrawersRoute: typeof AuthenticatedDrawersRoute
+  AuthenticatedDrawersTableRoute: typeof AuthenticatedDrawersTableRoute
   AuthenticatedEyeglassesRoute: typeof AuthenticatedEyeglassesRoute
   AuthenticatedGlassesStatusRoute: typeof AuthenticatedGlassesStatusRoute
   AuthenticatedGlassesTableRoute: typeof AuthenticatedGlassesTableRoute
@@ -420,6 +441,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedCompaniesRoute: AuthenticatedCompaniesRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedDrawersRoute: AuthenticatedDrawersRoute,
+  AuthenticatedDrawersTableRoute: AuthenticatedDrawersTableRoute,
   AuthenticatedEyeglassesRoute: AuthenticatedEyeglassesRoute,
   AuthenticatedGlassesStatusRoute: AuthenticatedGlassesStatusRoute,
   AuthenticatedGlassesTableRoute: AuthenticatedGlassesTableRoute,

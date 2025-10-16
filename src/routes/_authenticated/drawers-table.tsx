@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
-import AddCompanyModal from "@/components/modals/AddCompanyModal";
-import { getAllCompanies } from "@/api/glassesDependencies";
+import AddDrawerModal from "@/components/modals/AddDrawerModal";
+import { getAllDrawers } from "@/api/glassesDependencies";
 import { DataTable } from "@/components/DataTable";
 import {
   InputGroup,
@@ -20,21 +20,21 @@ import { formatDate } from "@/api/glassesDependencies";
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"; */
-import type { Companies } from "@/types/companies";
+import type { Drawers } from "@/types/drawers";
 
-export const Route = createFileRoute("/_authenticated/companies")({
+export const Route = createFileRoute("/_authenticated/drawers-table")({
   component: RouteComponent,
 });
 
 function RouteComponent() {
   const { data, isLoading, isError, error } = useQuery({
-    queryKey: ["companies"],
-    queryFn: getAllCompanies,
+    queryKey: ["drawers"],
+    queryFn: getAllDrawers,
   });
 
   const [search, setSearch] = useState("");
 
-  const columnHelper = createColumnHelper<Companies>();
+  const columnHelper = createColumnHelper<Drawers>();
   const columns = [
     columnHelper.accessor("ID", { header: () => "ID" }),
     columnHelper.accessor("name", { header: () => "Name" }),
@@ -53,7 +53,7 @@ function RouteComponent() {
     if (!data) return [];
     const lower = search.toLowerCase();
 
-    return data.filter((item: Companies) => {
+    return data.filter((item: Drawers) => {
       return [item.id, item.name, item.createdAt, item.updatedAt]
         .filter(Boolean)
         .some((field) => String(field).toLowerCase().includes(lower));
@@ -85,13 +85,13 @@ function RouteComponent() {
         </InputGroup>
 
         {/* Add Button */}
-        <AddCompanyModal>
-          + Add Company
-        </AddCompanyModal>
+        <AddDrawerModal>
+          + Add Drawer
+        </AddDrawerModal>
       </div>
 
       {/* 📋 Data Table */}
-      <DataTable<Companies, any> columns={columns} data={filteredData} />
+      <DataTable<Drawers, any> columns={columns} data={filteredData} />
     </div>
   );
 }
