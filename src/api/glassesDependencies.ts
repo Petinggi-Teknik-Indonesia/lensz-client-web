@@ -1,7 +1,8 @@
+import type { Brands } from "@/types/glassesDependencies";
 import axios from "./axios";
 
 // 🧩 Dependencies
-export const getAllBrands = async () => {
+export const getAllBrands = async (): Promise<Brands[]> => {
   const { data } = await axios.get("/brands/");
   return data;
 };
