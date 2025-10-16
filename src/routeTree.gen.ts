@@ -17,18 +17,14 @@ import { Route as PreAuthLoginRouteImport } from './routes/_preAuth/login'
 import { Route as AuthenticatedTrashRouteImport } from './routes/_authenticated/trash'
 import { Route as AuthenticatedTestRouteImport } from './routes/_authenticated/test'
 import { Route as AuthenticatedLogoutRouteImport } from './routes/_authenticated/logout'
-import { Route as AuthenticatedLaciDRouteImport } from './routes/_authenticated/laci-d'
-import { Route as AuthenticatedLaciCRouteImport } from './routes/_authenticated/laci-c'
-import { Route as AuthenticatedLaciBRouteImport } from './routes/_authenticated/laci-b'
 import { Route as AuthenticatedGlassesTableRouteImport } from './routes/_authenticated/glasses-table'
 import { Route as AuthenticatedGlassesStatusRouteImport } from './routes/_authenticated/glasses-status'
 import { Route as AuthenticatedEyeglassesRouteImport } from './routes/_authenticated/eyeglasses'
 import { Route as AuthenticatedDrawersTableRouteImport } from './routes/_authenticated/drawers-table'
-import { Route as AuthenticatedDrawersRouteImport } from './routes/_authenticated/drawers'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedCompaniesRouteImport } from './routes/_authenticated/companies'
 import { Route as AuthenticatedBrandsRouteImport } from './routes/_authenticated/brands'
-import { Route as AuthenticatedLaciARouteImport } from './routes/_authenticated/laci-a.'
+import { Route as AuthenticatedDrawersDrawerNameRouteImport } from './routes/_authenticated/drawers/$drawerName'
 
 const ProfileRoute = ProfileRouteImport.update({
   id: '/profile',
@@ -69,21 +65,6 @@ const AuthenticatedLogoutRoute = AuthenticatedLogoutRouteImport.update({
   path: '/logout',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
-const AuthenticatedLaciDRoute = AuthenticatedLaciDRouteImport.update({
-  id: '/laci-d',
-  path: '/laci-d',
-  getParentRoute: () => AuthenticatedRoute,
-} as any)
-const AuthenticatedLaciCRoute = AuthenticatedLaciCRouteImport.update({
-  id: '/laci-c',
-  path: '/laci-c',
-  getParentRoute: () => AuthenticatedRoute,
-} as any)
-const AuthenticatedLaciBRoute = AuthenticatedLaciBRouteImport.update({
-  id: '/laci-b',
-  path: '/laci-b',
-  getParentRoute: () => AuthenticatedRoute,
-} as any)
 const AuthenticatedGlassesTableRoute =
   AuthenticatedGlassesTableRouteImport.update({
     id: '/glasses-table',
@@ -107,11 +88,6 @@ const AuthenticatedDrawersTableRoute =
     path: '/drawers-table',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
-const AuthenticatedDrawersRoute = AuthenticatedDrawersRouteImport.update({
-  id: '/drawers',
-  path: '/drawers',
-  getParentRoute: () => AuthenticatedRoute,
-} as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -127,11 +103,12 @@ const AuthenticatedBrandsRoute = AuthenticatedBrandsRouteImport.update({
   path: '/brands',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
-const AuthenticatedLaciARoute = AuthenticatedLaciARouteImport.update({
-  id: '/laci-a/',
-  path: '/laci-a/',
-  getParentRoute: () => AuthenticatedRoute,
-} as any)
+const AuthenticatedDrawersDrawerNameRoute =
+  AuthenticatedDrawersDrawerNameRouteImport.update({
+    id: '/drawers/$drawerName',
+    path: '/drawers/$drawerName',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -139,20 +116,16 @@ export interface FileRoutesByFullPath {
   '/brands': typeof AuthenticatedBrandsRoute
   '/companies': typeof AuthenticatedCompaniesRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
-  '/drawers': typeof AuthenticatedDrawersRoute
   '/drawers-table': typeof AuthenticatedDrawersTableRoute
   '/eyeglasses': typeof AuthenticatedEyeglassesRoute
   '/glasses-status': typeof AuthenticatedGlassesStatusRoute
   '/glasses-table': typeof AuthenticatedGlassesTableRoute
-  '/laci-b': typeof AuthenticatedLaciBRoute
-  '/laci-c': typeof AuthenticatedLaciCRoute
-  '/laci-d': typeof AuthenticatedLaciDRoute
   '/logout': typeof AuthenticatedLogoutRoute
   '/test': typeof AuthenticatedTestRoute
   '/trash': typeof AuthenticatedTrashRoute
   '/login': typeof PreAuthLoginRoute
   '/register': typeof PreAuthRegisterRoute
-  '/laci-a': typeof AuthenticatedLaciARoute
+  '/drawers/$drawerName': typeof AuthenticatedDrawersDrawerNameRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -160,20 +133,16 @@ export interface FileRoutesByTo {
   '/brands': typeof AuthenticatedBrandsRoute
   '/companies': typeof AuthenticatedCompaniesRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
-  '/drawers': typeof AuthenticatedDrawersRoute
   '/drawers-table': typeof AuthenticatedDrawersTableRoute
   '/eyeglasses': typeof AuthenticatedEyeglassesRoute
   '/glasses-status': typeof AuthenticatedGlassesStatusRoute
   '/glasses-table': typeof AuthenticatedGlassesTableRoute
-  '/laci-b': typeof AuthenticatedLaciBRoute
-  '/laci-c': typeof AuthenticatedLaciCRoute
-  '/laci-d': typeof AuthenticatedLaciDRoute
   '/logout': typeof AuthenticatedLogoutRoute
   '/test': typeof AuthenticatedTestRoute
   '/trash': typeof AuthenticatedTrashRoute
   '/login': typeof PreAuthLoginRoute
   '/register': typeof PreAuthRegisterRoute
-  '/laci-a': typeof AuthenticatedLaciARoute
+  '/drawers/$drawerName': typeof AuthenticatedDrawersDrawerNameRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -183,20 +152,16 @@ export interface FileRoutesById {
   '/_authenticated/brands': typeof AuthenticatedBrandsRoute
   '/_authenticated/companies': typeof AuthenticatedCompaniesRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
-  '/_authenticated/drawers': typeof AuthenticatedDrawersRoute
   '/_authenticated/drawers-table': typeof AuthenticatedDrawersTableRoute
   '/_authenticated/eyeglasses': typeof AuthenticatedEyeglassesRoute
   '/_authenticated/glasses-status': typeof AuthenticatedGlassesStatusRoute
   '/_authenticated/glasses-table': typeof AuthenticatedGlassesTableRoute
-  '/_authenticated/laci-b': typeof AuthenticatedLaciBRoute
-  '/_authenticated/laci-c': typeof AuthenticatedLaciCRoute
-  '/_authenticated/laci-d': typeof AuthenticatedLaciDRoute
   '/_authenticated/logout': typeof AuthenticatedLogoutRoute
   '/_authenticated/test': typeof AuthenticatedTestRoute
   '/_authenticated/trash': typeof AuthenticatedTrashRoute
   '/_preAuth/login': typeof PreAuthLoginRoute
   '/_preAuth/register': typeof PreAuthRegisterRoute
-  '/_authenticated/laci-a/': typeof AuthenticatedLaciARoute
+  '/_authenticated/drawers/$drawerName': typeof AuthenticatedDrawersDrawerNameRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -206,20 +171,16 @@ export interface FileRouteTypes {
     | '/brands'
     | '/companies'
     | '/dashboard'
-    | '/drawers'
     | '/drawers-table'
     | '/eyeglasses'
     | '/glasses-status'
     | '/glasses-table'
-    | '/laci-b'
-    | '/laci-c'
-    | '/laci-d'
     | '/logout'
     | '/test'
     | '/trash'
     | '/login'
     | '/register'
-    | '/laci-a'
+    | '/drawers/$drawerName'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -227,20 +188,16 @@ export interface FileRouteTypes {
     | '/brands'
     | '/companies'
     | '/dashboard'
-    | '/drawers'
     | '/drawers-table'
     | '/eyeglasses'
     | '/glasses-status'
     | '/glasses-table'
-    | '/laci-b'
-    | '/laci-c'
-    | '/laci-d'
     | '/logout'
     | '/test'
     | '/trash'
     | '/login'
     | '/register'
-    | '/laci-a'
+    | '/drawers/$drawerName'
   id:
     | '__root__'
     | '/'
@@ -249,20 +206,16 @@ export interface FileRouteTypes {
     | '/_authenticated/brands'
     | '/_authenticated/companies'
     | '/_authenticated/dashboard'
-    | '/_authenticated/drawers'
     | '/_authenticated/drawers-table'
     | '/_authenticated/eyeglasses'
     | '/_authenticated/glasses-status'
     | '/_authenticated/glasses-table'
-    | '/_authenticated/laci-b'
-    | '/_authenticated/laci-c'
-    | '/_authenticated/laci-d'
     | '/_authenticated/logout'
     | '/_authenticated/test'
     | '/_authenticated/trash'
     | '/_preAuth/login'
     | '/_preAuth/register'
-    | '/_authenticated/laci-a/'
+    | '/_authenticated/drawers/$drawerName'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -331,27 +284,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedLogoutRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
-    '/_authenticated/laci-d': {
-      id: '/_authenticated/laci-d'
-      path: '/laci-d'
-      fullPath: '/laci-d'
-      preLoaderRoute: typeof AuthenticatedLaciDRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/laci-c': {
-      id: '/_authenticated/laci-c'
-      path: '/laci-c'
-      fullPath: '/laci-c'
-      preLoaderRoute: typeof AuthenticatedLaciCRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/laci-b': {
-      id: '/_authenticated/laci-b'
-      path: '/laci-b'
-      fullPath: '/laci-b'
-      preLoaderRoute: typeof AuthenticatedLaciBRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
     '/_authenticated/glasses-table': {
       id: '/_authenticated/glasses-table'
       path: '/glasses-table'
@@ -380,13 +312,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDrawersTableRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
-    '/_authenticated/drawers': {
-      id: '/_authenticated/drawers'
-      path: '/drawers'
-      fullPath: '/drawers'
-      preLoaderRoute: typeof AuthenticatedDrawersRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
       path: '/dashboard'
@@ -408,11 +333,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedBrandsRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
-    '/_authenticated/laci-a/': {
-      id: '/_authenticated/laci-a/'
-      path: '/laci-a'
-      fullPath: '/laci-a'
-      preLoaderRoute: typeof AuthenticatedLaciARouteImport
+    '/_authenticated/drawers/$drawerName': {
+      id: '/_authenticated/drawers/$drawerName'
+      path: '/drawers/$drawerName'
+      fullPath: '/drawers/$drawerName'
+      preLoaderRoute: typeof AuthenticatedDrawersDrawerNameRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
   }
@@ -422,36 +347,28 @@ interface AuthenticatedRouteChildren {
   AuthenticatedBrandsRoute: typeof AuthenticatedBrandsRoute
   AuthenticatedCompaniesRoute: typeof AuthenticatedCompaniesRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
-  AuthenticatedDrawersRoute: typeof AuthenticatedDrawersRoute
   AuthenticatedDrawersTableRoute: typeof AuthenticatedDrawersTableRoute
   AuthenticatedEyeglassesRoute: typeof AuthenticatedEyeglassesRoute
   AuthenticatedGlassesStatusRoute: typeof AuthenticatedGlassesStatusRoute
   AuthenticatedGlassesTableRoute: typeof AuthenticatedGlassesTableRoute
-  AuthenticatedLaciBRoute: typeof AuthenticatedLaciBRoute
-  AuthenticatedLaciCRoute: typeof AuthenticatedLaciCRoute
-  AuthenticatedLaciDRoute: typeof AuthenticatedLaciDRoute
   AuthenticatedLogoutRoute: typeof AuthenticatedLogoutRoute
   AuthenticatedTestRoute: typeof AuthenticatedTestRoute
   AuthenticatedTrashRoute: typeof AuthenticatedTrashRoute
-  AuthenticatedLaciARoute: typeof AuthenticatedLaciARoute
+  AuthenticatedDrawersDrawerNameRoute: typeof AuthenticatedDrawersDrawerNameRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedBrandsRoute: AuthenticatedBrandsRoute,
   AuthenticatedCompaniesRoute: AuthenticatedCompaniesRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
-  AuthenticatedDrawersRoute: AuthenticatedDrawersRoute,
   AuthenticatedDrawersTableRoute: AuthenticatedDrawersTableRoute,
   AuthenticatedEyeglassesRoute: AuthenticatedEyeglassesRoute,
   AuthenticatedGlassesStatusRoute: AuthenticatedGlassesStatusRoute,
   AuthenticatedGlassesTableRoute: AuthenticatedGlassesTableRoute,
-  AuthenticatedLaciBRoute: AuthenticatedLaciBRoute,
-  AuthenticatedLaciCRoute: AuthenticatedLaciCRoute,
-  AuthenticatedLaciDRoute: AuthenticatedLaciDRoute,
   AuthenticatedLogoutRoute: AuthenticatedLogoutRoute,
   AuthenticatedTestRoute: AuthenticatedTestRoute,
   AuthenticatedTrashRoute: AuthenticatedTrashRoute,
-  AuthenticatedLaciARoute: AuthenticatedLaciARoute,
+  AuthenticatedDrawersDrawerNameRoute: AuthenticatedDrawersDrawerNameRoute,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(

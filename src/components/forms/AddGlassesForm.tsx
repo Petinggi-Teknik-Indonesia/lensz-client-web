@@ -20,7 +20,7 @@ import {
   SelectValue,
 } from "../ui/select";
 import { getAllBrands } from "@/api/glassesDependencies";
-import type { Brands } from "@/types/glassesDependencies";
+import type { Brands } from "@/types/brands";
 
 type AddGlassesFormProps = {
   onSuccess: () => void;
