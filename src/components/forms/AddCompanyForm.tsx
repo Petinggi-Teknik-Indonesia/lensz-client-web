@@ -6,9 +6,9 @@ import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { addBrand } from "@/api/glassesDependencies";
+import { addCompany } from "@/api/glassesDependencies";
 
-type AddBrandFormProps = {
+type AddCompanyFormProps = {
   onSuccess: () => void;
   onCancel: () => void;
 };
@@ -18,8 +18,8 @@ const formSchema = z.object({
   name: z.string().min(1, "Name cannot be empty"),
 });
 
-function AddBrandForm({ onSuccess, onCancel }: AddBrandFormProps) {
-  const mutation = useMutation({ mutationFn: addBrand });
+function AddCompanyForm({ onSuccess, onCancel }: AddCompanyFormProps) {
+  const mutation = useMutation({ mutationFn: addCompany });
 
   const form = useForm({
     defaultValues: { name: "" },
@@ -28,7 +28,7 @@ function AddBrandForm({ onSuccess, onCancel }: AddBrandFormProps) {
       try {
         await mutation.mutateAsync(value);
 
-        toast.success("Brand added successfully!", {
+        toast.success("Company added successfully!", {
           description: (
             <pre className="bg-code text-primary mt-2 w-[320px] overflow-x-auto rounded-md p-4">
               <code>{JSON.stringify(value, null, 2)}</code>
@@ -39,7 +39,7 @@ function AddBrandForm({ onSuccess, onCancel }: AddBrandFormProps) {
 
         onSuccess();
       } catch (error) {
-        toast.error("Failed to add brand", {
+        toast.error("Failed to add company", {
           description: (error as Error).message,
         });
       }
@@ -48,13 +48,13 @@ function AddBrandForm({ onSuccess, onCancel }: AddBrandFormProps) {
 
   return (
     <form
-      id="add-brand-form"
+      id="add-company-form"
       onSubmit={(e) => {
         e.preventDefault();
         form.handleSubmit();
       }}
     >
-      {/* 🏷️ Brand Name Field */}
+      {/* 🏷️ Company Name Field */}
       <form.Field
         name="name"
         children={(field) => {
@@ -63,7 +63,7 @@ function AddBrandForm({ onSuccess, onCancel }: AddBrandFormProps) {
 
           return (
             <Field data-invalid={isInvalid}>
-              <FieldLabel htmlFor={field.name}>Brand Name</FieldLabel>
+              <FieldLabel htmlFor={field.name}>Company Name</FieldLabel>
               <Input
                 id={field.name}
                 name={field.name}
@@ -71,7 +71,7 @@ function AddBrandForm({ onSuccess, onCancel }: AddBrandFormProps) {
                 onBlur={field.handleBlur}
                 onChange={(e) => field.handleChange(e.target.value)}
                 aria-invalid={isInvalid}
-                placeholder="Enter brand name"
+                placeholder="Enter company name"
                 autoComplete="off"
               />
               {isInvalid && <FieldError errors={field.state.meta.errors} />}
@@ -85,7 +85,7 @@ function AddBrandForm({ onSuccess, onCancel }: AddBrandFormProps) {
         <Button type="button" variant="outline" onClick={onCancel}>
           Cancel
         </Button>
-        <Button type="submit" form="add-brand-form">
+        <Button type="submit" form="add-company-form">
           Submit
         </Button>
       </div>
@@ -93,4 +93,4 @@ function AddBrandForm({ onSuccess, onCancel }: AddBrandFormProps) {
   );
 }
 
-export default AddBrandForm;
+export default AddCompanyForm;

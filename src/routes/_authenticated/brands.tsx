@@ -1,15 +1,14 @@
 import { getAllBrands } from "@/api/glassesDependencies";
 import { DataTable } from "@/components/DataTable";
 import AddBrandModal from "@/components/modals/AddBrandModal";
-import AddGlassesModal from "@/components/modals/AddGlassesModal";
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from "@/components/ui/input-group";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import type { Brands } from "@/types/glassesDependencies";
+import type { Brands } from "@/types/brands";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router"
 import { createColumnHelper } from "@tanstack/react-table";
 import { SearchIcon } from "lucide-react";
 import { useMemo, useState } from "react";
+import { formatDate } from "@/api/glassesDependencies";
 
 // import {
 //   Table,
@@ -75,13 +74,19 @@ function RouteComponent() {
   // use a non-empty sentinel value for "All"
 
   const columnHelper = createColumnHelper<Brands>();
+  console.log("data:", data);
   const columns = [
-    columnHelper.accessor("id", { header: () => "ID" }),
+    columnHelper.accessor("ID", { header: () => "ID" }),
     columnHelper.accessor("name", { header: () => "Name" }),
-    columnHelper.accessor("createdAt", { header: () => "Created At" }),
-    columnHelper.accessor("updatedAt", { header: () => "Updated At" }),
+    columnHelper.accessor("CreatedAt", {
+      header: () => "Created At",
+      cell: info => info.getValue() ? formatDate(info.getValue() as string) : "",
+    }),
+    columnHelper.accessor("UpdatedAt", {
+      header: () => "Updated At",
+      cell: info => info.getValue() ? formatDate(info.getValue() as string) : "",
+    }),
   ];
-
 
   // Filter data by search
   const filteredData = useMemo(() => {
@@ -96,6 +101,8 @@ function RouteComponent() {
       return matchesSearch;
     });
   }, [data, search]);
+
+
 
   if (isLoading) return <p>Loading...</p>;
   if (isError) return <p>Error: {error.message}</p>;
