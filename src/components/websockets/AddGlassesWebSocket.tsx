@@ -34,7 +34,6 @@ export function AddGlassesWebSocket() {
   });
 
     const handleFormSubmit = async () => {
-    console.log("✅ Parent detected form submission!");
     try {
       await mutation.mutateAsync();
       console.log("hIT");

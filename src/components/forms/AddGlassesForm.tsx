@@ -12,12 +12,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { addGlasses } from "@/api/glasses";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-} from "../ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger } from "../ui/select";
 import {
   getAllBrands,
   getAllCompanies,
@@ -38,7 +33,7 @@ const formSchema = z.object({
   name: z.string().min(1, "Name cannot be empty"),
   type: z.string().min(1, "Type cannot be empty"),
   color: z.string().min(1, "Color cannot be empty"),
-  status: z.number(),
+  status: z.string().min(1, "Status cannot be empty"),
   drawer: z.object({
     name: z.string(),
     id: z.number(),
@@ -74,14 +69,14 @@ function AddGlassesForm(props: AddGlassesFormProps) {
 
   const mutation = useMutation({ mutationFn: addGlasses });
   const queryClient = useQueryClient();
-  console.log(props.rfid)
+  console.log(props.rfid);
   const form = useForm({
     defaultValues: {
       rfid: props.rfid,
       name: "",
       type: "",
       color: "",
-      status: 0,
+      status: "Tersedia",
       drawer: { name: "", id: 0 },
       company: { name: "", id: 0 },
       brand: { name: "", id: 0 },
@@ -224,28 +219,48 @@ function AddGlassesForm(props: AddGlassesFormProps) {
           />
 
           {/* Status */}
-          {/* <form.Field
+          <form.Field
             name="status"
             children={(field) => {
+              const statusOptions = [
+                "Tersedia",
+                "Terjual",
+                "Rusak",
+                "Terpinjam",
+                "Lainnya",
+              ];
               const isInvalid =
                 field.state.meta.isTouched && !field.state.meta.isValid;
+
               return (
                 <Field data-invalid={isInvalid}>
                   <FieldLabel htmlFor={field.name}>Status</FieldLabel>
-                  <Input
-                    id={field.name}
-                    name={field.name}
+                  <Select
                     value={field.state.value}
-                    onBlur={field.handleBlur}
-                    aria-invalid={isInvalid}
-                    placeholder="Available / Sold / Reserved"
-                    autoComplete="off"
-                  />
+                    onValueChange={(value) => field.handleChange(value)}
+                  >
+                    <SelectTrigger>
+                      <span
+                        className={
+                          field.state.value ? "" : "text-muted-foreground"
+                        }
+                      >
+                        {field.state.value || "Select status"}
+                      </span>
+                    </SelectTrigger>
+                    <SelectContent>
+                      {statusOptions.map((option) => (
+                        <SelectItem key={option} value={option}>
+                          {option}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                   {isInvalid && <FieldError errors={field.state.meta.errors} />}
                 </Field>
               );
             }}
-          /> */}
+          />
         </div>
       </FieldGroup>
 
