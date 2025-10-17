@@ -5,6 +5,7 @@ import App from "./App.tsx";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/sonner"
 import { WebSocketNotifier } from "@/components/WebSocketListener.tsx";
+import { AddGlassesWebSocket } from "./components/websockets/AddGlassesWebSocket.tsx";
 
 const queryClient = new QueryClient();
 
@@ -14,6 +15,7 @@ createRoot(document.getElementById("root")!).render(
       <App />
       <Toaster/>
       <WebSocketNotifier />
+      <AddGlassesWebSocket />
     </QueryClientProvider>
   // </StrictMode>
 );

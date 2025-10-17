@@ -18,22 +18,22 @@ export function formatDate(dateInput: string | Date) {
 
 // 🧩 Dependencies
 export const getAllBrands = async (): Promise<Brands[]> => {
-  const { data } = await axios.get("/brands/");
+  const { data } = await axios.get("/api/brands/");
   return data;
 };
 
 export const getAllCompanies = async (): Promise<Companies[]> => {
-  const { data } = await axios.get("/companies/");
+  const { data } = await axios.get("/api/companies/");
   return data;
 };
 export const getAllDrawers = async (): Promise<Drawers[]> => {
-  const { data } = await axios.get("/drawers/");
+  const { data } = await axios.get("/api/drawers/");
   return data;
 };
 
 // Create new dependencies
 export const addBrand = async (body: { name: string }) => {
-  const { data } = await axios.post("/brands/", body);
+  const { data } = await axios.post("/api/brands/", body);
   return data;
 };
 export const addCompany = async (body: { name: string }) => {

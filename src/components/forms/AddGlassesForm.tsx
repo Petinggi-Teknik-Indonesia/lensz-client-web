@@ -30,6 +30,7 @@ import type { Drawers } from "@/types/drawers";
 type AddGlassesFormProps = {
   onSuccess: () => void;
   onCancel: () => void;
+  rfid: string;
 };
 
 const formSchema = z.object({
@@ -73,9 +74,10 @@ function AddGlassesForm(props: AddGlassesFormProps) {
 
   const mutation = useMutation({ mutationFn: addGlasses });
   const queryClient = useQueryClient();
+  console.log(props.rfid)
   const form = useForm({
     defaultValues: {
-      rfid: "xxxxxxxxx",
+      rfid: props.rfid,
       name: "",
       type: "",
       color: "",
