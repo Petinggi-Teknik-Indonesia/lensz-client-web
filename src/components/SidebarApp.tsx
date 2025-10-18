@@ -4,6 +4,7 @@ import {
   Home,
   PersonStandingIcon,
   Sheet,
+  ChevronRight,
 } from "lucide-react";
 
 import {
@@ -26,7 +27,8 @@ import {
 } from "@/components/ui/collapsible";
 
 import { Link, useRouterState } from "@tanstack/react-router";
-import { ChevronRight } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { getAllDrawers } from "@/api/glassesDependencies";
 
 const generalItems = [{ title: "Dashboard", url: "/dashboard", icon: Home }];
 
@@ -37,7 +39,6 @@ const glassesItems = [
 ];
 
 const managementItems = [
-  { title: "Drawers", url: "/drawers", icon: Sheet },
   { title: "Add Drawer", url: "/drawers-table", icon: Sheet },
 ];
 
@@ -50,6 +51,20 @@ const profileItems = [
 export function SidebarApp() {
   const routerState = useRouterState();
   const currentPath = routerState.location.pathname;
+
+  // ✅ Fetch drawers dynamically
+  const { data: drawers, isLoading, isError } = useQuery({
+    queryKey: ["drawers"],
+    queryFn: getAllDrawers,
+  });
+
+  // ✅ Remove duplicates by drawer name + sort
+  const uniqueDrawers =
+    drawers && drawers.length > 0
+      ? [...new Map(drawers.map((d: any) => [d.name, d]))]
+          .map(([_, d]) => d)
+          .sort((a, b) => a.name.localeCompare(b.name))
+      : [];
 
   return (
     <Sidebar>
@@ -114,12 +129,10 @@ export function SidebarApp() {
 
         {/* Management */}
         <SidebarGroup>
-          <SidebarGroupLabel className="text-white">
-            Management
-          </SidebarGroupLabel>
+          <SidebarGroupLabel className="text-white">Management</SidebarGroupLabel>
           <SidebarGroupContent>
-            {/* Drawers Dropdown */}
             <SidebarMenu>
+              {/* Collapsible Drawers Section */}
               <Collapsible defaultOpen className="group/collapsible">
                 <SidebarMenuItem>
                   <CollapsibleTrigger asChild>
@@ -134,30 +147,54 @@ export function SidebarApp() {
                       />
                     </SidebarMenuButton>
                   </CollapsibleTrigger>
-                  <CollapsibleContent className="overflow-hidden transition-all duration-300 ease-in-out data-[state=closed]:max-h-0 data-[state=open]:max-h-64">
+
+                  <CollapsibleContent className="overflow-hidden transition-all data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down">
                     <SidebarMenuSub>
-                      {["Laci A", "Laci B", "Laci C", "Laci D"].map(
-                        (drawer) => {
-                          const url = `/${drawer.toLowerCase().replace(" ", "-")}`;
+                      {isLoading && (
+                        <SidebarMenuSubItem>
+                          <span className="px-2 py-1 text-sm">Loading...</span>
+                        </SidebarMenuSubItem>
+                      )}
+                      {isError && (
+                        <SidebarMenuSubItem>
+                          <span className="px-2 py-1 text-sm text-red-300">
+                            Failed to load drawers
+                          </span>
+                        </SidebarMenuSubItem>
+                      )}
+
+                      {uniqueDrawers.length > 0 ? (
+                        uniqueDrawers.map((drawer: any) => {
+                          const url = `/drawers/${drawer.name
+                            .toLowerCase()
+                            .replace(/\s+/g, "-")}`;
                           const isActive = currentPath.startsWith(url);
 
                           return (
-                            <SidebarMenuSubItem key={drawer}>
+                            <SidebarMenuSubItem key={drawer.name}>
                               <SidebarMenuButton asChild>
                                 <Link
-                                  to={url as any}
+                                  to={url}
                                   className={`flex items-center gap-2 rounded-md px-2 py-1 transition-colors ${
                                     isActive
                                       ? "bg-[#B1F70B] text-black"
                                       : "hover:bg-[#B1F70B] hover:text-black"
                                   } ${isActive ? "pointer-events-none" : ""}`}
                                 >
-                                  <span>{drawer}</span>
+                                  <span>{drawer.name}</span>
                                 </Link>
                               </SidebarMenuButton>
                             </SidebarMenuSubItem>
                           );
-                        }
+                        })
+                      ) : (
+                        !isLoading && (
+                          <SidebarMenuSubItem>
+                            <span className="px-2 py-1 text-sm opacity-75">
+                              No drawers found
+                            </span>
+                          </SidebarMenuSubItem>
+                        )
                       )}
                     </SidebarMenuSub>
                   </CollapsibleContent>
@@ -165,28 +202,26 @@ export function SidebarApp() {
               </Collapsible>
 
               {/* Other Management Items */}
-              {managementItems
-                .filter((item) => item.title !== "Drawers")
-                .map((item) => {
-                  const isActive = currentPath.startsWith(item.url);
-                  return (
-                    <SidebarMenuItem key={item.title}>
-                      <SidebarMenuButton asChild>
-                        <Link
-                          to={item.url}
-                          className={`flex items-center gap-2 rounded-md px-2 py-1 transition-colors ${
-                            isActive
-                              ? "bg-[#B1F70B] text-black"
-                              : "hover:bg-[#B1F70B] hover:text-black"
-                          } ${isActive ? "pointer-events-none" : ""}`}
-                        >
-                          <item.icon size={18} />
-                          <span>{item.title}</span>
-                        </Link>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                  );
-                })}
+              {managementItems.map((item) => {
+                const isActive = currentPath.startsWith(item.url);
+                return (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton asChild>
+                      <Link
+                        to={item.url}
+                        className={`flex items-center gap-2 rounded-md px-2 py-1 transition-colors ${
+                          isActive
+                            ? "bg-[#B1F70B] text-black"
+                            : "hover:bg-[#B1F70B] hover:text-black"
+                        } ${isActive ? "pointer-events-none" : ""}`}
+                      >
+                        <item.icon size={18} />
+                        <span>{item.title}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

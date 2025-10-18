@@ -8,8 +8,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import AddGlassesForm from "../forms/AddGlassesForm";
 import type { ReactNode } from "react";
+import AddDrawerForm from "../forms/AddDrawerForm";
 
 export default function AddDrawerModal({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false);
@@ -27,7 +27,7 @@ export default function AddDrawerModal({ children }: { children: ReactNode }) {
           <DialogTitle>Add New Drawer</DialogTitle>
         </DialogHeader>
 
-        <AddGlassesForm onSuccess={() => setOpen(false)} onCancel={() => setOpen(false)} />
+        <AddDrawerForm onSuccess={() => setOpen(false)} onCancel={() => setOpen(false)} />
 
         <DialogFooter>
           {/* <Button variant="ghost" onClick={() => setOpen(false)}>

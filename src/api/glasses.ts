@@ -16,5 +16,11 @@ export const getGlasses = async (id: number): Promise<Glasses> => {
 export async function addGlasses(newGlasses: GlassesInput) {
   const { data } = await axios.post(`/api/glasses/`, newGlasses);
   return data;
-}
+};
 
+export async function getGlassesByDrawer(drawerName: string) {
+  const allGlasses = await getAllGlasses();
+  return allGlasses.filter(
+    (g: any) => g.drawer?.toLowerCase() === drawerName.toLowerCase()
+  );
+}
