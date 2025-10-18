@@ -148,7 +148,7 @@ export function SidebarApp() {
                     </SidebarMenuButton>
                   </CollapsibleTrigger>
 
-                  <CollapsibleContent>
+                  <CollapsibleContent className="overflow-hidden transition-all data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down">
                     <SidebarMenuSub>
                       {isLoading && (
                         <SidebarMenuSubItem>
