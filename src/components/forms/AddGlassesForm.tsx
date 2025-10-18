@@ -12,19 +12,20 @@ import {
 import { Input } from "@/components/ui/input";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { addGlasses } from "@/api/glasses";
+import { Select, SelectContent, SelectItem, SelectTrigger } from "../ui/select";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../ui/select";
-import { getAllBrands } from "@/api/glassesDependencies";
+  getAllBrands,
+  getAllCompanies,
+  getAllDrawers,
+} from "@/api/glassesDependencies";
 import type { Brands } from "@/types/brands";
+import type { Companies } from "@/types/companies";
+import type { Drawers } from "@/types/drawers";
 
 type AddGlassesFormProps = {
   onSuccess: () => void;
   onCancel: () => void;
+  rfid: string;
 };
 
 const formSchema = z.object({
@@ -32,7 +33,7 @@ const formSchema = z.object({
   name: z.string().min(1, "Name cannot be empty"),
   type: z.string().min(1, "Type cannot be empty"),
   color: z.string().min(1, "Color cannot be empty"),
-  status: z.number(),
+  status: z.string().min(1, "Status cannot be empty"),
   drawer: z.object({
     name: z.string(),
     id: z.number(),
@@ -48,21 +49,34 @@ const formSchema = z.object({
 });
 
 function AddGlassesForm(props: AddGlassesFormProps) {
-  const { data } = useQuery({
+  const { data: brandsData } = useQuery({
     queryKey: ["brands"],
     queryFn: getAllBrands,
   });
-  const brands: Brands[] = data ?? [];
+  const brands: Brands[] = brandsData ?? [];
+
+  const { data: companiesData } = useQuery({
+    queryKey: ["companies"],
+    queryFn: getAllCompanies,
+  });
+  const companies: Companies[] = companiesData ?? [];
+
+  const { data: drawersData } = useQuery({
+    queryKey: ["drawers"],
+    queryFn: getAllDrawers,
+  });
+  const drawers: Drawers[] = drawersData ?? [];
 
   const mutation = useMutation({ mutationFn: addGlasses });
   const queryClient = useQueryClient();
+  console.log(props.rfid);
   const form = useForm({
     defaultValues: {
-      rfid: "xxxxxxxxx",
+      rfid: props.rfid,
       name: "",
       type: "",
       color: "",
-      status: 0,
+      status: "Tersedia",
       drawer: { name: "", id: 0 },
       company: { name: "", id: 0 },
       brand: { name: "", id: 0 },
@@ -83,7 +97,7 @@ function AddGlassesForm(props: AddGlassesFormProps) {
           position: "bottom-right",
         });
 
-        queryClient.invalidateQueries({queryKey: ["glasses"]});
+        queryClient.invalidateQueries({ queryKey: ["glasses"] });
         props.onSuccess();
       } catch (error) {
         toast.error("Failed to add glasses", {
@@ -205,28 +219,48 @@ function AddGlassesForm(props: AddGlassesFormProps) {
           />
 
           {/* Status */}
-          {/* <form.Field
+          <form.Field
             name="status"
             children={(field) => {
+              const statusOptions = [
+                "Tersedia",
+                "Terjual",
+                "Rusak",
+                "Terpinjam",
+                "Lainnya",
+              ];
               const isInvalid =
                 field.state.meta.isTouched && !field.state.meta.isValid;
+
               return (
                 <Field data-invalid={isInvalid}>
                   <FieldLabel htmlFor={field.name}>Status</FieldLabel>
-                  <Input
-                    id={field.name}
-                    name={field.name}
+                  <Select
                     value={field.state.value}
-                    onBlur={field.handleBlur}
-                    aria-invalid={isInvalid}
-                    placeholder="Available / Sold / Reserved"
-                    autoComplete="off"
-                  />
+                    onValueChange={(value) => field.handleChange(value)}
+                  >
+                    <SelectTrigger>
+                      <span
+                        className={
+                          field.state.value ? "" : "text-muted-foreground"
+                        }
+                      >
+                        {field.state.value || "Select status"}
+                      </span>
+                    </SelectTrigger>
+                    <SelectContent>
+                      {statusOptions.map((option) => (
+                        <SelectItem key={option} value={option}>
+                          {option}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                   {isInvalid && <FieldError errors={field.state.meta.errors} />}
                 </Field>
               );
             }}
-          /> */}
+          />
         </div>
       </FieldGroup>
 
@@ -236,36 +270,138 @@ function AddGlassesForm(props: AddGlassesFormProps) {
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           {/* Drawer */}
           <form.Field
-            name="drawer.name"
-            children={(field) => (
-              <Field>
-                <FieldLabel htmlFor={field.name}>Drawer</FieldLabel>
-                <Input
-                  id={field.name}
-                  name={field.name}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                  placeholder="Drawer name"
-                  autoComplete="off"
-                />
-              </Field>
-            )}
+            name="drawer"
+            children={(field) => {
+              const selectedValue = field.state.value?.id
+                ? String(field.state.value.id)
+                : "";
+              const displayName = field.state.value?.name || "Select drawer";
+
+              return (
+                <Field>
+                  <FieldLabel htmlFor={field.name}>Drawer</FieldLabel>
+
+                  <Select
+                    value={selectedValue}
+                    onValueChange={(value) => {
+                      const selectedDrawer = drawers.find(
+                        (drawer) => String(drawer.id) === value
+                      );
+                      field.handleChange({
+                        id: selectedDrawer?.id ?? 0,
+                        name: selectedDrawer?.name ?? "",
+                      });
+                    }}
+                  >
+                    <SelectTrigger>
+                      <span
+                        className={
+                          displayName === "Select drawer"
+                            ? "text-muted-foreground"
+                            : ""
+                        }
+                      >
+                        {displayName}
+                      </span>
+                    </SelectTrigger>
+
+                    <SelectContent>
+                      <div className="px-2 py-1">
+                        <Input
+                          placeholder="Or type a new drawer..."
+                          value={
+                            field.state.value?.id
+                              ? ""
+                              : (field.state.value?.name ?? "")
+                          }
+                          onChange={(e) => {
+                            const newDrawerName = e.target.value;
+                            field.handleChange({ name: newDrawerName, id: 0 });
+                          }}
+                          autoComplete="off"
+                        />
+                      </div>
+
+                      <div className="border-t my-1" />
+
+                      {drawers.map((drawer) => (
+                        <SelectItem key={drawer.id} value={String(drawer.id)}>
+                          {drawer.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </Field>
+              );
+            }}
           />
 
           {/* Company */}
           <form.Field
-            name="company.name"
-            children={(field) => (
-              <Field>
-                <FieldLabel htmlFor={field.name}>Company</FieldLabel>
-                <Input
-                  id={field.name}
-                  name={field.name}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                  placeholder="Company name"
-                  autoComplete="off"
-                />
-              </Field>
-            )}
+            name="company"
+            children={(field) => {
+              const selectedValue = field.state.value?.id
+                ? String(field.state.value.id)
+                : "";
+              const displayName = field.state.value?.name || "Select company";
+
+              return (
+                <Field>
+                  <FieldLabel htmlFor={field.name}>Company</FieldLabel>
+
+                  <Select
+                    value={selectedValue}
+                    onValueChange={(value) => {
+                      const selectedCompany = companies.find(
+                        (company) => String(company.id) === value
+                      );
+                      field.handleChange({
+                        id: selectedCompany?.id ?? 0,
+                        name: selectedCompany?.name ?? "",
+                      });
+                    }}
+                  >
+                    <SelectTrigger>
+                      <span
+                        className={
+                          displayName === "Select company"
+                            ? "text-muted-foreground"
+                            : ""
+                        }
+                      >
+                        {displayName}
+                      </span>
+                    </SelectTrigger>
+
+                    <SelectContent>
+                      <div className="px-2 py-1">
+                        <Input
+                          placeholder="Or type a new company..."
+                          value={
+                            field.state.value?.id
+                              ? ""
+                              : (field.state.value?.name ?? "")
+                          }
+                          onChange={(e) => {
+                            const newCompanyName = e.target.value;
+                            field.handleChange({ name: newCompanyName, id: 0 });
+                          }}
+                          autoComplete="off"
+                        />
+                      </div>
+
+                      <div className="border-t my-1" />
+
+                      {companies.map((company) => (
+                        <SelectItem key={company.id} value={String(company.id)}>
+                          {company.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </Field>
+              );
+            }}
           />
 
           {/* Brand */}
@@ -275,7 +411,6 @@ function AddGlassesForm(props: AddGlassesFormProps) {
               const selectedValue = field.state.value?.id
                 ? String(field.state.value.id)
                 : "";
-
               const displayName = field.state.value?.name || "Select brand";
 
               return (
@@ -295,7 +430,6 @@ function AddGlassesForm(props: AddGlassesFormProps) {
                     }}
                   >
                     <SelectTrigger>
-                      {/* 👇 Custom text instead of <SelectValue /> */}
                       <span
                         className={
                           displayName === "Select brand"
@@ -308,7 +442,6 @@ function AddGlassesForm(props: AddGlassesFormProps) {
                     </SelectTrigger>
 
                     <SelectContent>
-                      {/* Inline input for new brand */}
                       <div className="px-2 py-1">
                         <Input
                           placeholder="Or type a new brand..."
@@ -327,7 +460,6 @@ function AddGlassesForm(props: AddGlassesFormProps) {
 
                       <div className="border-t my-1" />
 
-                      {/* Existing brands */}
                       {brands.map((brand) => (
                         <SelectItem key={brand.id} value={String(brand.id)}>
                           {brand.name}

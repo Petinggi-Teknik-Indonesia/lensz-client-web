@@ -76,15 +76,15 @@ function RouteComponent() {
   const columnHelper = createColumnHelper<Brands>();
   console.log("data:", data);
   const columns = [
-    columnHelper.accessor("ID", { header: () => "ID" }),
+    columnHelper.accessor("id", { header: () => "ID" }),
     columnHelper.accessor("name", { header: () => "Name" }),
-    columnHelper.accessor("CreatedAt", {
+    columnHelper.accessor("createdAt", {
       header: () => "Created At",
-      cell: info => info.getValue() ? formatDate(info.getValue() as string) : "",
+      cell: info => info.getValue() ? formatDate(info.getValue() as Date) : "",
     }),
-    columnHelper.accessor("UpdatedAt", {
+    columnHelper.accessor("updatedAt", {
       header: () => "Updated At",
-      cell: info => info.getValue() ? formatDate(info.getValue() as string) : "",
+      cell: info => info.getValue() ? formatDate(info.getValue() as Date) : "",
     }),
   ];
 

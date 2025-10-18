@@ -16,7 +16,7 @@ export type GlassesInput = {
   name: string;
   type: string;
   color: string;
-  status: number;
+  status: string;
   drawer?: { name?: string; id?: number };
   company?: { name?: string; id?: number };
   brand?: { name?: string; id?: number };

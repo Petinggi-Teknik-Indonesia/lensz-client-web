@@ -27,7 +27,7 @@ export default function AddGlassesModal({ children }: { children: ReactNode }) {
           <DialogTitle>Add New Glasses</DialogTitle>
         </DialogHeader>
 
-        <AddGlassesForm onSuccess={() => setOpen(false)} onCancel={() => setOpen(false)} />
+        <AddGlassesForm onSuccess={() => setOpen(false)} onCancel={() => setOpen(false)} rfid="xxx"/>
 
         <DialogFooter>
           {/* <Button variant="ghost" onClick={() => setOpen(false)}>
