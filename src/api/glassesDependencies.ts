@@ -37,11 +37,11 @@ export const addBrand = async (body: { name: string }) => {
   return data;
 };
 export const addCompany = async (body: { name: string }) => {
-  const { data } = await axios.post("/companies/", body);
+  const { data } = await axios.post("/api/companies/", body);
   return data;
 };
 export const addDrawer = async (body: { name: string }) => {
-  const { data } = await axios.post("/drawers/", body);
+  const { data } = await axios.post("/api/drawers/", body);
   return data;
 };
 

@@ -13,7 +13,7 @@ export const getCompany = async (id: number): Promise<Companies> => {
   return data;
 };
 
-export async function addCompanies(newCompanies: CompaniesInput) {
+export async function addCompany(newCompanies: CompaniesInput) {
   const { data } = await axios.post(`/api/companies/`, newCompanies);
   return data;
 }

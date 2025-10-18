@@ -24,3 +24,7 @@ export async function getGlassesByDrawer(drawerName: string) {
     (g: any) => g.drawer?.toLowerCase() === drawerName.toLowerCase()
   );
 }
+export async function deleteGlasses(id:number){
+  const {data} = await axios.delete(`/api/glasses/${id}`);
+  return data;
+}
