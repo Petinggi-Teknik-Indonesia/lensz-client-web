@@ -16,5 +16,6 @@ export const getDrawer = async (id: number): Promise<Drawers> => {
 export async function addDrawers(newDrawers: DrawersInput) {
   const { data } = await axios.post(`/api/drawers/`, newDrawers);
   return data;
-}
+};
+
 

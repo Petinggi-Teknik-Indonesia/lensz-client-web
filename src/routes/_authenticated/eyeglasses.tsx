@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { getAllGlasses } from "@/api/glasses";
+import { deleteGlasses, getAllGlasses } from "@/api/glasses";
 import { DataTable } from "@/components/DataTable";
 import {
   InputGroup,
@@ -8,10 +8,17 @@ import {
   InputGroupInput,
 } from "@/components/ui/input-group";
 import type { Glasses } from "@/types/glasses";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { createColumnHelper } from "@tanstack/react-table";
-import { SearchIcon } from "lucide-react";
+import {
+  Edit,
+  Eye,
+  MoreHorizontal,
+  Pencil,
+  SearchIcon,
+  Trash2,
+} from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -20,20 +27,53 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import AddGlassesModal from "@/components/modals/AddGlassesModal";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { ButtonGroup } from "@/components/ui/button-group";
+import { toast } from "sonner";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import EditGlassesModal from "@/components/modals/EditGlassesModal";
 
 export const Route = createFileRoute("/_authenticated/eyeglasses")({
   component: RouteComponent,
 });
 
 function RouteComponent() {
+  const queryClient = useQueryClient();
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["glasses"],
     queryFn: getAllGlasses,
   });
 
+  const [editOpen, setEditOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<Glasses | null>(null);
   const [search, setSearch] = useState("");
   // use a non-empty sentinel value for "All"
   const [statusFilter, setStatusFilter] = useState<string>("all");
+
+  const deleteMutation = useMutation({
+    mutationFn: (id: number) => deleteGlasses(id),
+    onSuccess: () => {
+      toast.success("Glasses deleted successfully!");
+      queryClient.invalidateQueries({ queryKey: ["glasses"] });
+    },
+    onError: () => toast.error("Failed to delete glasses"),
+  });
 
   const columnHelper = createColumnHelper<Glasses>();
   const columns = [
@@ -42,6 +82,90 @@ function RouteComponent() {
     columnHelper.accessor("drawer", { header: () => "Drawers" }),
     columnHelper.accessor("status", { header: () => "Status" }),
     columnHelper.accessor("color", { header: () => "Color" }),
+    columnHelper.display({
+      id: "actions",
+      header: "Actions",
+      cell: ({ row }) => {
+        const item = row.original;
+
+        return (
+          <ButtonGroup>
+            <Button
+              variant="ghost"
+              className="text-primary bg-secondary border-1"
+              size="sm"
+              onClick={() => console.log("View", item)}
+            >
+              <Eye />
+              View
+            </Button>
+
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  className="bg-secondary border-1"
+                  size="icon-sm"
+                >
+                  <MoreHorizontal />
+                </Button>
+              </DropdownMenuTrigger>
+
+              <DropdownMenuContent align="end">
+                {/* EDIT */}
+                <DropdownMenuItem
+                  className="text-orange-400"
+                  onClick={() => {
+                    setSelectedItem(item);
+                    setEditOpen(true);
+                  }}
+                >
+                  <Edit className="text-orange-400" />
+                  Edit
+                </DropdownMenuItem>
+
+                {/* DELETE */}
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <DropdownMenuItem
+                      className="text-red-600"
+                      onSelect={(e) => e.preventDefault()} // 🧠 prevent dropdown auto-close
+                    >
+                      <Trash2 className="text-red-600" />
+                      Delete
+                    </DropdownMenuItem>
+                  </AlertDialogTrigger>
+
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Delete Glasses</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        Are you sure you want to delete <b>{item.name}</b>? This
+                        action cannot be undone.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction
+                        onClick={() => {
+                          deleteMutation.mutate(item.id);
+                          queryClient.invalidateQueries({
+                            queryKey: ["glasses"],
+                          });
+                        }}
+                        className="bg-red-600 hover:bg-red-700"
+                      >
+                        Delete
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </ButtonGroup>
+        );
+      },
+    }),
   ];
 
   // Collect unique statuses for dropdown
@@ -57,7 +181,13 @@ function RouteComponent() {
     const lower = search.toLowerCase();
 
     return data.filter((item) => {
-      const matchesSearch = [item.id, item.name, item.drawer, item.status, item.color]
+      const matchesSearch = [
+        item.id,
+        item.name,
+        item.drawer,
+        item.status,
+        item.color,
+      ]
         .filter(Boolean)
         .some((field) => String(field).toLowerCase().includes(lower));
 
@@ -110,13 +240,19 @@ function RouteComponent() {
         </Select>
 
         {/* Add Button */}
-        <AddGlassesModal>
-          + Add Glasses
-        </AddGlassesModal>
+        <AddGlassesModal>+ Add Glasses</AddGlassesModal>
       </div>
 
       {/* 📋 Data Table */}
       <DataTable<Glasses, any> columns={columns} data={filteredData} />
+
+      {selectedItem && (
+        <EditGlassesModal
+          open={editOpen}
+          onOpenChange={setEditOpen}
+          data={selectedItem}
+        />
+      )}
     </div>
   );
 }

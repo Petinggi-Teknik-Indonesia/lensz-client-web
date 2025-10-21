@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { addGlasses } from "@/api/glasses";
+import { addGlasses, getGlasses } from "@/api/glasses";
 import { Select, SelectContent, SelectItem, SelectTrigger } from "../ui/select";
 import {
   getAllBrands,
@@ -34,6 +34,7 @@ const formSchema = z.object({
   type: z.string().min(1, "Type cannot be empty"),
   color: z.string().min(1, "Color cannot be empty"),
   status: z.string().min(1, "Status cannot be empty"),
+  description: z.string(),
   drawer: z.object({
     name: z.string(),
     id: z.number(),
@@ -76,6 +77,7 @@ function AddGlassesForm(props: AddGlassesFormProps) {
       name: "",
       type: "",
       color: "",
+      description:"",
       status: "Tersedia",
       drawer: { name: "", id: 0 },
       company: { name: "", id: 0 },
