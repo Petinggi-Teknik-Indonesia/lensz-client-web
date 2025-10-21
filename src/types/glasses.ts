@@ -9,6 +9,10 @@ export type Glasses = {
   company: string;
   brand: string;
   description?: string;
+
+  drawerId: number;
+  brandId: number;
+  companyId: number;
 };
 
 export type GlassesInput = {
@@ -17,6 +21,7 @@ export type GlassesInput = {
   type: string;
   color: string;
   status: string;
+  description: string;
   drawer?: { name?: string; id?: number };
   company?: { name?: string; id?: number };
   brand?: { name?: string; id?: number };

@@ -47,6 +47,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import EditGlassesModal from "@/components/modals/EditGlassesModal";
 
 export const Route = createFileRoute("/_authenticated/eyeglasses")({
   component: RouteComponent,
@@ -146,8 +147,11 @@ function RouteComponent() {
                     <AlertDialogFooter>
                       <AlertDialogCancel>Cancel</AlertDialogCancel>
                       <AlertDialogAction
-                        onClick={() => {deleteMutation.mutate(item.id)
-                          queryClient.invalidateQueries({queryKey: ["glasses"]})
+                        onClick={() => {
+                          deleteMutation.mutate(item.id);
+                          queryClient.invalidateQueries({
+                            queryKey: ["glasses"],
+                          });
                         }}
                         className="bg-red-600 hover:bg-red-700"
                       >
@@ -241,6 +245,14 @@ function RouteComponent() {
 
       {/* 📋 Data Table */}
       <DataTable<Glasses, any> columns={columns} data={filteredData} />
+
+      {selectedItem && (
+        <EditGlassesModal
+          open={editOpen}
+          onOpenChange={setEditOpen}
+          data={selectedItem}
+        />
+      )}
     </div>
   );
 }
