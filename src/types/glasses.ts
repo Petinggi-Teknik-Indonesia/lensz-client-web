@@ -1,4 +1,5 @@
 export type Glasses = {
+  extraInfo: string;
   id: number;
   rfid: string;
   name: string;
