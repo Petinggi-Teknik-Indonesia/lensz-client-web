@@ -1,10 +1,24 @@
 import { createFileRoute, Link, useParams } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
-import { getGlasses } from "@/api/glasses";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { getGlasses, deleteGlasses } from "@/api/glasses";
 import { Badge } from "@/components/ui/badge";
 import type { Glasses } from "@/types/glasses";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Edit, Trash2 } from "lucide-react";
+import { useState } from "react";
+import EditGlassesModal from "@/components/modals/EditGlassesModal";
+import { toast } from "sonner";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 export const Route = createFileRoute("/_authenticated/eyeglasses/$glassesId")({
   component: GlassesDescription,
@@ -34,12 +48,27 @@ function GlassesDescription() {
     from: "/_authenticated/eyeglasses/$glassesId",
   });
   const id = Number(glassesId);
+  const queryClient = useQueryClient();
 
+  // 🔹 Fetch current glasses
   const { data, isLoading, isError } = useQuery({
     queryKey: ["glasses", id],
     queryFn: () => getGlasses(id),
     enabled: !!id,
   });
+
+  // 🔹 Delete mutation
+  const deleteMutation = useMutation({
+    mutationFn: () => deleteGlasses(id),
+    onSuccess: () => {
+      toast.success("Glasses deleted successfully!");
+      queryClient.invalidateQueries({ queryKey: ["glasses"] });
+      window.location.href = "/eyeglasses"; // redirect back to list
+    },
+    onError: () => toast.error("Failed to delete glasses"),
+  });
+
+  const [editOpen, setEditOpen] = useState(false);
 
   if (isLoading) return <p className="p-6 text-muted-foreground">Loading...</p>;
   if (isError || !data)
@@ -52,12 +81,58 @@ function GlassesDescription() {
       {/* Header */}
       <div className="border-b border-border">
         <div className="px-4 mx-auto py-2">
-          <Link to="/eyeglasses">
-            <Button className="mb-2" variant="ghost">
-              <ArrowLeft />
-              Back
-            </Button>
-          </Link>
+          <div className="flex flex-row justify-between">
+            <Link to="/eyeglasses">
+              <Button variant="ghost" size="sm">
+                <ArrowLeft />
+                Back
+              </Button>
+            </Link>
+
+            <div className="flex gap-2 mb-2">
+              {/* ✏️ Edit */}
+              <Button
+                className="bg-orange-400 hover:bg-orange-500"
+                size="sm"
+                onClick={() => {
+                  console.log("edittt")
+                  setEditOpen(true)
+                }}
+              >
+                <Edit />
+                Edit
+              </Button>
+
+              {/* 🗑️ Delete */}
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button variant="destructive" size="sm">
+                    <Trash2 />
+                    Delete
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Delete Glasses</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Are you sure you want to delete{" "}
+                      <b>{glasses.name}</b>? This action cannot be undone.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction
+                      className="bg-red-600 hover:bg-red-700"
+                      onClick={() => deleteMutation.mutate()}
+                    >
+                      Delete
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </div>
+          </div>
+
           <div className="flex items-start justify-between gap-6">
             <div className="flex-1">
               <h1 className="text-5xl font-bold text-foreground mb-2">
@@ -68,16 +143,19 @@ function GlassesDescription() {
               </p>
             </div>
             <Badge
-              className={`${getStatusColor(glasses.status)} text-base px-4 py-2 h-fit`}
+              className={`${getStatusColor(
+                glasses.status
+              )} text-base px-4 py-2 h-fit`}
             >
-              {glasses.status.charAt(0).toUpperCase() + glasses.status.slice(1)}
+              {glasses.status.charAt(0).toUpperCase() +
+                glasses.status.slice(1)}
             </Badge>
           </div>
         </div>
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 px-4 mx-auto w-full px-6 py-12">
+      <div className="flex-1 px-4 mx-auto w-full py-12">
         <div className="space-y-12">
           {/* Description */}
           {glasses.description && (
@@ -169,6 +247,15 @@ function GlassesDescription() {
           </div>
         </div>
       </div>
+
+      {/* Edit Modal */}
+      <EditGlassesModal
+        open={editOpen}
+        onOpenChange={setEditOpen}
+        data={glasses}
+      />
     </div>
   );
 }
+
+export default GlassesDescription;

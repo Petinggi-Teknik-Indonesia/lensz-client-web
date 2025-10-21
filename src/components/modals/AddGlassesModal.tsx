@@ -22,7 +22,7 @@ export default function AddGlassesModal({ children }: { children: ReactNode }) {
       </DialogTrigger>
 
       {/* Modal content */}
-      <DialogContent className="sm:max-w-[560px]">
+      <DialogContent className="sm:max-w-[900px]">
         <DialogHeader>
           <DialogTitle>Add New Glasses</DialogTitle>
         </DialogHeader>

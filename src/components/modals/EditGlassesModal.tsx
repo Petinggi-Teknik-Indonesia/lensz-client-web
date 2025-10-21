@@ -22,7 +22,7 @@ export default function EditGlassesModal({
   console.log(data?.id)
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[560px]">
+      <DialogContent className="sm:max-w-[700px]">
         <DialogHeader>
           <DialogTitle>Edit Glasses</DialogTitle>
         </DialogHeader>

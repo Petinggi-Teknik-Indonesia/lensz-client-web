@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { addGlasses, getGlasses } from "@/api/glasses";
+import { addGlasses } from "@/api/glasses";
 import { Select, SelectContent, SelectItem, SelectTrigger } from "../ui/select";
 import {
   getAllBrands,
@@ -21,6 +21,7 @@ import {
 import type { Brands } from "@/types/brands";
 import type { Companies } from "@/types/companies";
 import type { Drawers } from "@/types/drawers";
+import { Textarea } from "../ui/textarea";
 
 type AddGlassesFormProps = {
   onSuccess: () => void;
@@ -71,13 +72,13 @@ function AddGlassesForm(props: AddGlassesFormProps) {
   const mutation = useMutation({ mutationFn: addGlasses });
   const queryClient = useQueryClient();
   console.log(props.rfid);
-  const form = useForm({
+  const glassesForm = useForm({
     defaultValues: {
       rfid: props.rfid,
       name: "",
       type: "",
       color: "",
-      description:"",
+      description: "",
       status: "Tersedia",
       drawer: { name: "", id: 0 },
       company: { name: "", id: 0 },
@@ -114,96 +115,20 @@ function AddGlassesForm(props: AddGlassesFormProps) {
       id="add-glasses-form"
       onSubmit={(e) => {
         e.preventDefault();
-        form.handleSubmit();
+        glassesForm.handleSubmit();
       }}
+      className=""
     >
-      {/* RFID */}
-      {/* <form.Field
-          name="rfid"
-          children={(field) => {
-            const isInvalid =
-              field.state.meta.isTouched && !field.state.meta.isValid;
-            return (
-              <Field data-invalid={isInvalid}>
-                <FieldLabel htmlFor={field.name}>RFID</FieldLabel>
-                <Input
-                  id={field.name}
-                  name={field.name}
-                  value={field.state.value}
-                  onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                  aria-invalid={isInvalid}
-                  placeholder="Enter RFID tag"
-                  autoComplete="off"
-                />
-                {isInvalid && <FieldError errors={field.state.meta.errors} />}
-              </Field>
-            );
-          }}
-        /> */}
-
-      {/* Name */}
-      <form.Field
-        name="name"
-        children={(field) => {
-          const isInvalid =
-            field.state.meta.isTouched && !field.state.meta.isValid;
-          return (
-            <Field data-invalid={isInvalid}>
-              <FieldLabel htmlFor={field.name}>Name</FieldLabel>
-              <Input
-                id={field.name}
-                name={field.name}
-                value={field.state.value}
-                onBlur={field.handleBlur}
-                onChange={(e) => field.handleChange(e.target.value)}
-                aria-invalid={isInvalid}
-                placeholder="Eyeglasses name"
-                autoComplete="off"
-              />
-              {isInvalid && <FieldError errors={field.state.meta.errors} />}
-            </Field>
-          );
-        }}
-      />
-
-      {/* HORIZONTAL FIELDSET */}
-      <FieldGroup className="mt-4 border-t pt-4">
-        {/* Make fields align in a row */}
-        {/* Type */}
-        <form.Field
-          name="type"
-          children={(field) => {
-            const isInvalid =
-              field.state.meta.isTouched && !field.state.meta.isValid;
-            return (
-              <Field data-invalid={isInvalid}>
-                <FieldLabel htmlFor={field.name}>Type</FieldLabel>
-                <Input
-                  id={field.name}
-                  name={field.name}
-                  value={field.state.value}
-                  onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                  aria-invalid={isInvalid}
-                  placeholder="e.g. Sunglasses, Optical"
-                  autoComplete="off"
-                />
-                {isInvalid && <FieldError errors={field.state.meta.errors} />}
-              </Field>
-            );
-          }}
-        />
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          {/* Color */}
-          <form.Field
-            name="color"
+      <div className="flex flex-col md:flex-row gap-4 h-[86%]">
+        <div className="flex-1">
+          <glassesForm.Field
+            name="name"
             children={(field) => {
               const isInvalid =
                 field.state.meta.isTouched && !field.state.meta.isValid;
               return (
                 <Field data-invalid={isInvalid}>
-                  <FieldLabel htmlFor={field.name}>Color</FieldLabel>
+                  <FieldLabel htmlFor={field.name}>Name</FieldLabel>
                   <Input
                     id={field.name}
                     name={field.name}
@@ -211,7 +136,7 @@ function AddGlassesForm(props: AddGlassesFormProps) {
                     onBlur={field.handleBlur}
                     onChange={(e) => field.handleChange(e.target.value)}
                     aria-invalid={isInvalid}
-                    placeholder="Frame color"
+                    placeholder="Eyeglasses name"
                     autoComplete="off"
                   />
                   {isInvalid && <FieldError errors={field.state.meta.errors} />}
@@ -220,261 +145,364 @@ function AddGlassesForm(props: AddGlassesFormProps) {
             }}
           />
 
-          {/* Status */}
-          <form.Field
-            name="status"
-            children={(field) => {
-              const statusOptions = [
-                "Tersedia",
-                "Terjual",
-                "Rusak",
-                "Terpinjam",
-                "Lainnya",
-              ];
-              const isInvalid =
-                field.state.meta.isTouched && !field.state.meta.isValid;
+          {/* HORIZONTAL FIELDSET */}
+          <FieldGroup className="mt-4 border-t pt-4">
+            {/* Make fields align in a row */}
+            {/* Type */}
+            <glassesForm.Field
+              name="type"
+              children={(field) => {
+                const isInvalid =
+                  field.state.meta.isTouched && !field.state.meta.isValid;
+                return (
+                  <Field data-invalid={isInvalid}>
+                    <FieldLabel htmlFor={field.name}>Type</FieldLabel>
+                    <Input
+                      id={field.name}
+                      name={field.name}
+                      value={field.state.value}
+                      onBlur={field.handleBlur}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      aria-invalid={isInvalid}
+                      placeholder="e.g. Sunglasses, Optical"
+                      autoComplete="off"
+                    />
+                    {isInvalid && (
+                      <FieldError errors={field.state.meta.errors} />
+                    )}
+                  </Field>
+                );
+              }}
+            />
+            <div className="grid grid-cols-2 gap-4">
+              {/* Color */}
+              <glassesForm.Field
+                name="color"
+                children={(field) => {
+                  const isInvalid =
+                    field.state.meta.isTouched && !field.state.meta.isValid;
+                  return (
+                    <Field data-invalid={isInvalid}>
+                      <FieldLabel htmlFor={field.name}>Color</FieldLabel>
+                      <div className={`bg-${field.state.value} size-5`}></div>
+                      <Input
+                        id={field.name}
+                        name={field.name}
+                        value={field.state.value}
+                        onBlur={field.handleBlur}
+                        onChange={(e) => field.handleChange(e.target.value)}
+                        aria-invalid={isInvalid}
+                        placeholder="Frame color"
+                        autoComplete="off"
+                      />
+                      {isInvalid && (
+                        <FieldError errors={field.state.meta.errors} />
+                      )}
+                    </Field>
+                  );
+                }}
+              />
 
-              return (
-                <Field data-invalid={isInvalid}>
-                  <FieldLabel htmlFor={field.name}>Status</FieldLabel>
-                  <Select
-                    value={field.state.value}
-                    onValueChange={(value) => field.handleChange(value)}
-                  >
-                    <SelectTrigger>
-                      <span
-                        className={
-                          field.state.value ? "" : "text-muted-foreground"
-                        }
+              {/* Status */}
+              <glassesForm.Field
+                name="status"
+                children={(field) => {
+                  const statusOptions = [
+                    "Tersedia",
+                    "Terjual",
+                    "Rusak",
+                    "Terpinjam",
+                    "Lainnya",
+                  ];
+                  const isInvalid =
+                    field.state.meta.isTouched && !field.state.meta.isValid;
+
+                  return (
+                    <Field data-invalid={isInvalid}>
+                      <FieldLabel htmlFor={field.name}>Status</FieldLabel>
+                      <Select
+                        value={field.state.value}
+                        onValueChange={(value) => field.handleChange(value)}
                       >
-                        {field.state.value || "Select status"}
-                      </span>
-                    </SelectTrigger>
-                    <SelectContent>
-                      {statusOptions.map((option) => (
-                        <SelectItem key={option} value={option}>
-                          {option}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
-                </Field>
-              );
-            }}
-          />
+                        <SelectTrigger>
+                          <span
+                            className={
+                              field.state.value ? "" : "text-muted-foreground"
+                            }
+                          >
+                            {field.state.value || "Select status"}
+                          </span>
+                        </SelectTrigger>
+                        <SelectContent>
+                          {statusOptions.map((option) => (
+                            <SelectItem key={option} value={option}>
+                              {option}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      {isInvalid && (
+                        <FieldError errors={field.state.meta.errors} />
+                      )}
+                    </Field>
+                  );
+                }}
+              />
+            </div>
+          </FieldGroup>
+
+          {/* HORIZONTAL FIELDSET */}
+          <FieldGroup className="mt-4 border-t pt-4">
+            {/* Make fields align in a row */}
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+              {/* Drawer */}
+              <glassesForm.Field
+                name="drawer"
+                children={(field) => {
+                  const selectedValue = field.state.value?.id
+                    ? String(field.state.value.id)
+                    : "";
+                  const displayName =
+                    field.state.value?.name || "Select drawer";
+
+                  return (
+                    <Field>
+                      <FieldLabel htmlFor={field.name}>Drawer</FieldLabel>
+
+                      <Select
+                        value={selectedValue}
+                        onValueChange={(value) => {
+                          const selectedDrawer = drawers.find(
+                            (drawer) => String(drawer.id) === value
+                          );
+                          field.handleChange({
+                            id: selectedDrawer?.id ?? 0,
+                            name: selectedDrawer?.name ?? "",
+                          });
+                        }}
+                      >
+                        <SelectTrigger>
+                          <span
+                            className={
+                              displayName === "Select drawer"
+                                ? "text-muted-foreground"
+                                : ""
+                            }
+                          >
+                            {displayName}
+                          </span>
+                        </SelectTrigger>
+
+                        <SelectContent>
+                          <div className="px-2 py-1">
+                            <Input
+                              placeholder="Or type a new drawer..."
+                              value={
+                                field.state.value?.id
+                                  ? ""
+                                  : (field.state.value?.name ?? "")
+                              }
+                              onChange={(e) => {
+                                const newDrawerName = e.target.value;
+                                field.handleChange({
+                                  name: newDrawerName,
+                                  id: 0,
+                                });
+                              }}
+                              autoComplete="off"
+                            />
+                          </div>
+
+                          <div className="border-t my-1" />
+
+                          {drawers.map((drawer) => (
+                            <SelectItem
+                              key={drawer.id}
+                              value={String(drawer.id)}
+                            >
+                              {drawer.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </Field>
+                  );
+                }}
+              />
+
+              {/* Company */}
+              <glassesForm.Field
+                name="company"
+                children={(field) => {
+                  const selectedValue = field.state.value?.id
+                    ? String(field.state.value.id)
+                    : "";
+                  const displayName =
+                    field.state.value?.name || "Select company";
+
+                  return (
+                    <Field>
+                      <FieldLabel htmlFor={field.name}>Company</FieldLabel>
+
+                      <Select
+                        value={selectedValue}
+                        onValueChange={(value) => {
+                          const selectedCompany = companies.find(
+                            (company) => String(company.id) === value
+                          );
+                          field.handleChange({
+                            id: selectedCompany?.id ?? 0,
+                            name: selectedCompany?.name ?? "",
+                          });
+                        }}
+                      >
+                        <SelectTrigger>
+                          <span
+                            className={
+                              displayName === "Select company"
+                                ? "text-muted-foreground"
+                                : ""
+                            }
+                          >
+                            {displayName}
+                          </span>
+                        </SelectTrigger>
+
+                        <SelectContent>
+                          <div className="px-2 py-1">
+                            <Input
+                              placeholder="Or type a new company..."
+                              value={
+                                field.state.value?.id
+                                  ? ""
+                                  : (field.state.value?.name ?? "")
+                              }
+                              onChange={(e) => {
+                                const newCompanyName = e.target.value;
+                                field.handleChange({
+                                  name: newCompanyName,
+                                  id: 0,
+                                });
+                              }}
+                              autoComplete="off"
+                            />
+                          </div>
+
+                          <div className="border-t my-1" />
+
+                          {companies.map((company) => (
+                            <SelectItem
+                              key={company.id}
+                              value={String(company.id)}
+                            >
+                              {company.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </Field>
+                  );
+                }}
+              />
+
+              {/* Brand */}
+              <glassesForm.Field
+                name="brand"
+                children={(field) => {
+                  const selectedValue = field.state.value?.id
+                    ? String(field.state.value.id)
+                    : "";
+                  const displayName = field.state.value?.name || "Select brand";
+
+                  return (
+                    <Field>
+                      <FieldLabel htmlFor={field.name}>Brand</FieldLabel>
+
+                      <Select
+                        value={selectedValue}
+                        onValueChange={(value) => {
+                          const selectedBrand = brands.find(
+                            (brand) => String(brand.id) === value
+                          );
+                          field.handleChange({
+                            id: selectedBrand?.id ?? 0,
+                            name: selectedBrand?.name ?? "",
+                          });
+                        }}
+                      >
+                        <SelectTrigger>
+                          <span
+                            className={
+                              displayName === "Select brand"
+                                ? "text-muted-foreground"
+                                : ""
+                            }
+                          >
+                            {displayName}
+                          </span>
+                        </SelectTrigger>
+
+                        <SelectContent>
+                          <div className="px-2 py-1">
+                            <Input
+                              placeholder="Or type a new brand..."
+                              value={
+                                field.state.value?.id
+                                  ? ""
+                                  : (field.state.value?.name ?? "")
+                              }
+                              onChange={(e) => {
+                                const newBrandName = e.target.value;
+                                field.handleChange({
+                                  name: newBrandName,
+                                  id: 0,
+                                });
+                              }}
+                              autoComplete="off"
+                            />
+                          </div>
+
+                          <div className="border-t my-1" />
+
+                          {brands.map((brand) => (
+                            <SelectItem key={brand.id} value={String(brand.id)}>
+                              {brand.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </Field>
+                  );
+                }}
+              />
+            </div>
+          </FieldGroup>
         </div>
-      </FieldGroup>
-
-      {/* HORIZONTAL FIELDSET */}
-      <FieldGroup className="mt-4 border-t pt-4">
-        {/* Make fields align in a row */}
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-          {/* Drawer */}
-          <form.Field
-            name="drawer"
-            children={(field) => {
-              const selectedValue = field.state.value?.id
-                ? String(field.state.value.id)
-                : "";
-              const displayName = field.state.value?.name || "Select drawer";
-
-              return (
-                <Field>
-                  <FieldLabel htmlFor={field.name}>Drawer</FieldLabel>
-
-                  <Select
-                    value={selectedValue}
-                    onValueChange={(value) => {
-                      const selectedDrawer = drawers.find(
-                        (drawer) => String(drawer.id) === value
-                      );
-                      field.handleChange({
-                        id: selectedDrawer?.id ?? 0,
-                        name: selectedDrawer?.name ?? "",
-                      });
-                    }}
-                  >
-                    <SelectTrigger>
-                      <span
-                        className={
-                          displayName === "Select drawer"
-                            ? "text-muted-foreground"
-                            : ""
-                        }
-                      >
-                        {displayName}
-                      </span>
-                    </SelectTrigger>
-
-                    <SelectContent>
-                      <div className="px-2 py-1">
-                        <Input
-                          placeholder="Or type a new drawer..."
-                          value={
-                            field.state.value?.id
-                              ? ""
-                              : (field.state.value?.name ?? "")
-                          }
-                          onChange={(e) => {
-                            const newDrawerName = e.target.value;
-                            field.handleChange({ name: newDrawerName, id: 0 });
-                          }}
-                          autoComplete="off"
-                        />
-                      </div>
-
-                      <div className="border-t my-1" />
-
-                      {drawers.map((drawer) => (
-                        <SelectItem key={drawer.id} value={String(drawer.id)}>
-                          {drawer.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </Field>
-              );
-            }}
-          />
-
-          {/* Company */}
-          <form.Field
-            name="company"
-            children={(field) => {
-              const selectedValue = field.state.value?.id
-                ? String(field.state.value.id)
-                : "";
-              const displayName = field.state.value?.name || "Select company";
-
-              return (
-                <Field>
-                  <FieldLabel htmlFor={field.name}>Company</FieldLabel>
-
-                  <Select
-                    value={selectedValue}
-                    onValueChange={(value) => {
-                      const selectedCompany = companies.find(
-                        (company) => String(company.id) === value
-                      );
-                      field.handleChange({
-                        id: selectedCompany?.id ?? 0,
-                        name: selectedCompany?.name ?? "",
-                      });
-                    }}
-                  >
-                    <SelectTrigger>
-                      <span
-                        className={
-                          displayName === "Select company"
-                            ? "text-muted-foreground"
-                            : ""
-                        }
-                      >
-                        {displayName}
-                      </span>
-                    </SelectTrigger>
-
-                    <SelectContent>
-                      <div className="px-2 py-1">
-                        <Input
-                          placeholder="Or type a new company..."
-                          value={
-                            field.state.value?.id
-                              ? ""
-                              : (field.state.value?.name ?? "")
-                          }
-                          onChange={(e) => {
-                            const newCompanyName = e.target.value;
-                            field.handleChange({ name: newCompanyName, id: 0 });
-                          }}
-                          autoComplete="off"
-                        />
-                      </div>
-
-                      <div className="border-t my-1" />
-
-                      {companies.map((company) => (
-                        <SelectItem key={company.id} value={String(company.id)}>
-                          {company.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </Field>
-              );
-            }}
-          />
-
-          {/* Brand */}
-          <form.Field
-            name="brand"
-            children={(field) => {
-              const selectedValue = field.state.value?.id
-                ? String(field.state.value.id)
-                : "";
-              const displayName = field.state.value?.name || "Select brand";
-
-              return (
-                <Field>
-                  <FieldLabel htmlFor={field.name}>Brand</FieldLabel>
-
-                  <Select
-                    value={selectedValue}
-                    onValueChange={(value) => {
-                      const selectedBrand = brands.find(
-                        (brand) => String(brand.id) === value
-                      );
-                      field.handleChange({
-                        id: selectedBrand?.id ?? 0,
-                        name: selectedBrand?.name ?? "",
-                      });
-                    }}
-                  >
-                    <SelectTrigger>
-                      <span
-                        className={
-                          displayName === "Select brand"
-                            ? "text-muted-foreground"
-                            : ""
-                        }
-                      >
-                        {displayName}
-                      </span>
-                    </SelectTrigger>
-
-                    <SelectContent>
-                      <div className="px-2 py-1">
-                        <Input
-                          placeholder="Or type a new brand..."
-                          value={
-                            field.state.value?.id
-                              ? ""
-                              : (field.state.value?.name ?? "")
-                          }
-                          onChange={(e) => {
-                            const newBrandName = e.target.value;
-                            field.handleChange({ name: newBrandName, id: 0 });
-                          }}
-                          autoComplete="off"
-                        />
-                      </div>
-
-                      <div className="border-t my-1" />
-
-                      {brands.map((brand) => (
-                        <SelectItem key={brand.id} value={String(brand.id)}>
-                          {brand.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </Field>
-              );
-            }}
-          />
-        </div>
-      </FieldGroup>
+        <glassesForm.Field
+          name="description"
+          children={(field) => {
+            const isInvalid =
+              field.state.meta.isTouched && !field.state.meta.isValid;
+            return (
+              <Field data-invalid={isInvalid} className="w-full md:w-[40%] h-full">
+                <FieldLabel htmlFor={field.name}>Description</FieldLabel>
+                <Textarea
+                  id={field.name}
+                  name={field.name}
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  aria-invalid={isInvalid}
+                  placeholder="Description over here..."
+                  autoComplete="off"
+                  className="resize-none h-[100%]"
+                />
+                {isInvalid && <FieldError errors={field.state.meta.errors} />}
+              </Field>
+            );
+          }}
+        />
+      </div>
 
       <Field
         orientation="horizontal"
