@@ -1,5 +1,6 @@
 import { SidebarApp } from "@/components/SidebarApp"
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
+import GlassesStatusToast from "@/components/websockets/StatusNotification"
 import { createFileRoute, Outlet } from "@tanstack/react-router"
 
 export const Route = createFileRoute("/_authenticated")({
@@ -10,6 +11,7 @@ export const Route = createFileRoute("/_authenticated")({
 function RouteComponent() {
   return (
     <div className="flex h-screen w-full overflow-hidden">
+      <GlassesStatusToast/>
       <SidebarProvider>
         <SidebarApp />
 
