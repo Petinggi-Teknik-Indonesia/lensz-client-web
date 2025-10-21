@@ -6,13 +6,12 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "../ui/dialog";
-import { Button } from "../ui/button";
 import AddGlassesForm from "../forms/AddGlassesForm";
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { webSocketCompleteRegistration } from "@/api/glassesEvents";
+import notification from "@/assets/sounds/notification.mp3";
 
 export function AddGlassesWebSocket() {
   const [open, setOpen] = useState(false);
@@ -23,6 +22,11 @@ export function AddGlassesWebSocket() {
     console.log("📩 Received message:", msg);
     if (msg.type === "rfid_scanned") {
       const rfid = msg.payload?.rfid || "Unknown RFID";
+            const audio = new Audio(notification);
+      audio.volume = 1; // optional: set lower volume
+      audio.play().catch((err) => {
+        console.warn("Audio play failed:", err);
+      });
       toast.success(`RFID Scanned: ${rfid}`, {
         description: "A new RFID scan was detected.",
         duration: 4000,
