@@ -19,12 +19,12 @@ import { Route as AuthenticatedTestRouteImport } from './routes/_authenticated/t
 import { Route as AuthenticatedLogoutRouteImport } from './routes/_authenticated/logout'
 import { Route as AuthenticatedGlassesTableRouteImport } from './routes/_authenticated/glasses-table'
 import { Route as AuthenticatedGlassesStatusRouteImport } from './routes/_authenticated/glasses-status'
-import { Route as AuthenticatedEyeglassesRouteImport } from './routes/_authenticated/eyeglasses'
 import { Route as AuthenticatedDrawersTableRouteImport } from './routes/_authenticated/drawers-table'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedCompaniesRouteImport } from './routes/_authenticated/companies'
 import { Route as AuthenticatedBrandsRouteImport } from './routes/_authenticated/brands'
-import { Route as AuthenticatedEyeglassesDescriptionGlassesidRouteImport } from './routes/_authenticated/eyeglasses-description/$glassesid'
+import { Route as AuthenticatedEyeglassesIndexRouteImport } from './routes/_authenticated/eyeglasses/index'
+import { Route as AuthenticatedEyeglassesGlassesIdRouteImport } from './routes/_authenticated/eyeglasses/$glassesId'
 import { Route as AuthenticatedDrawersDrawerNameRouteImport } from './routes/_authenticated/drawers/$drawerName'
 
 const ProfileRoute = ProfileRouteImport.update({
@@ -78,11 +78,6 @@ const AuthenticatedGlassesStatusRoute =
     path: '/glasses-status',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
-const AuthenticatedEyeglassesRoute = AuthenticatedEyeglassesRouteImport.update({
-  id: '/eyeglasses',
-  path: '/eyeglasses',
-  getParentRoute: () => AuthenticatedRoute,
-} as any)
 const AuthenticatedDrawersTableRoute =
   AuthenticatedDrawersTableRouteImport.update({
     id: '/drawers-table',
@@ -104,10 +99,16 @@ const AuthenticatedBrandsRoute = AuthenticatedBrandsRouteImport.update({
   path: '/brands',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
-const AuthenticatedEyeglassesDescriptionGlassesidRoute =
-  AuthenticatedEyeglassesDescriptionGlassesidRouteImport.update({
-    id: '/eyeglasses-description/$glassesid',
-    path: '/eyeglasses-description/$glassesid',
+const AuthenticatedEyeglassesIndexRoute =
+  AuthenticatedEyeglassesIndexRouteImport.update({
+    id: '/eyeglasses/',
+    path: '/eyeglasses/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedEyeglassesGlassesIdRoute =
+  AuthenticatedEyeglassesGlassesIdRouteImport.update({
+    id: '/eyeglasses/$glassesId',
+    path: '/eyeglasses/$glassesId',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
 const AuthenticatedDrawersDrawerNameRoute =
@@ -124,7 +125,6 @@ export interface FileRoutesByFullPath {
   '/companies': typeof AuthenticatedCompaniesRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/drawers-table': typeof AuthenticatedDrawersTableRoute
-  '/eyeglasses': typeof AuthenticatedEyeglassesRoute
   '/glasses-status': typeof AuthenticatedGlassesStatusRoute
   '/glasses-table': typeof AuthenticatedGlassesTableRoute
   '/logout': typeof AuthenticatedLogoutRoute
@@ -132,8 +132,9 @@ export interface FileRoutesByFullPath {
   '/trash': typeof AuthenticatedTrashRoute
   '/login': typeof PreAuthLoginRoute
   '/register': typeof PreAuthRegisterRoute
-  '/eyeglasses-description/$glassesid': typeof AuthenticatedEyeglassesDescriptionGlassesidRoute
   '/drawers/$drawerName': typeof AuthenticatedDrawersDrawerNameRoute
+  '/eyeglasses/$glassesId': typeof AuthenticatedEyeglassesGlassesIdRoute
+  '/eyeglasses': typeof AuthenticatedEyeglassesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -142,7 +143,6 @@ export interface FileRoutesByTo {
   '/companies': typeof AuthenticatedCompaniesRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/drawers-table': typeof AuthenticatedDrawersTableRoute
-  '/eyeglasses': typeof AuthenticatedEyeglassesRoute
   '/glasses-status': typeof AuthenticatedGlassesStatusRoute
   '/glasses-table': typeof AuthenticatedGlassesTableRoute
   '/logout': typeof AuthenticatedLogoutRoute
@@ -150,8 +150,9 @@ export interface FileRoutesByTo {
   '/trash': typeof AuthenticatedTrashRoute
   '/login': typeof PreAuthLoginRoute
   '/register': typeof PreAuthRegisterRoute
-  '/eyeglasses-description/$glassesid': typeof AuthenticatedEyeglassesDescriptionGlassesidRoute
   '/drawers/$drawerName': typeof AuthenticatedDrawersDrawerNameRoute
+  '/eyeglasses/$glassesId': typeof AuthenticatedEyeglassesGlassesIdRoute
+  '/eyeglasses': typeof AuthenticatedEyeglassesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -162,7 +163,6 @@ export interface FileRoutesById {
   '/_authenticated/companies': typeof AuthenticatedCompaniesRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/drawers-table': typeof AuthenticatedDrawersTableRoute
-  '/_authenticated/eyeglasses': typeof AuthenticatedEyeglassesRoute
   '/_authenticated/glasses-status': typeof AuthenticatedGlassesStatusRoute
   '/_authenticated/glasses-table': typeof AuthenticatedGlassesTableRoute
   '/_authenticated/logout': typeof AuthenticatedLogoutRoute
@@ -170,8 +170,9 @@ export interface FileRoutesById {
   '/_authenticated/trash': typeof AuthenticatedTrashRoute
   '/_preAuth/login': typeof PreAuthLoginRoute
   '/_preAuth/register': typeof PreAuthRegisterRoute
-  '/_authenticated/eyeglasses-description/$glassesid': typeof AuthenticatedEyeglassesDescriptionGlassesidRoute
   '/_authenticated/drawers/$drawerName': typeof AuthenticatedDrawersDrawerNameRoute
+  '/_authenticated/eyeglasses/$glassesId': typeof AuthenticatedEyeglassesGlassesIdRoute
+  '/_authenticated/eyeglasses/': typeof AuthenticatedEyeglassesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -182,7 +183,6 @@ export interface FileRouteTypes {
     | '/companies'
     | '/dashboard'
     | '/drawers-table'
-    | '/eyeglasses'
     | '/glasses-status'
     | '/glasses-table'
     | '/logout'
@@ -190,8 +190,9 @@ export interface FileRouteTypes {
     | '/trash'
     | '/login'
     | '/register'
-    | '/eyeglasses-description/$glassesid'
     | '/drawers/$drawerName'
+    | '/eyeglasses/$glassesId'
+    | '/eyeglasses'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -200,7 +201,6 @@ export interface FileRouteTypes {
     | '/companies'
     | '/dashboard'
     | '/drawers-table'
-    | '/eyeglasses'
     | '/glasses-status'
     | '/glasses-table'
     | '/logout'
@@ -208,8 +208,9 @@ export interface FileRouteTypes {
     | '/trash'
     | '/login'
     | '/register'
-    | '/eyeglasses-description/$glassesid'
     | '/drawers/$drawerName'
+    | '/eyeglasses/$glassesId'
+    | '/eyeglasses'
   id:
     | '__root__'
     | '/'
@@ -219,7 +220,6 @@ export interface FileRouteTypes {
     | '/_authenticated/companies'
     | '/_authenticated/dashboard'
     | '/_authenticated/drawers-table'
-    | '/_authenticated/eyeglasses'
     | '/_authenticated/glasses-status'
     | '/_authenticated/glasses-table'
     | '/_authenticated/logout'
@@ -227,8 +227,9 @@ export interface FileRouteTypes {
     | '/_authenticated/trash'
     | '/_preAuth/login'
     | '/_preAuth/register'
-    | '/_authenticated/eyeglasses-description/$glassesid'
     | '/_authenticated/drawers/$drawerName'
+    | '/_authenticated/eyeglasses/$glassesId'
+    | '/_authenticated/eyeglasses/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -311,13 +312,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedGlassesStatusRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
-    '/_authenticated/eyeglasses': {
-      id: '/_authenticated/eyeglasses'
-      path: '/eyeglasses'
-      fullPath: '/eyeglasses'
-      preLoaderRoute: typeof AuthenticatedEyeglassesRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
     '/_authenticated/drawers-table': {
       id: '/_authenticated/drawers-table'
       path: '/drawers-table'
@@ -346,11 +340,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedBrandsRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
-    '/_authenticated/eyeglasses-description/$glassesid': {
-      id: '/_authenticated/eyeglasses-description/$glassesid'
-      path: '/eyeglasses-description/$glassesid'
-      fullPath: '/eyeglasses-description/$glassesid'
-      preLoaderRoute: typeof AuthenticatedEyeglassesDescriptionGlassesidRouteImport
+    '/_authenticated/eyeglasses/': {
+      id: '/_authenticated/eyeglasses/'
+      path: '/eyeglasses'
+      fullPath: '/eyeglasses'
+      preLoaderRoute: typeof AuthenticatedEyeglassesIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/eyeglasses/$glassesId': {
+      id: '/_authenticated/eyeglasses/$glassesId'
+      path: '/eyeglasses/$glassesId'
+      fullPath: '/eyeglasses/$glassesId'
+      preLoaderRoute: typeof AuthenticatedEyeglassesGlassesIdRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/drawers/$drawerName': {
@@ -368,14 +369,14 @@ interface AuthenticatedRouteChildren {
   AuthenticatedCompaniesRoute: typeof AuthenticatedCompaniesRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedDrawersTableRoute: typeof AuthenticatedDrawersTableRoute
-  AuthenticatedEyeglassesRoute: typeof AuthenticatedEyeglassesRoute
   AuthenticatedGlassesStatusRoute: typeof AuthenticatedGlassesStatusRoute
   AuthenticatedGlassesTableRoute: typeof AuthenticatedGlassesTableRoute
   AuthenticatedLogoutRoute: typeof AuthenticatedLogoutRoute
   AuthenticatedTestRoute: typeof AuthenticatedTestRoute
   AuthenticatedTrashRoute: typeof AuthenticatedTrashRoute
-  AuthenticatedEyeglassesDescriptionGlassesidRoute: typeof AuthenticatedEyeglassesDescriptionGlassesidRoute
   AuthenticatedDrawersDrawerNameRoute: typeof AuthenticatedDrawersDrawerNameRoute
+  AuthenticatedEyeglassesGlassesIdRoute: typeof AuthenticatedEyeglassesGlassesIdRoute
+  AuthenticatedEyeglassesIndexRoute: typeof AuthenticatedEyeglassesIndexRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
@@ -383,15 +384,14 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedCompaniesRoute: AuthenticatedCompaniesRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedDrawersTableRoute: AuthenticatedDrawersTableRoute,
-  AuthenticatedEyeglassesRoute: AuthenticatedEyeglassesRoute,
   AuthenticatedGlassesStatusRoute: AuthenticatedGlassesStatusRoute,
   AuthenticatedGlassesTableRoute: AuthenticatedGlassesTableRoute,
   AuthenticatedLogoutRoute: AuthenticatedLogoutRoute,
   AuthenticatedTestRoute: AuthenticatedTestRoute,
   AuthenticatedTrashRoute: AuthenticatedTrashRoute,
-  AuthenticatedEyeglassesDescriptionGlassesidRoute:
-    AuthenticatedEyeglassesDescriptionGlassesidRoute,
   AuthenticatedDrawersDrawerNameRoute: AuthenticatedDrawersDrawerNameRoute,
+  AuthenticatedEyeglassesGlassesIdRoute: AuthenticatedEyeglassesGlassesIdRoute,
+  AuthenticatedEyeglassesIndexRoute: AuthenticatedEyeglassesIndexRoute,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(

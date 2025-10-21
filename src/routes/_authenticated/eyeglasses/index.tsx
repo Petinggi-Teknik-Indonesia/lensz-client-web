@@ -9,16 +9,9 @@ import {
 } from "@/components/ui/input-group";
 import type { Glasses } from "@/types/glasses";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { createColumnHelper } from "@tanstack/react-table";
-import {
-  Edit,
-  Eye,
-  MoreHorizontal,
-  Pencil,
-  SearchIcon,
-  Trash2,
-} from "lucide-react";
+import { Edit, Eye, MoreHorizontal, SearchIcon, Trash2 } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -49,7 +42,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import EditGlassesModal from "@/components/modals/EditGlassesModal";
 
-export const Route = createFileRoute("/_authenticated/eyeglasses")({
+export const Route = createFileRoute("/_authenticated/eyeglasses/")({
   component: RouteComponent,
 });
 
@@ -90,15 +83,20 @@ function RouteComponent() {
 
         return (
           <ButtonGroup>
-            <Button
-              variant="ghost"
-              className="text-primary bg-secondary border-1"
-              size="sm"
-              onClick={() => console.log("View", item)}
+              <Button
+                variant="ghost"
+                className="text-primary bg-secondary border-1"
+                size="sm"
+              >
+            <Link
+              to="/eyeglasses/$glassesId"
+              params={{ glassesId: String(item.id) }}
+              className="flex flex-row items-center justify-center gap-2"
             >
-              <Eye />
-              View
-            </Button>
+                <Eye />
+                View
+            </Link>
+              </Button>
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>

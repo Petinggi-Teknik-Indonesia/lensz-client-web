@@ -4,32 +4,24 @@ import { useQuery } from "@tanstack/react-query";
 import { createColumnHelper } from "@tanstack/react-table";
 import { getGlasses } from "@/api/glasses";
 import { DataTable } from "@/components/DataTable";
-import {
-
-  InputGroup,
-  InputGroupAddon,
-  InputGroupButton,
-  InputGroupInput,
-} from "@/components/ui/input-group";
 
 import type { Glasses } from "@/types/glasses";
 
-export const Route = createFileRoute("/_authenticated/eyeglasses-description/$glassesid")({
+export const Route = createFileRoute("/_authenticated/eyeglasses/$glassesId")({
   component: Description,
 });
 
 function Description() {
-  const { glassesid } = useParams({
-    from: "/_authenticated/eyeglasses-description/$glassesid",
+  const { glassesId } = useParams({
+    from: "/_authenticated/eyeglasses/$glassesId",
   });
 
-  const id = Number(glassesid);
+  const id = Number(glassesId);
 
-  // 🧠 Fetch glasses inside this drawer
   const { data } = useQuery({
     queryKey: ["glasses", id],
     queryFn: () => getGlasses(id),
-    enabled: !!id, // only fetch when glassesid is truthy
+    enabled: !!id,
   });
 
   const [search, setSearch] = useState("");
@@ -70,7 +62,7 @@ function Description() {
   return (
     <div className="h-full flex flex-col gap-2 mt-2">
       {/* 🏷 Drawer Title */}
-      <h1 className="text-2xl font-semibold mb-2">ID : {glassesid}</h1>
+      <h1 className="text-2xl font-semibold mb-2">ID : {glassesId}</h1>
 
       
 
