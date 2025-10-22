@@ -1,9 +1,9 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-export const Route = createFileRoute('/(preAuth)/register')({
+export const Route = createFileRoute('/_authenticated/logout')({
   component: RouteComponent,
 })
 
 function RouteComponent() {
-  return <div>Hello "/register"!</div>
+  return <div>Hello "/_authenticated/logout"!</div>
 }

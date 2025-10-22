@@ -12,13 +12,20 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as AuthenticatedEyeglassesRouteImport } from './routes/_authenticated/eyeglasses'
-import { Route as AuthenticatedDrawersRouteImport } from './routes/_authenticated/drawers'
+import { Route as PreAuthRegisterRouteImport } from './routes/_preAuth/register'
+import { Route as PreAuthLoginRouteImport } from './routes/_preAuth/login'
+import { Route as AuthenticatedTrashRouteImport } from './routes/_authenticated/trash'
+import { Route as AuthenticatedTestRouteImport } from './routes/_authenticated/test'
+import { Route as AuthenticatedLogoutRouteImport } from './routes/_authenticated/logout'
+import { Route as AuthenticatedGlassesTableRouteImport } from './routes/_authenticated/glasses-table'
+import { Route as AuthenticatedGlassesStatusRouteImport } from './routes/_authenticated/glasses-status'
+import { Route as AuthenticatedDrawersTableRouteImport } from './routes/_authenticated/drawers-table'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedCompaniesRouteImport } from './routes/_authenticated/companies'
 import { Route as AuthenticatedBrandsRouteImport } from './routes/_authenticated/brands'
-import { Route as preAuthRegisterRouteImport } from './routes/(preAuth)/register'
-import { Route as preAuthLoginRouteImport } from './routes/(preAuth)/login'
+import { Route as AuthenticatedEyeglassesIndexRouteImport } from './routes/_authenticated/eyeglasses/index'
+import { Route as AuthenticatedEyeglassesGlassesIdRouteImport } from './routes/_authenticated/eyeglasses/$glassesId'
+import { Route as AuthenticatedDrawersDrawerNameRouteImport } from './routes/_authenticated/drawers/$drawerName'
 
 const ProfileRoute = ProfileRouteImport.update({
   id: '/profile',
@@ -34,16 +41,49 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedEyeglassesRoute = AuthenticatedEyeglassesRouteImport.update({
-  id: '/eyeglasses',
-  path: '/eyeglasses',
+const PreAuthRegisterRoute = PreAuthRegisterRouteImport.update({
+  id: '/_preAuth/register',
+  path: '/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PreAuthLoginRoute = PreAuthLoginRouteImport.update({
+  id: '/_preAuth/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedTrashRoute = AuthenticatedTrashRouteImport.update({
+  id: '/trash',
+  path: '/trash',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
-const AuthenticatedDrawersRoute = AuthenticatedDrawersRouteImport.update({
-  id: '/drawers',
-  path: '/drawers',
+const AuthenticatedTestRoute = AuthenticatedTestRouteImport.update({
+  id: '/test',
+  path: '/test',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedLogoutRoute = AuthenticatedLogoutRouteImport.update({
+  id: '/logout',
+  path: '/logout',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedGlassesTableRoute =
+  AuthenticatedGlassesTableRouteImport.update({
+    id: '/glasses-table',
+    path: '/glasses-table',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedGlassesStatusRoute =
+  AuthenticatedGlassesStatusRouteImport.update({
+    id: '/glasses-status',
+    path: '/glasses-status',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedDrawersTableRoute =
+  AuthenticatedDrawersTableRouteImport.update({
+    id: '/drawers-table',
+    path: '/drawers-table',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -59,95 +99,145 @@ const AuthenticatedBrandsRoute = AuthenticatedBrandsRouteImport.update({
   path: '/brands',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
-const preAuthRegisterRoute = preAuthRegisterRouteImport.update({
-  id: '/(preAuth)/register',
-  path: '/register',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const preAuthLoginRoute = preAuthLoginRouteImport.update({
-  id: '/(preAuth)/login',
-  path: '/login',
-  getParentRoute: () => rootRouteImport,
-} as any)
+const AuthenticatedEyeglassesIndexRoute =
+  AuthenticatedEyeglassesIndexRouteImport.update({
+    id: '/eyeglasses/',
+    path: '/eyeglasses/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedEyeglassesGlassesIdRoute =
+  AuthenticatedEyeglassesGlassesIdRouteImport.update({
+    id: '/eyeglasses/$glassesId',
+    path: '/eyeglasses/$glassesId',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedDrawersDrawerNameRoute =
+  AuthenticatedDrawersDrawerNameRouteImport.update({
+    id: '/drawers/$drawerName',
+    path: '/drawers/$drawerName',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/profile': typeof ProfileRoute
-  '/login': typeof preAuthLoginRoute
-  '/register': typeof preAuthRegisterRoute
   '/brands': typeof AuthenticatedBrandsRoute
   '/companies': typeof AuthenticatedCompaniesRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
-  '/drawers': typeof AuthenticatedDrawersRoute
-  '/eyeglasses': typeof AuthenticatedEyeglassesRoute
+  '/drawers-table': typeof AuthenticatedDrawersTableRoute
+  '/glasses-status': typeof AuthenticatedGlassesStatusRoute
+  '/glasses-table': typeof AuthenticatedGlassesTableRoute
+  '/logout': typeof AuthenticatedLogoutRoute
+  '/test': typeof AuthenticatedTestRoute
+  '/trash': typeof AuthenticatedTrashRoute
+  '/login': typeof PreAuthLoginRoute
+  '/register': typeof PreAuthRegisterRoute
+  '/drawers/$drawerName': typeof AuthenticatedDrawersDrawerNameRoute
+  '/eyeglasses/$glassesId': typeof AuthenticatedEyeglassesGlassesIdRoute
+  '/eyeglasses': typeof AuthenticatedEyeglassesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/profile': typeof ProfileRoute
-  '/login': typeof preAuthLoginRoute
-  '/register': typeof preAuthRegisterRoute
   '/brands': typeof AuthenticatedBrandsRoute
   '/companies': typeof AuthenticatedCompaniesRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
-  '/drawers': typeof AuthenticatedDrawersRoute
-  '/eyeglasses': typeof AuthenticatedEyeglassesRoute
+  '/drawers-table': typeof AuthenticatedDrawersTableRoute
+  '/glasses-status': typeof AuthenticatedGlassesStatusRoute
+  '/glasses-table': typeof AuthenticatedGlassesTableRoute
+  '/logout': typeof AuthenticatedLogoutRoute
+  '/test': typeof AuthenticatedTestRoute
+  '/trash': typeof AuthenticatedTrashRoute
+  '/login': typeof PreAuthLoginRoute
+  '/register': typeof PreAuthRegisterRoute
+  '/drawers/$drawerName': typeof AuthenticatedDrawersDrawerNameRoute
+  '/eyeglasses/$glassesId': typeof AuthenticatedEyeglassesGlassesIdRoute
+  '/eyeglasses': typeof AuthenticatedEyeglassesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/profile': typeof ProfileRoute
-  '/(preAuth)/login': typeof preAuthLoginRoute
-  '/(preAuth)/register': typeof preAuthRegisterRoute
   '/_authenticated/brands': typeof AuthenticatedBrandsRoute
   '/_authenticated/companies': typeof AuthenticatedCompaniesRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
-  '/_authenticated/drawers': typeof AuthenticatedDrawersRoute
-  '/_authenticated/eyeglasses': typeof AuthenticatedEyeglassesRoute
+  '/_authenticated/drawers-table': typeof AuthenticatedDrawersTableRoute
+  '/_authenticated/glasses-status': typeof AuthenticatedGlassesStatusRoute
+  '/_authenticated/glasses-table': typeof AuthenticatedGlassesTableRoute
+  '/_authenticated/logout': typeof AuthenticatedLogoutRoute
+  '/_authenticated/test': typeof AuthenticatedTestRoute
+  '/_authenticated/trash': typeof AuthenticatedTrashRoute
+  '/_preAuth/login': typeof PreAuthLoginRoute
+  '/_preAuth/register': typeof PreAuthRegisterRoute
+  '/_authenticated/drawers/$drawerName': typeof AuthenticatedDrawersDrawerNameRoute
+  '/_authenticated/eyeglasses/$glassesId': typeof AuthenticatedEyeglassesGlassesIdRoute
+  '/_authenticated/eyeglasses/': typeof AuthenticatedEyeglassesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/profile'
-    | '/login'
-    | '/register'
     | '/brands'
     | '/companies'
     | '/dashboard'
-    | '/drawers'
+    | '/drawers-table'
+    | '/glasses-status'
+    | '/glasses-table'
+    | '/logout'
+    | '/test'
+    | '/trash'
+    | '/login'
+    | '/register'
+    | '/drawers/$drawerName'
+    | '/eyeglasses/$glassesId'
     | '/eyeglasses'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/profile'
-    | '/login'
-    | '/register'
     | '/brands'
     | '/companies'
     | '/dashboard'
-    | '/drawers'
+    | '/drawers-table'
+    | '/glasses-status'
+    | '/glasses-table'
+    | '/logout'
+    | '/test'
+    | '/trash'
+    | '/login'
+    | '/register'
+    | '/drawers/$drawerName'
+    | '/eyeglasses/$glassesId'
     | '/eyeglasses'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/profile'
-    | '/(preAuth)/login'
-    | '/(preAuth)/register'
     | '/_authenticated/brands'
     | '/_authenticated/companies'
     | '/_authenticated/dashboard'
-    | '/_authenticated/drawers'
-    | '/_authenticated/eyeglasses'
+    | '/_authenticated/drawers-table'
+    | '/_authenticated/glasses-status'
+    | '/_authenticated/glasses-table'
+    | '/_authenticated/logout'
+    | '/_authenticated/test'
+    | '/_authenticated/trash'
+    | '/_preAuth/login'
+    | '/_preAuth/register'
+    | '/_authenticated/drawers/$drawerName'
+    | '/_authenticated/eyeglasses/$glassesId'
+    | '/_authenticated/eyeglasses/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   ProfileRoute: typeof ProfileRoute
-  preAuthLoginRoute: typeof preAuthLoginRoute
-  preAuthRegisterRoute: typeof preAuthRegisterRoute
+  PreAuthLoginRoute: typeof PreAuthLoginRoute
+  PreAuthRegisterRoute: typeof PreAuthRegisterRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -173,18 +263,60 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/eyeglasses': {
-      id: '/_authenticated/eyeglasses'
-      path: '/eyeglasses'
-      fullPath: '/eyeglasses'
-      preLoaderRoute: typeof AuthenticatedEyeglassesRouteImport
+    '/_preAuth/register': {
+      id: '/_preAuth/register'
+      path: '/register'
+      fullPath: '/register'
+      preLoaderRoute: typeof PreAuthRegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_preAuth/login': {
+      id: '/_preAuth/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof PreAuthLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/trash': {
+      id: '/_authenticated/trash'
+      path: '/trash'
+      fullPath: '/trash'
+      preLoaderRoute: typeof AuthenticatedTrashRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
-    '/_authenticated/drawers': {
-      id: '/_authenticated/drawers'
-      path: '/drawers'
-      fullPath: '/drawers'
-      preLoaderRoute: typeof AuthenticatedDrawersRouteImport
+    '/_authenticated/test': {
+      id: '/_authenticated/test'
+      path: '/test'
+      fullPath: '/test'
+      preLoaderRoute: typeof AuthenticatedTestRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/logout': {
+      id: '/_authenticated/logout'
+      path: '/logout'
+      fullPath: '/logout'
+      preLoaderRoute: typeof AuthenticatedLogoutRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/glasses-table': {
+      id: '/_authenticated/glasses-table'
+      path: '/glasses-table'
+      fullPath: '/glasses-table'
+      preLoaderRoute: typeof AuthenticatedGlassesTableRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/glasses-status': {
+      id: '/_authenticated/glasses-status'
+      path: '/glasses-status'
+      fullPath: '/glasses-status'
+      preLoaderRoute: typeof AuthenticatedGlassesStatusRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/drawers-table': {
+      id: '/_authenticated/drawers-table'
+      path: '/drawers-table'
+      fullPath: '/drawers-table'
+      preLoaderRoute: typeof AuthenticatedDrawersTableRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/dashboard': {
@@ -208,19 +340,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedBrandsRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
-    '/(preAuth)/register': {
-      id: '/(preAuth)/register'
-      path: '/register'
-      fullPath: '/register'
-      preLoaderRoute: typeof preAuthRegisterRouteImport
-      parentRoute: typeof rootRouteImport
+    '/_authenticated/eyeglasses/': {
+      id: '/_authenticated/eyeglasses/'
+      path: '/eyeglasses'
+      fullPath: '/eyeglasses'
+      preLoaderRoute: typeof AuthenticatedEyeglassesIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
     }
-    '/(preAuth)/login': {
-      id: '/(preAuth)/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof preAuthLoginRouteImport
-      parentRoute: typeof rootRouteImport
+    '/_authenticated/eyeglasses/$glassesId': {
+      id: '/_authenticated/eyeglasses/$glassesId'
+      path: '/eyeglasses/$glassesId'
+      fullPath: '/eyeglasses/$glassesId'
+      preLoaderRoute: typeof AuthenticatedEyeglassesGlassesIdRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/drawers/$drawerName': {
+      id: '/_authenticated/drawers/$drawerName'
+      path: '/drawers/$drawerName'
+      fullPath: '/drawers/$drawerName'
+      preLoaderRoute: typeof AuthenticatedDrawersDrawerNameRouteImport
+      parentRoute: typeof AuthenticatedRoute
     }
   }
 }
@@ -229,16 +368,30 @@ interface AuthenticatedRouteChildren {
   AuthenticatedBrandsRoute: typeof AuthenticatedBrandsRoute
   AuthenticatedCompaniesRoute: typeof AuthenticatedCompaniesRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
-  AuthenticatedDrawersRoute: typeof AuthenticatedDrawersRoute
-  AuthenticatedEyeglassesRoute: typeof AuthenticatedEyeglassesRoute
+  AuthenticatedDrawersTableRoute: typeof AuthenticatedDrawersTableRoute
+  AuthenticatedGlassesStatusRoute: typeof AuthenticatedGlassesStatusRoute
+  AuthenticatedGlassesTableRoute: typeof AuthenticatedGlassesTableRoute
+  AuthenticatedLogoutRoute: typeof AuthenticatedLogoutRoute
+  AuthenticatedTestRoute: typeof AuthenticatedTestRoute
+  AuthenticatedTrashRoute: typeof AuthenticatedTrashRoute
+  AuthenticatedDrawersDrawerNameRoute: typeof AuthenticatedDrawersDrawerNameRoute
+  AuthenticatedEyeglassesGlassesIdRoute: typeof AuthenticatedEyeglassesGlassesIdRoute
+  AuthenticatedEyeglassesIndexRoute: typeof AuthenticatedEyeglassesIndexRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedBrandsRoute: AuthenticatedBrandsRoute,
   AuthenticatedCompaniesRoute: AuthenticatedCompaniesRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
-  AuthenticatedDrawersRoute: AuthenticatedDrawersRoute,
-  AuthenticatedEyeglassesRoute: AuthenticatedEyeglassesRoute,
+  AuthenticatedDrawersTableRoute: AuthenticatedDrawersTableRoute,
+  AuthenticatedGlassesStatusRoute: AuthenticatedGlassesStatusRoute,
+  AuthenticatedGlassesTableRoute: AuthenticatedGlassesTableRoute,
+  AuthenticatedLogoutRoute: AuthenticatedLogoutRoute,
+  AuthenticatedTestRoute: AuthenticatedTestRoute,
+  AuthenticatedTrashRoute: AuthenticatedTrashRoute,
+  AuthenticatedDrawersDrawerNameRoute: AuthenticatedDrawersDrawerNameRoute,
+  AuthenticatedEyeglassesGlassesIdRoute: AuthenticatedEyeglassesGlassesIdRoute,
+  AuthenticatedEyeglassesIndexRoute: AuthenticatedEyeglassesIndexRoute,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
@@ -249,8 +402,8 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
   ProfileRoute: ProfileRoute,
-  preAuthLoginRoute: preAuthLoginRoute,
-  preAuthRegisterRoute: preAuthRegisterRoute,
+  PreAuthLoginRoute: PreAuthLoginRoute,
+  PreAuthRegisterRoute: PreAuthRegisterRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

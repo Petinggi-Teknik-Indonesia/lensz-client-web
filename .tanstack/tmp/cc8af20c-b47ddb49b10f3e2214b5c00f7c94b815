@@ -1,0 +1,73 @@
+import { useState, useMemo } from "react";
+import { createFileRoute, useParams } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import { createColumnHelper } from "@tanstack/react-table";
+import { SearchIcon } from "lucide-react";
+import { getGlasses } from "@/api/glasses";
+import { DataTable } from "@/components/DataTable";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupButton,
+  InputGroupInput,
+} from "@/components/ui/input-group";
+
+import type { Glasses } from "@/types/glasses";
+
+export const Route = createFileRoute("/_authenticated/eyeglasses-description/$eyeglasses-description")({
+  component: Description,
+});
+
+function Description() {
+  const { glassesid } = useParams({
+    from: "/_authenticated/eyeglasses-description/$eyeglasses-description",
+  });
+
+  // 🧠 Fetch glasses inside this drawer
+  const { data, isLoading, isError, error } = useQuery({
+    queryKey: ["glasses", glassesid],
+    queryFn: () => getGlasses(glassesid),
+  });
+
+  const [search, setSearch] = useState("");
+
+  const columnHelper = createColumnHelper<Glasses>();
+  const columns = [
+    columnHelper.accessor("id", { header: () => "ID" }),
+    columnHelper.accessor("name", { header: () => "Name" }),
+    columnHelper.accessor("drawer", { header: () => "Drawer" }),
+    columnHelper.accessor("status", { header: () => "Status" }),
+    columnHelper.accessor("color", { header: () => "Color" }),
+  ];
+
+
+  
+  return (
+    <div className="h-full flex flex-col gap-2 mt-2">
+      {/* 🏷 Drawer Title */}
+      <h1 className="text-2xl font-semibold mb-2">{glassesid}</h1>
+
+      {/* 🔍 Search Bar */}
+      <div className="flex flex-row gap-2 justify-end">
+        <InputGroup>
+          <InputGroupInput
+            placeholder="Search glasses..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+          <InputGroupAddon>
+            <SearchIcon />
+          </InputGroupAddon>
+          <InputGroupAddon align="inline-end">
+            <InputGroupButton onClick={() => setSearch("")}>
+              Clear
+            </InputGroupButton>
+          </InputGroupAddon>
+        </InputGroup>
+      </div>
+
+      {/* 📋 Glasses Table
+      <DataTable<Glasses, any> columns={columns} data={filteredData} /> */}
+    </div>
+  );
+}
