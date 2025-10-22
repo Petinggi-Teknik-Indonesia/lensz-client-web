@@ -18,4 +18,20 @@ export async function addDrawers(newDrawers: DrawersInput) {
   return data;
 };
 
+export async function updateDrawers(id: number, updatedDrawer: DrawersInput) {
+  // Transform payload if needed, here it's simple
+  const payload = {
+    name: updatedDrawer.name,
+  };
 
+  console.log("Payload for updateDrawer:", payload);
+
+  const { data } = await axios.put(`/api/drawers/${id}`, payload);
+  return data;
+}
+
+export async function deleteDrawer(id: number) {
+  const { data, status } = await axios.delete(`/api/drawers/${id}`);
+  console.log(status);
+  return data;
+}
