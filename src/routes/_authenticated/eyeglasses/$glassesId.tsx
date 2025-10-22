@@ -1,8 +1,8 @@
 import { createFileRoute, Link, useParams } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { getGlasses, deleteGlasses } from "@/api/glasses";
+import { getGlasses, deleteGlasses, historyGlasses } from "@/api/glasses";
 import { Badge } from "@/components/ui/badge";
-import type { Glasses } from "@/types/glasses";
+import type { Glasses, GlassesHistory } from "@/types/glasses";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Edit, Trash2 } from "lucide-react";
 import { useState } from "react";
@@ -19,6 +19,9 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { DataTable } from "@/components/DataTable";
+import { createColumnHelper } from "@tanstack/react-table";
+import { formatDate } from "@/api/glassesDependencies";
 
 export const Route = createFileRoute("/_authenticated/eyeglasses/$glassesId")({
   component: GlassesDescription,
@@ -56,6 +59,23 @@ function GlassesDescription() {
     queryFn: () => getGlasses(id),
     enabled: !!id,
   });
+
+  const { data: history } = useQuery({
+    queryKey: ["history", id],
+    queryFn: () => historyGlasses(id),
+  });
+  console.log(history);
+
+  const columnHelper = createColumnHelper<GlassesHistory>();
+  const columns = [
+    columnHelper.accessor("id", { header: () => "ID" }),
+    columnHelper.accessor("statusChange", { header: () => "Status" }),
+    columnHelper.accessor("userName", { header: () => "User" }),
+    columnHelper.accessor("createdAt", {
+      header: () => "Time",
+      cell: (info) => (info.getValue() ? formatDate(info.getValue()) : ""),
+    }),
+  ];
 
   // 🔹 Delete mutation
   const deleteMutation = useMutation({
@@ -95,8 +115,8 @@ function GlassesDescription() {
                 className="bg-orange-400 hover:bg-orange-500"
                 size="sm"
                 onClick={() => {
-                  console.log("edittt")
-                  setEditOpen(true)
+                  console.log("edittt");
+                  setEditOpen(true);
                 }}
               >
                 <Edit />
@@ -115,8 +135,8 @@ function GlassesDescription() {
                   <AlertDialogHeader>
                     <AlertDialogTitle>Delete Glasses</AlertDialogTitle>
                     <AlertDialogDescription>
-                      Are you sure you want to delete{" "}
-                      <b>{glasses.name}</b>? This action cannot be undone.
+                      Are you sure you want to delete <b>{glasses.name}</b>?
+                      This action cannot be undone.
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
@@ -147,8 +167,7 @@ function GlassesDescription() {
                 glasses.status
               )} text-base px-4 py-2 h-fit`}
             >
-              {glasses.status.charAt(0).toUpperCase() +
-                glasses.status.slice(1)}
+              {glasses.status.charAt(0).toUpperCase() + glasses.status.slice(1)}
             </Badge>
           </div>
         </div>
@@ -218,6 +237,7 @@ function GlassesDescription() {
               </div>
             </div>
           </div>
+          <DataTable<GlassesHistory, any> columns={columns} data={history} />
 
           {/* Meta Info */}
           <div className="pt-8 border-t border-border">
@@ -245,6 +265,7 @@ function GlassesDescription() {
               </div>
             </div>
           </div>
+
         </div>
       </div>
 

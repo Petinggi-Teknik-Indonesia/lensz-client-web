@@ -1,9 +1,9 @@
 import { useState, useMemo } from "react";
-import { createFileRoute, useParams } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+import { createFileRoute, Link, useParams } from "@tanstack/react-router";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createColumnHelper } from "@tanstack/react-table";
-import { SearchIcon } from "lucide-react";
-import { getGlassesByDrawer } from "@/api/glasses";
+import { Edit, Eye, MoreHorizontal, SearchIcon, Trash2 } from "lucide-react";
+import { deleteGlasses, getGlassesByDrawer } from "@/api/glasses";
 import { DataTable } from "@/components/DataTable";
 import {
   InputGroup,
@@ -13,6 +13,27 @@ import {
 } from "@/components/ui/input-group";
 
 import type { Glasses } from "@/types/glasses";
+import { ButtonGroup } from "@/components/ui/button-group";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { toast } from "sonner";
+import EditGlassesModal from "@/components/modals/EditGlassesModal";
 
 export const Route = createFileRoute("/_authenticated/drawers/$drawerName")({
   component: DrawerPage,
@@ -29,15 +50,127 @@ function DrawerPage() {
     queryFn: () => getGlassesByDrawer(drawerName),
   });
 
+  const queryClient = useQueryClient();
+
+  const [editOpen, setEditOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<Glasses | null>(null);
   const [search, setSearch] = useState("");
+  const deleteMutation = useMutation({
+    mutationFn: (id: number) => deleteGlasses(id),
+    onSuccess: () => {
+      toast.success("Glasses deleted successfully!");
+      queryClient.invalidateQueries({ queryKey: ["glasses"] });
+    },
+    onError: () => toast.error("Failed to delete glasses"),
+  });
 
   const columnHelper = createColumnHelper<Glasses>();
   const columns = [
     columnHelper.accessor("id", { header: () => "ID" }),
+    columnHelper.accessor("color", {
+      header: () => "Color",
+      cell: ({ getValue }) => {
+        const color = getValue<string>();
+        return (
+          <div
+            className="w-6 h-6 rounded border border-gray-300"
+            style={{ backgroundColor: color }}
+          />
+        );
+      },
+    }),
     columnHelper.accessor("name", { header: () => "Name" }),
     columnHelper.accessor("drawer", { header: () => "Drawer" }),
     columnHelper.accessor("status", { header: () => "Status" }),
-    columnHelper.accessor("color", { header: () => "Color" }),
+    columnHelper.display({
+      id: "actions",
+      header: "Actions",
+      cell: ({ row }) => {
+        const item = row.original;
+
+        return (
+          <ButtonGroup>
+            <Button
+              variant="ghost"
+              className="text-primary bg-secondary border-1"
+              size="sm"
+            >
+              <Link
+                to="/eyeglasses/$glassesId"
+                params={{ glassesId: String(item.id) }}
+                className="flex flex-row items-center justify-center gap-2"
+              >
+                <Eye />
+                View
+              </Link>
+            </Button>
+
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  className="bg-secondary border-1"
+                  size="icon-sm"
+                >
+                  <MoreHorizontal />
+                </Button>
+              </DropdownMenuTrigger>
+
+              <DropdownMenuContent align="end">
+                {/* EDIT */}
+                <DropdownMenuItem
+                  className="text-orange-400"
+                  onClick={() => {
+                    setSelectedItem(item);
+                    setEditOpen(true);
+                  }}
+                >
+                  <Edit className="text-orange-400" />
+                  Edit
+                </DropdownMenuItem>
+
+                {/* DELETE */}
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <DropdownMenuItem
+                      className="text-red-600"
+                      onSelect={(e) => e.preventDefault()} // 🧠 prevent dropdown auto-close
+                    >
+                      <Trash2 className="text-red-600" />
+                      Delete
+                    </DropdownMenuItem>
+                  </AlertDialogTrigger>
+
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Delete Glasses</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        Are you sure you want to delete <b>{item.name}</b>? This
+                        action cannot be undone.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction
+                        onClick={() => {
+                          deleteMutation.mutate(item.id);
+                          queryClient.invalidateQueries({
+                            queryKey: ["glasses"],
+                          });
+                        }}
+                        className="bg-red-600 hover:bg-red-700"
+                      >
+                        Delete
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </ButtonGroup>
+        );
+      },
+    }),
   ];
 
   // 🔍 Filter data by search input
@@ -88,6 +221,13 @@ function DrawerPage() {
 
       {/* 📋 Glasses Table */}
       <DataTable<Glasses, any> columns={columns} data={filteredData} />
+      {selectedItem && (
+        <EditGlassesModal
+          open={editOpen}
+          onOpenChange={setEditOpen}
+          data={selectedItem}
+        />
+      )}
     </div>
   );
 }

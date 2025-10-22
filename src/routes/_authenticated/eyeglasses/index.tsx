@@ -56,9 +56,6 @@ function RouteComponent() {
   const [editOpen, setEditOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<Glasses | null>(null);
   const [search, setSearch] = useState("");
-  // use a non-empty sentinel value for "All"
-  const [statusFilter, setStatusFilter] = useState<string>("all");
-
   const deleteMutation = useMutation({
     mutationFn: (id: number) => deleteGlasses(id),
     onSuccess: () => {
@@ -67,14 +64,28 @@ function RouteComponent() {
     },
     onError: () => toast.error("Failed to delete glasses"),
   });
+  // use a non-empty sentinel value for "All"
+  const [statusFilter, setStatusFilter] = useState<string>("all");
+
 
   const columnHelper = createColumnHelper<Glasses>();
   const columns = [
     columnHelper.accessor("id", { header: () => "ID" }),
+    columnHelper.accessor("color", {
+      header: () => "Color",
+      cell: ({ getValue }) => {
+        const color = getValue<string>();
+        return (
+          <div
+            className="w-6 h-6 rounded border border-gray-300"
+            style={{ backgroundColor: color }}
+          />
+        );
+      },
+    }),
     columnHelper.accessor("name", { header: () => "Name" }),
     columnHelper.accessor("drawer", { header: () => "Drawers" }),
     columnHelper.accessor("status", { header: () => "Status" }),
-    columnHelper.accessor("color", { header: () => "Color" }),
     columnHelper.display({
       id: "actions",
       header: "Actions",
@@ -83,20 +94,20 @@ function RouteComponent() {
 
         return (
           <ButtonGroup>
-              <Button
-                variant="ghost"
-                className="text-primary bg-secondary border-1"
-                size="sm"
-              >
-            <Link
-              to="/eyeglasses/$glassesId"
-              params={{ glassesId: String(item.id) }}
-              className="flex flex-row items-center justify-center gap-2"
+            <Button
+              variant="ghost"
+              className="text-primary bg-secondary border-1"
+              size="sm"
             >
+              <Link
+                to="/eyeglasses/$glassesId"
+                params={{ glassesId: String(item.id) }}
+                className="flex flex-row items-center justify-center gap-2"
+              >
                 <Eye />
                 View
-            </Link>
-              </Button>
+              </Link>
+            </Button>
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>

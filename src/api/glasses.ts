@@ -1,5 +1,5 @@
 // api/users.js
-import type { Glasses, GlassesInput } from "@/types/glasses";
+import type { Glasses, GlassesHistory, GlassesInput } from "@/types/glasses";
 import axios from "./axios";
 
 export const getAllGlasses = async (): Promise<Glasses[]> => {
@@ -50,4 +50,9 @@ export async function updateGlasses(id: number, updatedGlasses: GlassesInput) {
   const { data } = await axios.put(`/api/glasses/${id}`, payload);
   return data;
 
+}
+
+export async function historyGlasses(id: number){
+  const { data } = await axios.get<GlassesHistory>(`/api/glasses/${id}/history`);
+  return data;
 }

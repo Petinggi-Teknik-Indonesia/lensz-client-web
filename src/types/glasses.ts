@@ -27,3 +27,11 @@ export type GlassesInput = {
   company?: { name?: string; id?: number };
   brand?: { name?: string; id?: number };
 };
+
+export type GlassesHistory = {
+  id: number;
+  statusChange: string;
+  glassesId: number;
+  userName: string;
+  createdAt: string;
+}
