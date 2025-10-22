@@ -18,3 +18,19 @@ export async function addCompany(newCompanies: CompaniesInput) {
   return data;
 }
 
+export async function deleteCompany(id: number) {
+  const { data, status } = await axios.delete(`/api/companies/${id}`);
+  console.log(status);
+  return data;
+}
+
+export async function updateCompany(id: number, updatedCompany: CompaniesInput) {
+  // Transform payload if needed, here it's simple
+  const payload = {
+    name: updatedCompany.name,
+  };
+  console.log("Payload for updateCompany:", payload);
+
+  const { data } = await axios.put(`/api/companies/${id}`, payload);
+  return data;
+}
