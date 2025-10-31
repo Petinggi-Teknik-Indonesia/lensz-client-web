@@ -52,7 +52,7 @@ export async function updateGlasses(id: number, updatedGlasses: GlassesInput) {
 
 }
 
-export async function historyGlasses(id: number){
-  const { data } = await axios.get<GlassesHistory>(`/api/glasses/${id}/history`);
+export async  function  historyGlasses(id: number):Promise<GlassesHistory[]>{
+  const { data } = await axios.get<GlassesHistory[]>(`/api/glasses/${id}/history`);
   return data;
 }

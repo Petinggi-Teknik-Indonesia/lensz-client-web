@@ -1,5 +1,4 @@
 export type Glasses = {
-  extraInfo: string;
   id: number;
   rfid: string;
   name: string;
@@ -10,6 +9,8 @@ export type Glasses = {
   company: string;
   brand: string;
   description?: string;
+  createdAt: string;
+  updatedAt:string;
 
   drawerId: number;
   brandId: number;

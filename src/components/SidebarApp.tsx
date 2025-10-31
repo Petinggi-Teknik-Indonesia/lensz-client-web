@@ -5,6 +5,8 @@ import {
   PersonStandingIcon,
   Sheet,
   ChevronRight,
+  Tag,
+  Factory,
 } from "lucide-react";
 
 import {
@@ -34,8 +36,8 @@ const generalItems = [{ title: "Dashboard", url: "/dashboard", icon: Home }];
 
 const glassesItems = [
   { title: "Eyeglasses", url: "/eyeglasses", icon: Glasses },
-  { title: "Brands", url: "/brands", icon: Sheet },
-  { title: "Companies", url: "/companies", icon: Sheet },
+  { title: "Brands", url: "/brands", icon: Tag },
+  { title: "Companies", url: "/companies", icon: Factory },
 ];
 
 const managementItems = [
