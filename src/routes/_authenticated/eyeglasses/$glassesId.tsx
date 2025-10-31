@@ -2,7 +2,7 @@ import { createFileRoute, Link, useParams } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getGlasses, deleteGlasses, historyGlasses } from "@/api/glasses";
 import { Badge } from "@/components/ui/badge";
-import type { Glasses, GlassesHistory } from "@/types/glasses";
+import type { GlassesHistory } from "@/types/glasses";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Edit, Trash2 } from "lucide-react";
 import { useState } from "react";
@@ -60,11 +60,13 @@ function GlassesDescription() {
     enabled: !!id,
   });
 
-  const { data: history } = useQuery({
+   
+  const { data: history } = useQuery<GlassesHistory[]>({
     queryKey: ["history", id],
     queryFn: () => historyGlasses(id),
   });
   console.log(history);
+  const historyData: GlassesHistory[] = history ?? [];
 
   const columnHelper = createColumnHelper<GlassesHistory>();
   const columns = [
@@ -237,7 +239,7 @@ function GlassesDescription() {
               </div>
             </div>
           </div>
-          <DataTable<GlassesHistory, any> columns={columns} data={history} />
+          <DataTable<GlassesHistory, any> columns={columns} data={historyData} />
 
           {/* Meta Info */}
           <div className="pt-8 border-t border-border">
