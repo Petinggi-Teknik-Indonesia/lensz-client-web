@@ -1,8 +1,6 @@
 import {
-  ArrowLeftIcon,
   Glasses,
   Home,
-  PersonStandingIcon,
   Sheet,
   ChevronRight,
   Tag,
@@ -31,6 +29,15 @@ import {
 import { Link, useRouterState } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { getAllDrawers } from "@/api/glassesDependencies";
+import { NavUser } from "./UserProfile";
+
+const data = {
+  user: {
+    name: "Optik Gembira",
+    email: "example@gmail.com",
+    avatar: "/avatars/shadcn.jpg",
+  },
+};
 
 const generalItems = [{ title: "Dashboard", url: "/dashboard", icon: Home }];
 
@@ -44,11 +51,6 @@ const managementItems = [
   { title: "Add Drawer", url: "/drawers-table", icon: Sheet },
 ];
 
-const profileItems = [
-  { title: "Profile", url: "/profile", icon: PersonStandingIcon },
-  { title: "Logout", url: "/logout", icon: ArrowLeftIcon },
-  { title: "Test", url: "/test", icon: Sheet },
-];
 
 export function SidebarApp() {
   const routerState = useRouterState();
@@ -229,32 +231,8 @@ export function SidebarApp() {
         </SidebarGroup>
 
         {/* Profile */}
-        <SidebarGroup>
-          <SidebarGroupLabel className="text-white">Profile</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {profileItems.map((item) => {
-                const isActive = currentPath.startsWith(item.url);
-                return (
-                  <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild>
-                      <Link
-                        to={item.url}
-                        className={`flex items-center gap-2 rounded-md px-2 py-1 transition-colors ${
-                          isActive
-                            ? "bg-[#B1F70B] text-black"
-                            : "hover:bg-[#B1F70B] hover:text-black"
-                        } ${isActive ? "pointer-events-none" : ""}`}
-                      >
-                        <item.icon size={18} />
-                        <span>{item.title}</span>
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                );
-              })}
-            </SidebarMenu>
-          </SidebarGroupContent>
+        <SidebarGroup className="mt-auto">
+          <NavUser user={data.user} />
         </SidebarGroup>
       </SidebarContent>
     </Sidebar>
