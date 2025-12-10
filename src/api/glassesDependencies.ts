@@ -18,30 +18,30 @@ export function formatDate(dateInput: string | Date) {
 
 // 🧩 Dependencies
 export const getAllBrands = async (): Promise<Brands[]> => {
-  const { data } = await axios.get("/api/brands/");
+  const { data } = await axios.get("/api/brands");
   return data;
 };
 
 export const getAllCompanies = async (): Promise<Companies[]> => {
-  const { data } = await axios.get("/api/companies/");
+  const { data } = await axios.get("/api/companies");
   return data;
 };
 export const getAllDrawers = async (): Promise<Drawers[]> => {
-  const { data } = await axios.get("/api/drawers/");
+  const { data } = await axios.get("/api/drawers");
   return data;
 };
 
 // Create new dependencies
 export const addBrand = async (body: { name: string }) => {
-  const { data } = await axios.post("/api/brands/", body);
+  const { data } = await axios.post("/api/brands", body);
   return data;
 };
 export const addCompany = async (body: { name: string }) => {
-  const { data } = await axios.post("/api/companies/", body);
+  const { data } = await axios.post("/api/companies", body);
   return data;
 };
 export const addDrawer = async (body: { name: string }) => {
-  const { data } = await axios.post("/api/drawers/", body);
+  const { data } = await axios.post("/api/drawers", body);
   return data;
 };
 
