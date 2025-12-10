@@ -3,7 +3,7 @@ import type { Brands, BrandsInput } from "@/types/brands";
 import axios from "./axios";
 
 export const getAllBrands = async (): Promise<Brands[]> => {
-  const resp = await axios.get<Brands[]>("/api/brands/");
+  const resp = await axios.get<Brands[]>("/api/brands");
   console.log(resp.data);
   return resp.data;
 };
@@ -14,7 +14,7 @@ export const getBrand = async (id: number): Promise<Brands> => {
 };
 
 export async function addBrand(newBrand: BrandsInput) {
-  const { data } = await axios.post(`/api/brands/`, newBrand);
+  const { data } = await axios.post(`/api/brands`, newBrand);
   return data;
 }
 
