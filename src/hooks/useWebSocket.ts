@@ -10,8 +10,9 @@ export function useWebSocket(onMessage?: (data: any) => void) {
   }, [onMessage]);
 
   useEffect(() => {
+    const WS_URL = import.meta.env.VITE_WS_URL;
     console.log("Connecting WebSocket...");
-    const ws = new WebSocket("ws://localhost:8080/ws");
+    const ws = new WebSocket(WS_URL);
     wsRef.current = ws;
 
     ws.onopen = () => console.log("✅ WS connected");
