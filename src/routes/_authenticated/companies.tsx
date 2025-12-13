@@ -42,7 +42,7 @@ export const Route = createFileRoute("/_authenticated/companies")({
 
 function RouteComponent() {
   const queryClient = useQueryClient();
-  const { data, isLoading, isError, error } = useQuery({
+  const { data, isLoading, isError, error } = useQuery<Companies[]>({
     queryKey: ["companies"],
     queryFn: getAllCompanies,
   });

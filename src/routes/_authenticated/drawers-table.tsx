@@ -1,8 +1,8 @@
 import { useState, useMemo } from "react";
 import AddDrawerModal from "@/components/modals/AddDrawerModal";
-import EditDrawerModal from "@/components/modals/EditDrawerModal"; // ✅ Make sure this exists
-import { getAllDrawers, formatDate } from "@/api/glassesDependencies";
-import { deleteDrawer} from "@/api/drawers";
+import EditDrawerModal from "@/components/modals/EditDrawerModal";
+import { formatDate } from "../../lib/helpers";
+import { deleteDrawer, getAllDrawers } from "@/api/drawers";
 import { DataTable } from "@/components/DataTable";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
@@ -42,7 +42,7 @@ export const Route = createFileRoute("/_authenticated/drawers-table")({
 
 function RouteComponent() {
   const queryClient = useQueryClient();
-  const { data, isLoading, isError, error } = useQuery({
+  const { data, isLoading, isError, error } = useQuery<Drawers[]>({
     queryKey: ["drawers"],
     queryFn: getAllDrawers,
   });
@@ -67,11 +67,13 @@ function RouteComponent() {
     columnHelper.accessor("name", { header: () => "Name" }),
     columnHelper.accessor("createdAt", {
       header: () => "Created At",
-      cell: (info) => (info.getValue() ? formatDate(info.getValue() as Date) : ""),
+      cell: (info) =>
+        info.getValue() ? formatDate(info.getValue() as Date) : "",
     }),
     columnHelper.accessor("updatedAt", {
       header: () => "Updated At",
-      cell: (info) => (info.getValue() ? formatDate(info.getValue() as Date) : ""),
+      cell: (info) =>
+        info.getValue() ? formatDate(info.getValue() as Date) : "",
     }),
     columnHelper.display({
       id: "actions",
@@ -116,8 +118,8 @@ function RouteComponent() {
                     <AlertDialogHeader>
                       <AlertDialogTitle>Delete Drawer</AlertDialogTitle>
                       <AlertDialogDescription>
-                        Are you sure you want to delete <b>{drawer.name}</b>? This action cannot
-                        be undone.
+                        Are you sure you want to delete <b>{drawer.name}</b>?
+                        This action cannot be undone.
                       </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
@@ -139,7 +141,6 @@ function RouteComponent() {
     }),
   ];
 
-  // ✅ Filter by search 
   const filteredData = useMemo(() => {
     if (!data) return [];
     const lower = search.toLowerCase();
@@ -187,8 +188,12 @@ function RouteComponent() {
           onOpenChange={setEditOpen}
           data={{
             ...selectedDrawer,
-            createdAt: selectedDrawer.createdAt ? new Date(selectedDrawer.createdAt) : new Date(),
-            updatedAt: selectedDrawer.updatedAt ? new Date(selectedDrawer.updatedAt) : new Date(),
+            createdAt: selectedDrawer.createdAt
+              ? new Date(selectedDrawer.createdAt)
+              : new Date(),
+            updatedAt: selectedDrawer.updatedAt
+              ? new Date(selectedDrawer.updatedAt)
+              : new Date(),
           }}
         />
       )}
