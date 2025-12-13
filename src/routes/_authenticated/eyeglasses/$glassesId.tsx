@@ -60,7 +60,6 @@ function GlassesDescription() {
     enabled: !!id,
   });
 
-   
   const { data: history } = useQuery<GlassesHistory[]>({
     queryKey: ["history", id],
     queryFn: () => historyGlasses(id),
@@ -239,7 +238,10 @@ function GlassesDescription() {
               </div>
             </div>
           </div>
-          <DataTable<GlassesHistory, any> columns={columns} data={historyData} />
+          <DataTable<GlassesHistory, any>
+            columns={columns}
+            data={historyData}
+          />
 
           {/* Meta Info */}
           <div className="pt-8 border-t border-border">
@@ -267,7 +269,6 @@ function GlassesDescription() {
               </div>
             </div>
           </div>
-
         </div>
       </div>
 

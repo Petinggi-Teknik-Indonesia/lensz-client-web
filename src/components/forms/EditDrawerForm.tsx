@@ -8,8 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { getAllDrawers } from "@/api/glassesDependencies";
-import { updateDrawers } from "@/api/drawers";
+import { updateDrawers, getAllDrawers } from "@/api/drawers";
 import type { Drawers } from "@/types/drawers";
 
 type EditDrawerFormProps = {

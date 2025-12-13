@@ -13,7 +13,6 @@ type AddCompanyFormProps = {
   onCancel: () => void;
 };
 
-// ✅ Validate only "name"
 const formSchema = z.object({
   name: z.string().min(1, "Name cannot be empty"),
 });
@@ -54,7 +53,6 @@ function AddCompanyForm({ onSuccess, onCancel }: AddCompanyFormProps) {
         form.handleSubmit();
       }}
     >
-      {/* 🏷️ Company Name Field */}
       <form.Field
         name="name"
         children={(field) => {
@@ -80,7 +78,6 @@ function AddCompanyForm({ onSuccess, onCancel }: AddCompanyFormProps) {
         }}
       />
 
-      {/* 🧭 Buttons */}
       <div className="mt-6 flex flex-row justify-end gap-2">
         <Button type="button" variant="outline" onClick={onCancel}>
           Cancel

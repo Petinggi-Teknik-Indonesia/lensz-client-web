@@ -13,7 +13,6 @@ type AddBrandFormProps = {
   onCancel: () => void;
 };
 
-// ✅ Validate only "name"
 const formSchema = z.object({
   name: z.string().min(1, "Name cannot be empty"),
 });
@@ -54,7 +53,6 @@ function AddBrandForm({ onSuccess, onCancel }: AddBrandFormProps) {
         form.handleSubmit();
       }}
     >
-      {/* 🏷️ Brand Name Field */}
       <form.Field
         name="name"
         children={(field) => {
