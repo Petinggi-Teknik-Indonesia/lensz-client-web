@@ -16,14 +16,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getGlasses, updateGlasses } from "@/api/glasses";
 import { Select, SelectContent, SelectItem, SelectTrigger } from "../ui/select";
-import {
-  getAllBrands,
-  getAllCompanies,
-  getAllDrawers,
-} from "@/api/glassesDependencies";
+import { getAllCompanies } from "@/api/companies";
+import { getAllBrands } from "@/api/brands";
+import { getAllDrawers } from "@/api/drawers";
 import type { Brands } from "@/types/brands";
 import type { Companies } from "@/types/companies";
 import type { Drawers } from "@/types/drawers";
+import ColorPickerComponent from "../ui/color-picker";
 
 type EditGlassesFormProps = {
   onSuccess: () => void;
@@ -127,161 +126,172 @@ export default function EditGlassesForm(props: EditGlassesFormProps) {
     >
       {/* Left section: form fields */}
       <div className="flex flex-col md:flex-row gap-4 h-[86%]">
-      <div className="flex-1">
-        {/* Name */}
+        <div className="flex-1">
+          {/* Name */}
+          <glassesForm.Field
+            name="name"
+            children={(field) => (
+              <Field>
+                <FieldLabel htmlFor={field.name}>Name</FieldLabel>
+                <Input
+                  id={field.name}
+                  value={field.state.value}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  placeholder="Eyeglasses name"
+                />
+                <FieldError errors={field.state.meta.errors} />
+              </Field>
+            )}
+          />
+
+          {/* Type, Color, Status */}
+          <FieldGroup className="mt-4 border-t pt-4">
+            <glassesForm.Field
+              name="type"
+              children={(field) => (
+                <Field>
+                  <FieldLabel>Type</FieldLabel>
+                  <Input
+                    value={field.state.value}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                    placeholder="e.g. Sunglasses"
+                  />
+                </Field>
+              )}
+            />
+            <div className="grid grid-cols-2 gap-4">
+              <glassesForm.Field
+                name="color"
+                children={(field) => (
+                  <Field>
+                    <FieldLabel>Color</FieldLabel>
+                    <ColorPickerComponent
+                      value={field.state.value}
+                      defaultValue="#ffffff"
+                      onChange={field.handleChange}
+                    />
+                  </Field>
+                )}
+              />
+              <glassesForm.Field
+                name="status"
+                children={(field) => {
+                  const statusOptions = [
+                    "Tersedia",
+                    "Terjual",
+                    "Rusak",
+                    "Terpinjam",
+                    "Lainnya",
+                  ];
+                  return (
+                    <Field>
+                      <FieldLabel>Status</FieldLabel>
+                      <Select
+                        value={field.state.value}
+                        onValueChange={(value) => field.handleChange(value)}
+                      >
+                        <SelectTrigger>
+                          {field.state.value || "Select status"}
+                        </SelectTrigger>
+                        <SelectContent>
+                          {statusOptions.map((option) => (
+                            <SelectItem key={option} value={option}>
+                              {option}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </Field>
+                  );
+                }}
+              />
+            </div>
+          </FieldGroup>
+
+          {/* Drawer / Company / Brand */}
+          <FieldGroup className="mt-4 border-t pt-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+              {[
+                { name: "drawer", label: "Drawer", data: drawers },
+                { name: "company", label: "Company", data: companies },
+                { name: "brand", label: "Brand", data: brands },
+              ].map((dep) => (
+                <glassesForm.Field
+                  key={dep.name}
+                  name={dep.name as any}
+                  children={(field) => (
+                    <Field>
+                      <FieldLabel>{dep.label}</FieldLabel>
+                      <Select
+                        value={
+                          field.state.value.id
+                            ? String(field.state.value.id)
+                            : ""
+                        }
+                        onValueChange={(value) => {
+                          const selected = dep.data.find(
+                            (i) => String(i.id) === value
+                          );
+                          field.handleChange({
+                            id: selected?.id ?? 0,
+                            name: selected?.name ?? "",
+                          });
+                        }}
+                      >
+                        <SelectTrigger>
+                          {field.state.value.name ||
+                            `Select ${dep.label.toLowerCase()}`}
+                        </SelectTrigger>
+                        <SelectContent>
+                          <div className="px-2 py-1">
+                            <Input
+                              placeholder={`Or type a new ${dep.label.toLowerCase()}...`}
+                              value={
+                                field.state.value.id
+                                  ? ""
+                                  : (field.state.value.name ?? "")
+                              }
+                              onChange={(e) =>
+                                field.handleChange({
+                                  name: e.target.value,
+                                  id: 0,
+                                })
+                              }
+                            />
+                          </div>
+                          <div className="border-t my-1" />
+                          {dep.data.map((item) => (
+                            <SelectItem key={item.id} value={String(item.id)}>
+                              {item.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </Field>
+                  )}
+                />
+              ))}
+            </div>
+          </FieldGroup>
+        </div>
+
+        {/* Right section: description */}
         <glassesForm.Field
-          name="name"
+          name="description"
           children={(field) => (
-            <Field>
-              <FieldLabel htmlFor={field.name}>Name</FieldLabel>
-              <Input
+            <Field className="w-full md:w-[40%] h-full">
+              <FieldLabel htmlFor={field.name}>Description</FieldLabel>
+              <Textarea
                 id={field.name}
                 value={field.state.value}
                 onChange={(e) => field.handleChange(e.target.value)}
-                placeholder="Eyeglasses name"
+                placeholder="Description over here..."
+                className="resize-none h-full"
               />
               <FieldError errors={field.state.meta.errors} />
             </Field>
           )}
         />
-
-        {/* Type, Color, Status */}
-        <FieldGroup className="mt-4 border-t pt-4">
-          <glassesForm.Field
-            name="type"
-            children={(field) => (
-              <Field>
-                <FieldLabel>Type</FieldLabel>
-                <Input
-                  value={field.state.value}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                  placeholder="e.g. Sunglasses"
-                />
-              </Field>
-            )}
-          />
-          <div className="grid grid-cols-2 gap-4">
-            <glassesForm.Field
-              name="color"
-              children={(field) => (
-                <Field>
-                  <FieldLabel>Color</FieldLabel>
-                  <Input
-                    value={field.state.value}
-                    onChange={(e) => field.handleChange(e.target.value)}
-                    placeholder="Frame color"
-                  />
-                </Field>
-              )}
-            />
-            <glassesForm.Field
-              name="status"
-              children={(field) => {
-                const statusOptions = [
-                  "Tersedia",
-                  "Terjual",
-                  "Rusak",
-                  "Terpinjam",
-                  "Lainnya",
-                ];
-                return (
-                  <Field>
-                    <FieldLabel>Status</FieldLabel>
-                    <Select
-                      value={field.state.value}
-                      onValueChange={(value) => field.handleChange(value)}
-                    >
-                      <SelectTrigger>
-                        {field.state.value || "Select status"}
-                      </SelectTrigger>
-                      <SelectContent>
-                        {statusOptions.map((option) => (
-                          <SelectItem key={option} value={option}>
-                            {option}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </Field>
-                );
-              }}
-            />
-          </div>
-        </FieldGroup>
-
-        {/* Drawer / Company / Brand */}
-        <FieldGroup className="mt-4 border-t pt-4">
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-            {[{ name: "drawer", label: "Drawer", data: drawers },
-              { name: "company", label: "Company", data: companies },
-              { name: "brand", label: "Brand", data: brands }].map((dep) => (
-              <glassesForm.Field
-                key={dep.name}
-                name={dep.name as any}
-                children={(field) => (
-                  <Field>
-                    <FieldLabel>{dep.label}</FieldLabel>
-                    <Select
-                      value={field.state.value.id ? String(field.state.value.id) : ""}
-                      onValueChange={(value) => {
-                        const selected = dep.data.find((i) => String(i.id) === value);
-                        field.handleChange({
-                          id: selected?.id ?? 0,
-                          name: selected?.name ?? "",
-                        });
-                      }}
-                    >
-                      <SelectTrigger>
-                        {field.state.value.name || `Select ${dep.label.toLowerCase()}`}
-                      </SelectTrigger>
-                      <SelectContent>
-                        <div className="px-2 py-1">
-                          <Input
-                            placeholder={`Or type a new ${dep.label.toLowerCase()}...`}
-                            value={
-                              field.state.value.id ? "" : field.state.value.name ?? ""
-                            }
-                            onChange={(e) =>
-                              field.handleChange({
-                                name: e.target.value,
-                                id: 0,
-                              })
-                            }
-                          />
-                        </div>
-                        <div className="border-t my-1" />
-                        {dep.data.map((item) => (
-                          <SelectItem key={item.id} value={String(item.id)}>
-                            {item.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </Field>
-                )}
-              />
-            ))}
-          </div>
-        </FieldGroup>
-      </div>
-
-      {/* Right section: description */}
-      <glassesForm.Field
-        name="description"
-        children={(field) => (
-          <Field className="w-full md:w-[40%] h-full">
-            <FieldLabel htmlFor={field.name}>Description</FieldLabel>
-            <Textarea
-              id={field.name}
-              value={field.state.value}
-              onChange={(e) => field.handleChange(e.target.value)}
-              placeholder="Description over here..."
-              className="resize-none h-full"
-            />
-            <FieldError errors={field.state.meta.errors} />
-          </Field>
-        )}
-      />
       </div>
 
       {/* Buttons */}

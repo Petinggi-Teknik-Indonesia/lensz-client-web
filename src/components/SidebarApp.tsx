@@ -30,7 +30,7 @@ import {
 
 import { Link, useRouterState } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { getAllDrawers } from "@/api/glassesDependencies";
+import { getAllDrawers } from "@/api/drawers";
 
 const generalItems = [{ title: "Dashboard", url: "/dashboard", icon: Home }];
 
