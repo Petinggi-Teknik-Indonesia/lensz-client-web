@@ -6,7 +6,7 @@ import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { addBrand } from "@/api/glassesDependencies";
+import { addBrand } from "@/api/brands";
 
 type AddBrandFormProps = {
   onSuccess: () => void;

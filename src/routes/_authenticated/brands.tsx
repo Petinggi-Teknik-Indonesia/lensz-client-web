@@ -27,7 +27,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import AddBrandModal from "@/components/modals/AddBrandModal";
 import EditBrandModal from "@/components/modals/EditBrandModal";
-import { formatDate } from "@/api/glassesDependencies";
+import { formatDate } from "../../lib/helpers";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/brands")({

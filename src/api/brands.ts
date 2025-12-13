@@ -8,6 +8,16 @@ export const getAllBrands = async (): Promise<Brands[]> => {
   return resp.data;
 };
 
+export const getBrand = async (id: number): Promise<Brands> => {
+  const { data } = await axios.get<Brands>(`/api/brands/${id}`);
+  return data;
+};
+
+export const addBrand = async (body: { name: string }) => {
+  const { data } = await axios.post("/api/brands", body);
+  return data;
+};
+
 export async function deleteBrand(id: number) {
   const { data, status } = await axios.delete(`/api/brands/${id}`);
   console.log(status);

@@ -8,16 +8,23 @@ export const getAllCompanies = async (): Promise<Companies[]> => {
   return resp.data;
 };
 
+export const getCompany = async (id: number): Promise<Companies> => {
+  const { data } = await axios.get<Companies>(`/api/companies/${id}`);
+  return data;
+};
+
+export const addCompany = async (body: { name: string }) => {
+  const { data } = await axios.post("/api/companies", body);
+  return data;
+};
+
 export async function deleteCompany(id: number) {
   const { data, status } = await axios.delete(`/api/companies/${id}`);
   console.log(status);
   return data;
 }
 
-export async function updateCompany(
-  id: number,
-  updatedCompany: CompaniesInput
-) {
+export async function updateCompany(id: number, updatedCompany: CompaniesInput) {
   // Transform payload if needed, here it's simple
   const payload = {
     name: updatedCompany.name,

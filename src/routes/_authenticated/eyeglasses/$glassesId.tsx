@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { DataTable } from "@/components/DataTable";
 import { createColumnHelper } from "@tanstack/react-table";
-import { formatDate } from "@/api/glassesDependencies";
+import { formatDate } from "../../../lib/helpers";
 
 export const Route = createFileRoute("/_authenticated/eyeglasses/$glassesId")({
   component: GlassesDescription,

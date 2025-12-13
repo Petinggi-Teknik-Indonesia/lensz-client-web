@@ -8,6 +8,16 @@ export const getAllDrawers = async (): Promise<Drawers[]> => {
   return resp.data;
 };
 
+export const getDrawer = async (id: number): Promise<Drawers> => {
+  const { data } = await axios.get<Drawers>(`/api/drawers/${id}`);
+  return data;
+};
+
+export const addDrawer = async (body: { name: string }) => {
+  const { data } = await axios.post("/api/drawers", body);
+  return data;
+};
+
 export async function updateDrawers(id: number, updatedDrawer: DrawersInput) {
   // Transform payload if needed, here it's simple
   const payload = {

@@ -8,8 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { getAllCompanies } from "@/api/companies";
-import { updateCompany } from "@/api/companies";
+import { getAllCompanies, updateCompany } from "@/api/companies";
 import type { Companies } from "@/types/companies";
 
 type EditCompanyFormProps = {

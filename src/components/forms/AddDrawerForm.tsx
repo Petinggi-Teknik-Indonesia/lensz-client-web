@@ -5,7 +5,7 @@ import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { addDrawer } from "@/api/glassesDependencies";
+import { addDrawer } from "@/api/drawers";
 
 type AddDrawerFormProps = {
   onSuccess: () => void;
