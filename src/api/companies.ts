@@ -3,8 +3,8 @@ import type { Companies, CompaniesInput } from "@/types/companies";
 import axios from "./axios";
 
 export const getAllCompanies = async (): Promise<Companies[]> => {
-  const resp  = await axios.get<Companies[]>("/api/companies");
-  console.log(resp.data)
+  const resp = await axios.get<Companies[]>("/api/companies");
+  console.log(resp.data);
   return resp.data;
 };
 
@@ -13,10 +13,10 @@ export const getCompany = async (id: number): Promise<Companies> => {
   return data;
 };
 
-export async function addCompany(newCompanies: CompaniesInput) {
-  const { data } = await axios.post(`/api/companies`, newCompanies);
+export const addCompany = async (body: { name: string }) => {
+  const { data } = await axios.post("/api/companies", body);
   return data;
-}
+};
 
 export async function deleteCompany(id: number) {
   const { data, status } = await axios.delete(`/api/companies/${id}`);

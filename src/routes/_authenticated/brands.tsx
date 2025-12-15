@@ -27,8 +27,9 @@ import {
 } from "@/components/ui/alert-dialog";
 import AddBrandModal from "@/components/modals/AddBrandModal";
 import EditBrandModal from "@/components/modals/EditBrandModal";
-import { formatDate } from "@/api/glassesDependencies";
+import { formatDate } from "../../lib/helpers";
 import { toast } from "sonner";
+import type { Brands } from "@/types/brands";
 
 export const Route = createFileRoute("/_authenticated/brands")({
   component: RouteComponent,
@@ -36,7 +37,7 @@ export const Route = createFileRoute("/_authenticated/brands")({
 
 function RouteComponent() {
   const queryClient = useQueryClient();
-  const { data, isLoading, isError, error } = useQuery({
+  const { data, isLoading, isError, error } = useQuery<Brands[]>({
     queryKey: ["brands"],
     queryFn: getAllBrands,
   });

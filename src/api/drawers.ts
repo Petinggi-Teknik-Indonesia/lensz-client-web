@@ -3,8 +3,8 @@ import type { Drawers, DrawersInput } from "@/types/drawers";
 import axios from "./axios";
 
 export const getAllDrawers = async (): Promise<Drawers[]> => {
-  const resp  = await axios.get<Drawers[]>("/api/drawers");
-  console.log(resp.data)
+  const resp = await axios.get<Drawers[]>("/api/drawers");
+  console.log(resp.data);
   return resp.data;
 };
 
@@ -13,8 +13,8 @@ export const getDrawer = async (id: number): Promise<Drawers> => {
   return data;
 };
 
-export async function addDrawers(newDrawers: DrawersInput) {
-  const { data } = await axios.post(`/api/drawers`, newDrawers);
+export const addDrawer = async (body: { name: string }) => {
+  const { data } = await axios.post("/api/drawers", body);
   return data;
 };
 
