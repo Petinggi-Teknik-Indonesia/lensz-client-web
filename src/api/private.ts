@@ -2,7 +2,7 @@ import axios from "axios";
 import { getCookie } from "@/lib/cookie";
 
 const privateApi = axios.create({
-  baseURL: "http://localhost:8080",
+  baseURL: import.meta.env.VITE_API_BASE_URL,
   withCredentials: true,
 });
 
@@ -38,7 +38,7 @@ privateApi.interceptors.response.use(
 
       try {
         const res = await axios.post(
-          "http://localhost:8080/api/auth/refresh",
+          "/api/auth/refresh",
           {},
           {
             headers: {
