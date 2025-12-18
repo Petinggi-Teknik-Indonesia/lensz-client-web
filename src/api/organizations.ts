@@ -1,6 +1,11 @@
 import instance from "./axios";
 
-export const getOrganizations = async () => {
-  const { data } = await instance.get("/api/organizations");
-  return data;
+export type Organization = {
+  ID: number;
+  name: string;
+};
+
+export const getOrganizations = async (): Promise<Organization[]> => {
+  const res = await instance.get("/api/organizations");
+  return res.data;
 };

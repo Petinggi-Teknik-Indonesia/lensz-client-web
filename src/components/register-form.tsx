@@ -13,13 +13,21 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { register } from "@/api/auth";
-import { useNavigate } from "@tanstack/react-router";
+import { getOrganizations } from "@/api/organizations";
+import type { Organization } from "@/api/organizations";
+
+type RegisterPayload = {
+  name: string;
+  email: string;
+  phone: string;
+  password: string;
+  roleId: number;
+  organizationId: number;
+};
 
 export function SignupForm(props: React.ComponentProps<typeof Card>) {
-  const navigate = useNavigate();
-
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -28,34 +36,75 @@ export function SignupForm(props: React.ComponentProps<typeof Card>) {
     confirmPassword: "",
   });
 
-  const [error, setError] = useState<string | null>(null);
+  const [organizations, setOrganizations] = useState<Organization[]>([]);
+  const [organizationId, setOrganizationId] = useState<number | "">("");
 
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  /* ================= FETCH ORGANIZATIONS ================= */
+  useEffect(() => {
+    const fetchOrganizations = async () => {
+      try {
+        const data = await getOrganizations();
+        setOrganizations(data);
+      } catch (err) {
+        console.error("Failed to load organizations", err);
+        setError("Gagal mengambil data organisasi");
+      }
+    };
+
+    fetchOrganizations();
+  }, []);
+
+  /* ================= SUBMIT ================= */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+    setSuccess(null);
 
     if (form.password !== form.confirmPassword) {
       setError("Password dan konfirmasi password tidak sama");
       return;
     }
 
-    try {
-      await register({
-        name: form.name,
-        email: form.email,
-        phone: form.phone,
-        password: form.password,
-        roleId: 1, // ✅ STAFF
-        organizationId: 1, // ✅ HARDCODE
-      });
+    if (!organizationId) {
+      setError("Silakan pilih organisasi");
+      return;
+    }
 
-      alert("Registrasi berhasil. Tunggu verifikasi admin.");
-      navigate({ to: "/login" });
-    } catch {
-      setError("Registrasi gagal");
+    const payload: RegisterPayload = {
+      name: form.name,
+      email: form.email,
+      phone: form.phone,
+      password: form.password,
+      roleId: 1, // STAFF
+      organizationId: Number(organizationId),
+    };
+
+    try {
+      setLoading(true);
+      await register(payload);
+
+      setSuccess("Registrasi berhasil. Tunggu verifikasi admin.");
+
+      setForm({
+        name: "",
+        email: "",
+        phone: "",
+        password: "",
+        confirmPassword: "",
+      });
+      setOrganizationId("");
+    } catch (err: any) {
+      setError(err?.response?.data?.error ?? "Registrasi gagal");
+    } finally {
+      setLoading(false);
     }
   };
 
+  /* ================= UI ================= */
   return (
     <Card {...props}>
       <CardHeader>
@@ -95,6 +144,26 @@ export function SignupForm(props: React.ComponentProps<typeof Card>) {
             </Field>
 
             <Field>
+              <FieldLabel>Organization</FieldLabel>
+              <select
+                className="border rounded px-3 py-2 w-full"
+                value={organizationId}
+                onChange={(e) => setOrganizationId(Number(e.target.value))}
+                required
+              >
+                <option value="" disabled>
+                  Pilih organisasi
+                </option>
+
+                {organizations.map((org) => (
+                  <option key={org.ID} value={org.ID}>
+                    {org.name}
+                  </option>
+                ))}
+              </select>
+            </Field>
+
+            <Field>
               <FieldLabel>Password</FieldLabel>
               <Input
                 type="password"
@@ -110,19 +179,19 @@ export function SignupForm(props: React.ComponentProps<typeof Card>) {
                 type="password"
                 value={form.confirmPassword}
                 onChange={(e) =>
-                  setForm({
-                    ...form,
-                    confirmPassword: e.target.value,
-                  })
+                  setForm({ ...form, confirmPassword: e.target.value })
                 }
                 required
               />
             </Field>
 
             {error && <p className="text-sm text-red-500">{error}</p>}
+            {success && <p className="text-sm text-green-600">{success}</p>}
 
             <Field>
-              <Button type="submit">Create Account</Button>
+              <Button type="submit" disabled={loading}>
+                {loading ? "Registering..." : "Create Account"}
+              </Button>
               <FieldDescription className="px-4 text-center">
                 Already have an account? <a href="/login">Login</a>
               </FieldDescription>

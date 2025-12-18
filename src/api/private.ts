@@ -1,50 +1,60 @@
 import axios from "axios";
-import { getAccessToken, setAccessToken, clearAccessToken } from "@/lib/token";
+import { getCookie } from "@/lib/cookie";
 
 const privateApi = axios.create({
   baseURL: "http://localhost:8080",
-  headers: {
-    "Content-Type": "application/json",
-  },
   withCredentials: true,
 });
 
-// attach access token
+// ============================
+// REQUEST INTERCEPTOR
+// ============================
 privateApi.interceptors.request.use((config) => {
-  const token = getAccessToken();
+  const token = getCookie("access_token");
+
   if (token) {
+    config.headers = config.headers ?? {};
     config.headers.Authorization = `Bearer ${token}`;
   }
+
   return config;
 });
 
-// refresh token when expired
+// ============================
+// RESPONSE INTERCEPTOR
+// ============================
 privateApi.interceptors.response.use(
-  (res) => res,
+  (response) => response,
   async (error) => {
     const originalRequest = error.config;
 
-    if (
-      error.response?.status === 401 &&
-      !originalRequest._retry
-    ) {
+    if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
+
+      const refreshToken = getCookie("refresh_token");
+      if (!refreshToken) {
+        return Promise.reject(error);
+      }
 
       try {
         const res = await axios.post(
-          `${"http://localhost:8080"}/api/auth/refresh`,
+          "http://localhost:8080/api/auth/refresh",
           {},
-          { withCredentials: true }
+          {
+            headers: {
+              Authorization: `Bearer ${refreshToken}`,
+            },
+          }
         );
 
-        setAccessToken(res.data.accessToken);
-        originalRequest.headers.Authorization =
-          `Bearer ${res.data.accessToken}`;
+        const newAccessToken = res.data?.accessToken;
+        document.cookie = `access_token=${newAccessToken}; path=/`;
+        originalRequest.headers = originalRequest.headers ?? {};
+        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
 
         return privateApi(originalRequest);
-      } catch {
-        clearAccessToken();
-        window.location.href = "/login";
+      } catch (refreshError) {
+        return Promise.reject(refreshError);
       }
     }
 

@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
-import { login, getMe } from "@/api/auth";
+import { login } from "@/api/auth";
 import { useNavigate } from "@tanstack/react-router";
 
 export function LoginForm({
@@ -27,31 +27,23 @@ export function LoginForm({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError(null);
-    setLoading(true);
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setError(null);
+  setLoading(true);
 
-    try {
-      // 1️⃣ Login → simpan access token
-      await login({ email, password });
-      navigate({ to: "/dashboard" });
+  try {
+    await login({ email, password });
 
-      // 2️⃣ Ambil data user
-      const me = await getMe();
 
-      // 3️⃣ Redirect berdasarkan role
-      if (me.roleId === 2) {
-        navigate({ to: "/dashboard" });
-      } else {
-        navigate({ to: "/dashboard" });
-      }
-    } catch (err) {
-      setError("Email atau password salah");
-    } finally {
-      setLoading(false);
-    }
-  };
+    navigate({ to: "/dashboard" });
+  } catch (err) {
+    console.error(err);
+    setError("Login gagal");
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
