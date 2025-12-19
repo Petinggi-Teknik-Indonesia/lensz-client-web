@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 
 // 🔴 keep single WS instance
 const wsRef = { current: null as WebSocket | null };
+const messageQueue: any[] = [];
 
 export function useWebSocket(onMessage?: (data: any) => void) {
   const onMessageRef = useRef(onMessage);
@@ -20,6 +21,12 @@ export function useWebSocket(onMessage?: (data: any) => void) {
 
     ws.onopen = () => {
       console.log("✅ WS connected");
+
+      // 🔴 flush queued messages
+      while (messageQueue.length > 0) {
+        const msg = messageQueue.shift();
+        ws.send(JSON.stringify(msg));
+      }
     };
 
     ws.onmessage = (e) => {
@@ -51,14 +58,16 @@ export function useWebSocket(onMessage?: (data: any) => void) {
   // ✅ expose send INSIDE hook
   const send = (data: any) => {
     if (!wsRef.current) {
-      console.warn("⚠️ WS not connected, message dropped", data);
+      console.warn("⚠️ WS not ready, queueing message", data);
+      messageQueue.push(data);
       return;
     }
 
     if (wsRef.current.readyState === WebSocket.OPEN) {
       wsRef.current.send(JSON.stringify(data));
     } else {
-      console.warn("⚠️ WS not open, message dropped", data);
+      console.warn("⚠️ WS connecting, queueing message", data);
+      messageQueue.push(data);
     }
   };
 

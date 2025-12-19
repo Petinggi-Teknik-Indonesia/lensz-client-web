@@ -4,6 +4,7 @@ import GlassesStatusToast from "@/components/websockets/StatusNotification";
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { WebSocketNotifier } from "@/components/WebSocketListener.tsx";
 import { AddGlassesWebSocket } from "@/components/websockets/AddGlassesWebSocket.tsx";
+import { SearchRedirectWebSocket } from "@/components/websockets/SearchRedirectWebSocket";
 
 export const Route = createFileRoute("/_authenticated")({
   beforeLoad: () => {},
@@ -11,11 +12,13 @@ export const Route = createFileRoute("/_authenticated")({
 });
 
 function RouteComponent() {
+  
   return (
     <div className="flex h-screen w-full overflow-hidden">
       <GlassesStatusToast />
       <SidebarProvider>
         <SidebarApp />
+        <SearchRedirectWebSocket />
         <WebSocketNotifier />
         <AddGlassesWebSocket/>
 
