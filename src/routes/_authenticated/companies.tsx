@@ -2,7 +2,7 @@ import { useState, useMemo } from "react";
 import AddCompanyModal from "@/components/modals/AddCompanyModal";
 import EditCompanyModal from "@/components/modals/EditCompanyModal";
 import { deleteCompany, getAllCompanies } from "@/api/companies";
-import { formatDate } from "@/api/glassesDependencies";
+import { formatDate } from "../../lib/helpers";
 import { DataTable } from "@/components/DataTable";
 import {
   InputGroup,
@@ -42,7 +42,7 @@ export const Route = createFileRoute("/_authenticated/companies")({
 
 function RouteComponent() {
   const queryClient = useQueryClient();
-  const { data, isLoading, isError, error } = useQuery({
+  const { data, isLoading, isError, error } = useQuery<Companies[]>({
     queryKey: ["companies"],
     queryFn: getAllCompanies,
   });

@@ -16,7 +16,7 @@ export const getBrand = async (id: number): Promise<Brands> => {
 export async function addBrand(newBrand: BrandsInput) {
   const { data } = await privateApi.post(`/api/brands/`, newBrand);
   return data;
-}
+};
 
 export async function deleteBrand(id: number) {
   const { data, status } = await privateApi.delete(`/api/brands/${id}`);

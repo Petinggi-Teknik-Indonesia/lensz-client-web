@@ -42,7 +42,7 @@ export const Route = createFileRoute("/_authenticated/drawers-table")({
 
 function RouteComponent() {
   const queryClient = useQueryClient();
-  const { data, isLoading, isError, error } = useQuery({
+  const { data, isLoading, isError, error } = useQuery<Drawers[]>({
     queryKey: ["drawers"],
     queryFn: getAllDrawers,
   });

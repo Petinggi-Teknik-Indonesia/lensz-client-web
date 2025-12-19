@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { getAllBrands } from "@/api/glassesDependencies";
+import { getAllBrands } from "@/api/brands";
 import { updateBrand } from "@/api/brands";
 import type { Brands } from "@/types/brands";
 
