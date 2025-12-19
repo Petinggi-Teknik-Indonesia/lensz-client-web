@@ -1,5 +1,6 @@
 import axios from "axios";
 import { getCookie } from "@/lib/cookie";
+import instance from "./axios";
 
 const privateApi = axios.create({
   baseURL: "http://localhost:8080",
@@ -37,7 +38,7 @@ privateApi.interceptors.response.use(
       }
 
       try {
-        const res = await axios.post(
+        const res = await instance.post(
           "/api/auth/refresh",
           {},
           {

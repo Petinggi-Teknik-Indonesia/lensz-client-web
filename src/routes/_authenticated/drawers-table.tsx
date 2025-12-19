@@ -35,6 +35,7 @@ import { SearchIcon, Edit, MoreHorizontal, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import type { Drawers } from "@/types/drawers";
 import { getMe } from "@/api/auth";
+import { formatDate } from "@/lib/helpers";
 export const Route = createFileRoute("/_authenticated/drawers-table")({
   component: RouteComponent,
 });
