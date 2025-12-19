@@ -1,32 +1,20 @@
-// src/api/scanners.ts
 import privateApi from "@/api/private";
-import type { Scanner } from "@/types/scanners";
+import type { ScannerInput, UpdateScannerInput } from "@/types/scanners";
 
-/* =========================
-   GET ALL SCANNERS
-   ========================= */
-export const getAllScanners = async (): Promise<Scanner[]> => {
+export const getAllScanners = async () => {
   const { data } = await privateApi.get("/api/scanners");
   return data;
 };
 
-/* =========================
-   CREATE SCANNER
-   ========================= */
-export const createScanner = async (payload: {
-  deviceName: string;
-}): Promise<Scanner> => {
+export const createScanner = async (payload: ScannerInput) => {
   const { data } = await privateApi.post("/api/scanners", payload);
   return data;
 };
 
-/* =========================
-   UPDATE SCANNER
-   ========================= */
 export const updateScanner = async (
   id: number,
-  payload: { deviceName: string }
-): Promise<Scanner> => {
+  payload: UpdateScannerInput
+) => {
   const { data } = await privateApi.put(
     `/api/scanners/${id}`,
     payload
@@ -34,9 +22,7 @@ export const updateScanner = async (
   return data;
 };
 
-/* =========================
-   DELETE SCANNER
-   ========================= */
-export const deleteScanner = async (id: number): Promise<void> => {
-  await privateApi.delete(`/api/scanners/${id}`);
+export const deleteScanner = async (id: number) => {
+  const { data } = await privateApi.delete(`/api/scanners/${id}`);
+  return data;
 };

@@ -25,6 +25,7 @@ import { Route as AuthenticatedDrawersTableRouteImport } from './routes/_authent
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedCompaniesRouteImport } from './routes/_authenticated/companies'
 import { Route as AuthenticatedBrandsRouteImport } from './routes/_authenticated/brands'
+import { Route as AuthenticatedAdminUserRouteImport } from './routes/_authenticated/adminUser'
 import { Route as AuthenticatedEyeglassesIndexRouteImport } from './routes/_authenticated/eyeglasses/index'
 import { Route as AuthenticatedEyeglassesGlassesIdRouteImport } from './routes/_authenticated/eyeglasses/$glassesId'
 import { Route as AuthenticatedDrawersDrawerNameRouteImport } from './routes/_authenticated/drawers/$drawerName'
@@ -112,6 +113,11 @@ const AuthenticatedBrandsRoute = AuthenticatedBrandsRouteImport.update({
   path: '/brands',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedAdminUserRoute = AuthenticatedAdminUserRouteImport.update({
+  id: '/adminUser',
+  path: '/adminUser',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedEyeglassesIndexRoute =
   AuthenticatedEyeglassesIndexRouteImport.update({
     id: '/eyeglasses/',
@@ -133,6 +139,7 @@ const AuthenticatedDrawersDrawerNameRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/adminUser': typeof AuthenticatedAdminUserRoute
   '/brands': typeof AuthenticatedBrandsRoute
   '/companies': typeof AuthenticatedCompaniesRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
@@ -153,6 +160,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/adminUser': typeof AuthenticatedAdminUserRoute
   '/brands': typeof AuthenticatedBrandsRoute
   '/companies': typeof AuthenticatedCompaniesRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
@@ -175,6 +183,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteWithChildren
+  '/_authenticated/adminUser': typeof AuthenticatedAdminUserRoute
   '/_authenticated/brands': typeof AuthenticatedBrandsRoute
   '/_authenticated/companies': typeof AuthenticatedCompaniesRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
@@ -197,6 +206,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/adminUser'
     | '/brands'
     | '/companies'
     | '/dashboard'
@@ -217,6 +227,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/adminUser'
     | '/brands'
     | '/companies'
     | '/dashboard'
@@ -238,6 +249,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/_authenticated'
+    | '/_authenticated/adminUser'
     | '/_authenticated/brands'
     | '/_authenticated/companies'
     | '/_authenticated/dashboard'
@@ -378,6 +390,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedBrandsRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/adminUser': {
+      id: '/_authenticated/adminUser'
+      path: '/adminUser'
+      fullPath: '/adminUser'
+      preLoaderRoute: typeof AuthenticatedAdminUserRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/eyeglasses/': {
       id: '/_authenticated/eyeglasses/'
       path: '/eyeglasses'
@@ -403,6 +422,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedRouteChildren {
+  AuthenticatedAdminUserRoute: typeof AuthenticatedAdminUserRoute
   AuthenticatedBrandsRoute: typeof AuthenticatedBrandsRoute
   AuthenticatedCompaniesRoute: typeof AuthenticatedCompaniesRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
@@ -421,6 +441,7 @@ interface AuthenticatedRouteChildren {
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+  AuthenticatedAdminUserRoute: AuthenticatedAdminUserRoute,
   AuthenticatedBrandsRoute: AuthenticatedBrandsRoute,
   AuthenticatedCompaniesRoute: AuthenticatedCompaniesRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,

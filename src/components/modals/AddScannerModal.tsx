@@ -4,36 +4,34 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import type { ReactNode } from "react";
 import AddScannerForm from "../forms/AddScannerForm";
+import type { ReactNode } from "react";
 
-export default function AddScannerModal({ children }: { children: ReactNode }) {
+export default function AddScannerModal({
+  children,
+}: {
+  children: ReactNode;
+}) {
   const [open, setOpen] = useState(false);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      {/* Trigger button */}
       <DialogTrigger asChild>
-        <Button onClick={() => setOpen(true)}>{children}</Button>
+        <Button>{children}</Button>
       </DialogTrigger>
 
-      {/* Modal content */}
       <DialogContent className="sm:max-w-[560px]">
         <DialogHeader>
-          <DialogTitle>Add New Scanner</DialogTitle>
+          <DialogTitle>Add Scanner</DialogTitle>
         </DialogHeader>
 
-        <AddScannerForm onSuccess={() => setOpen(false)} onCancel={() => setOpen(false)} />
-
-        <DialogFooter>
-          {/* <Button variant="ghost" onClick={() => setOpen(false)}>
-            Cancel
-          </Button> */}
-        </DialogFooter>
+        <AddScannerForm
+          onSuccess={() => setOpen(false)}
+          onCancel={() => setOpen(false)}
+        />
       </DialogContent>
     </Dialog>
   );

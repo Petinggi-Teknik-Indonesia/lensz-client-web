@@ -4,11 +4,7 @@ import { toast } from "sonner";
 import * as z from "zod";
 
 import { Button } from "@/components/ui/button";
-import {
-  Field,
-  FieldError,
-  FieldLabel,
-} from "@/components/ui/field";
+import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { createScanner } from "@/api/scanners";
 
@@ -21,10 +17,7 @@ const formSchema = z.object({
   deviceName: z.string().min(1, "Device name is required"),
 });
 
-export default function AddScannerForm({
-  onSuccess,
-  onCancel,
-}: AddScannerFormProps) {
+export default function AddScannerForm({ onSuccess, onCancel }: AddScannerFormProps) {
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
@@ -62,39 +55,26 @@ export default function AddScannerForm({
       <form.Field
         name="deviceName"
         children={(field) => {
-          const isInvalid =
-            field.state.meta.isTouched &&
-            !field.state.meta.isValid;
+          const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
 
           return (
             <Field data-invalid={isInvalid}>
-              <FieldLabel htmlFor={field.name}>
-                Scanner Name
-              </FieldLabel>
+              <FieldLabel htmlFor={field.name}>Scanner Name</FieldLabel>
               <Input
                 id={field.name}
                 value={field.state.value}
                 onBlur={field.handleBlur}
-                onChange={(e) =>
-                  field.handleChange(e.target.value)
-                }
+                onChange={(e) => field.handleChange(e.target.value)}
                 placeholder="Enter scanner name"
               />
-              {isInvalid && (
-                <FieldError errors={field.state.meta.errors} />
-              )}
+              {isInvalid && <FieldError errors={field.state.meta.errors} />}
             </Field>
           );
         }}
       />
 
-      {/* SAME button layout */}
       <div className="mt-6 flex justify-end gap-2">
-        <Button
-          type="button"
-          variant="outline"
-          onClick={onCancel}
-        >
+        <Button type="button" variant="outline" onClick={onCancel}>
           Cancel
         </Button>
         <Button type="submit" form="add-scanner-form">
