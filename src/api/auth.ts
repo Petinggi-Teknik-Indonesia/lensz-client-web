@@ -1,5 +1,6 @@
 import instance from "./axios";
 import { getCookie } from "@/lib/cookie";
+import privateApi from "./private";
 
 export const register = async (payload: {
   name: string;
@@ -45,7 +46,7 @@ export const getMe = async () => {
     throw new Error("No access token");
   }
 
-  const res = await fetch("http://localhost:8080/api/auth/me", {
+  const res = await fetch(+"/api/auth/me", {
     headers: {
       Authorization: `Bearer ${token}`,
     },

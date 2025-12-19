@@ -1,4 +1,4 @@
-import privateApi from "./private";
+import privateApi from "@/api/private";
 
 export const getUnverifiedUsers = async () => {
   const { data } = await privateApi.get("/api/users/admin/unverified");
@@ -11,14 +11,14 @@ export const getVerifiedUsers = async () => {
 };
 
 export const verifyUser = async (email: string) => {
-  const { data } = await privateApi.post(
+  const { data } = await privateApi.patch(
     `/api/users/admin/verify/${email}`
   );
   return data;
 };
 
 export const rejectUser = async (email: string) => {
-  const { data } = await privateApi.post(
+  const { data } = await privateApi.delete(
     `/api/users/admin/reject/${email}`
   );
   return data;
