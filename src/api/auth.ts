@@ -45,7 +45,7 @@ export const getMe = async () => {
     throw new Error("No access token");
   }
 
-  const res = await fetch("/api/auth/me", {
+  const res = await fetch(import.meta.env.VITE_BASE_URL + "/api/auth/me", {
     headers: {
       Authorization: `Bearer ${token}`,
     },

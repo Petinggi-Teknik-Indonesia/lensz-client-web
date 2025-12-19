@@ -29,9 +29,9 @@ import {
 
 import { Link, useRouterState } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { getAllDrawers } from "@/api/glassesDependencies";
 import { NavUser } from "./UserProfile";
 import { getMe } from "@/api/auth";
+import { getAllDrawers } from "@/api/drawers";
 
 const generalItems = [{ title: "Dashboard", url: "/dashboard", icon: Home }];
 
