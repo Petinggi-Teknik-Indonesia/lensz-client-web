@@ -1,40 +1,26 @@
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from "@/components/ui/dialog";
-import type { Brands } from "@/types/brands";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import EditScannerForm from "../forms/EditScannerForm";
+import type { Scanner } from "@/types/scanners";
 
-interface EditScannerModalProps {
+type Props = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  data: Brands | null;
-}
+  data: Scanner;
+};
 
-export default function EditScannerModal({
-  open,
-  onOpenChange,
-  data,
-}: EditScannerModalProps) {
-  console.log(data?.id)
+export default function EditScannerModal({ open, onOpenChange, data }: Props) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[560px]">
         <DialogHeader>
-          <DialogTitle>Edit Brand</DialogTitle>
+          <DialogTitle>Edit Scanner</DialogTitle>
         </DialogHeader>
-        {data && (
-          <EditScannerForm
-            scannerID={data.id}
-            onSuccess={() => onOpenChange(false)}
-            onCancel={() => onOpenChange(false)}
-          />
-        )}
 
-        <DialogFooter />
+        <EditScannerForm
+          data={data}
+          onSuccess={() => onOpenChange(false)}
+          onCancel={() => onOpenChange(false)}
+        />
       </DialogContent>
     </Dialog>
   );
