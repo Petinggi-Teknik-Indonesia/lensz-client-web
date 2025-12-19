@@ -1,26 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getCookie } from "@/lib/cookie";
 import instance from "@/api/axios";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Trash2 } from "lucide-react";
 import { toast } from "sonner";
-
-/* =========================
-   ROLE CHECK (JWT)
-   ========================= */
-const getRoleFromToken = (): number | null => {
-  const token = getCookie("access_token");
-  if (!token) return null;
-
-  try {
-    return JSON.parse(atob(token.split(".")[1])).role ?? null;
-  } catch {
-    return null;
-  }
-};
+import { getMe } from "@/api/auth";
 
 export const Route = createFileRoute("/_authenticated/scanners")({
   component: ScannerPage,
@@ -30,14 +16,29 @@ function ScannerPage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  const role = getRoleFromToken();
-  const isAllowed = role === 1 || role === 2;
+  /* =========================
+     FETCH LOGGED-IN USER
+     ========================= */
+  const {
+    data: me,
+    isLoading: isMeLoading,
+  } = useQuery({
+    queryKey: ["me"],
+    queryFn: getMe,
+  });
 
-  /* 🚫 Redirect if not admin/superadmin */
-  if (!isAllowed) {
-    navigate({ to: "/dashboard" });
-    return null;
-  }
+  /* =========================
+     ROLE CHECK
+     ========================= */
+  const roleId = me?.role?.ID;
+  const isAllowed = roleId === 1 || roleId === 2;
+
+  /* 🚫 Redirect role 3 AFTER data loads */
+  useEffect(() => {
+    if (!isMeLoading && !isAllowed) {
+      navigate({ to: "/dashboard" });
+    }
+  }, [isMeLoading, isAllowed, navigate]);
 
   /* =========================
      FETCH SCANNERS
@@ -48,6 +49,7 @@ function ScannerPage() {
       const res = await instance.get("/api/scanners");
       return res.data;
     },
+    enabled: isAllowed, // ⬅️ do NOT fetch if not allowed
   });
 
   /* =========================
@@ -56,9 +58,8 @@ function ScannerPage() {
   const [deviceName, setDeviceName] = useState("");
 
   const createMutation = useMutation({
-    mutationFn: async () => {
-      return instance.post("/api/scanners", { deviceName });
-    },
+    mutationFn: () =>
+      instance.post("/api/scanners", { deviceName }),
     onSuccess: () => {
       toast.success("Scanner created");
       setDeviceName("");
@@ -81,10 +82,15 @@ function ScannerPage() {
   });
 
   /* =========================
+     LOADING STATES
+     ========================= */
+  if (isMeLoading || isLoading) {
+    return <p>Loading...</p>;
+  }
+
+  /* =========================
      RENDER
      ========================= */
-  if (isLoading) return <p>Loading scanners...</p>;
-
   return (
     <div className="p-4 space-y-4">
       <h1 className="text-xl font-semibold">Scanners</h1>
@@ -96,7 +102,10 @@ function ScannerPage() {
           value={deviceName}
           onChange={(e) => setDeviceName(e.target.value)}
         />
-        <Button onClick={() => createMutation.mutate()}>
+        <Button
+          onClick={() => createMutation.mutate()}
+          disabled={!deviceName}
+        >
           Add Scanner
         </Button>
       </div>

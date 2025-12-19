@@ -34,41 +34,49 @@ import AddBrandModal from "@/components/modals/AddBrandModal";
 import EditBrandModal from "@/components/modals/EditBrandModal";
 import { formatDate } from "@/api/glassesDependencies";
 import { toast } from "sonner";
-import { getCookie } from "@/lib/cookie";
+import { getMe } from "@/api/auth";
 
 export const Route = createFileRoute("/_authenticated/brands")({
   component: RouteComponent,
 });
 
-/* =========================
-   SIMPLE ROLE EXTRACTION
-   ========================= */
-const getRoleFromToken = (): number | null => {
-  const token = getCookie("access_token");
-  if (!token) return null;
-
-  try {
-    const payload = JSON.parse(atob(token.split(".")[1]));
-    return payload.role ?? null;
-  } catch {
-    return null;
-  }
-};
-
 function RouteComponent() {
   const queryClient = useQueryClient();
-  const { data, isLoading, isError, error } = useQuery({
+
+  const {
+    data: brands,
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
     queryKey: ["brands"],
     queryFn: getAllBrands,
   });
 
-  const role = getRoleFromToken();
-  const canShowDelete = role === 1 || role === 2;
+  const {
+    data: me,
+    isLoading: isMeLoading,
+  } = useQuery({
+    queryKey: ["me"],
+    queryFn: getMe,
+  });
 
+  /* =========================
+     ROLE-BASED PERMISSION
+     ========================= */
+  const canShowDelete =
+    me !== undefined && (me?.role?.ID === 1 || me?.role?.ID === 2);
+
+  /* =========================
+     STATE
+     ========================= */
   const [editOpen, setEditOpen] = useState(false);
   const [selectedBrand, setSelectedBrand] = useState<any>(null);
   const [search, setSearch] = useState("");
 
+  /* =========================
+     DELETE MUTATION
+     ========================= */
   const deleteMutation = useMutation({
     mutationFn: (id: number) => deleteBrand(id),
     onSuccess: () => {
@@ -84,102 +92,119 @@ function RouteComponent() {
     },
   });
 
+  /* =========================
+     TABLE COLUMNS (IMPORTANT)
+     Memoized so it updates
+     when canShowDelete changes
+     ========================= */
   const columnHelper = createColumnHelper<any>();
 
-  const columns = [
-    columnHelper.accessor("id", { header: "ID" }),
-    columnHelper.accessor("name", { header: "Name" }),
-    columnHelper.accessor("createdAt", {
-      header: "Created At",
-      cell: (info) => formatDate(info.getValue()),
-    }),
-    columnHelper.accessor("updatedAt", {
-      header: "Updated At",
-      cell: (info) => formatDate(info.getValue()),
-    }),
-    columnHelper.display({
-      id: "actions",
-      header: "Actions",
-      cell: ({ row }) => {
-        const brand = row.original;
+  const columns = useMemo(
+    () => [
+      columnHelper.accessor("id", { header: "ID" }),
+      columnHelper.accessor("name", { header: "Name" }),
+      columnHelper.accessor("createdAt", {
+        header: "Created At",
+        cell: (info) => formatDate(info.getValue()),
+      }),
+      columnHelper.accessor("updatedAt", {
+        header: "Updated At",
+        cell: (info) => formatDate(info.getValue()),
+      }),
+      columnHelper.display({
+        id: "actions",
+        header: "Actions",
+        cell: ({ row }) => {
+          const brand = row.original;
 
-        return (
-          <ButtonGroup>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon-sm">
-                  <MoreHorizontal />
-                </Button>
-              </DropdownMenuTrigger>
+          return (
+            <ButtonGroup>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon-sm">
+                    <MoreHorizontal />
+                  </Button>
+                </DropdownMenuTrigger>
 
-              <DropdownMenuContent align="end">
-                {/* EDIT */}
-                <DropdownMenuItem
-                  className="text-orange-400"
-                  onClick={() => {
-                    setSelectedBrand(brand);
-                    setEditOpen(true);
-                  }}
-                >
-                  <Edit className="text-orange-400" />
-                  Edit
-                </DropdownMenuItem>
+                <DropdownMenuContent align="end">
+                  {/* EDIT */}
+                  <DropdownMenuItem
+                    className="text-orange-400"
+                    onClick={() => {
+                      setSelectedBrand(brand);
+                      setEditOpen(true);
+                    }}
+                  >
+                    <Edit className="text-orange-400" />
+                    Edit
+                  </DropdownMenuItem>
 
-                {/* DELETE (ROLE 1 & 2 ONLY) */}
-                {canShowDelete && (
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <DropdownMenuItem
-                        className="text-red-600"
-                        onSelect={(e) => e.preventDefault()}
-                      >
-                        <Trash2 className="text-red-600" />
-                        Delete
-                      </DropdownMenuItem>
-                    </AlertDialogTrigger>
-
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>Delete Brand</AlertDialogTitle>
-                        <AlertDialogDescription>
-                          Are you sure you want to delete{" "}
-                          <b>{brand.name}</b>? This action cannot be undone.
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction
-                          className="bg-red-600 hover:bg-red-700"
-                          onClick={() => deleteMutation.mutate(brand.id)}
+                  {/* DELETE — ROLE 1 & 2 ONLY */}
+                  {canShowDelete && (
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <DropdownMenuItem
+                          className="text-red-600"
+                          onSelect={(e) => e.preventDefault()}
                         >
+                          <Trash2 className="text-red-600" />
                           Delete
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
-                )}
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </ButtonGroup>
-        );
-      },
-    }),
-  ];
+                        </DropdownMenuItem>
+                      </AlertDialogTrigger>
 
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Delete Brand</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            Are you sure you want to delete{" "}
+                            <b>{brand.name}</b>? This action cannot be undone.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogAction
+                            className="bg-red-600 hover:bg-red-700"
+                            onClick={() => deleteMutation.mutate(brand.id)}
+                          >
+                            Delete
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  )}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </ButtonGroup>
+          );
+        },
+      }),
+    ],
+    [canShowDelete]
+  );
+
+  /* =========================
+     SEARCH FILTER
+     ========================= */
   const filteredData = useMemo(() => {
-    if (!data) return [];
+    if (!brands) return [];
     const q = search.toLowerCase();
-    return data.filter((item) =>
+    return brands.filter((item) =>
       Object.values(item)
         .filter(Boolean)
         .some((v) => String(v).toLowerCase().includes(q))
     );
-  }, [data, search]);
+  }, [brands, search]);
 
-  if (isLoading) return <p>Loading...</p>;
+  /* =========================
+     LOADING / ERROR
+     ========================= */
+  if (isLoading || isMeLoading) return <p>Loading...</p>;
   if (isError) return <p>Error: {(error as Error).message}</p>;
 
+  /* =========================
+     RENDER
+     ========================= */
   return (
     <div className="h-full flex flex-col gap-2 mt-2">
       {/* SEARCH + ADD */}

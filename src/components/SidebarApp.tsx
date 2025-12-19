@@ -31,26 +31,7 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { getAllDrawers } from "@/api/glassesDependencies";
 import { NavUser } from "./UserProfile";
-import { getCookie } from "@/lib/cookie";
-
-const token = getCookie("access_token");
-let role: number | null = null;
-
-if (token) {
-  try {
-    role = JSON.parse(atob(token.split(".")[1])).role;
-  } catch {}
-}
-
-const canManageScanner = role === 1 || role === 2;
-
-const data = {
-  user: {
-    name: "Optik Gembira",
-    email: "example@gmail.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
-};
+import { getMe } from "@/api/auth";
 
 const generalItems = [{ title: "Dashboard", url: "/dashboard", icon: Home }];
 
@@ -67,6 +48,14 @@ const managementItems = [
 export function SidebarApp() {
   const routerState = useRouterState();
   const currentPath = routerState.location.pathname;
+
+  const { data: me} = useQuery({
+    queryKey: ["me"],
+    queryFn: getMe,
+  });
+  console.log("ME:", me);
+
+  const canManageScanner = me?.role?.ID === 1 || me?.role?.ID === 2;
 
   // ✅ Fetch drawers dynamically
   const {
@@ -245,28 +234,34 @@ export function SidebarApp() {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
-                      {/* Scanner Management - Role 1 & 2 ONLY */}
-              {canManageScanner && (
-                <SidebarMenuItem>
-                  <SidebarMenuButton asChild>
-                    <Link
-                      to="/scanners"
-                      className={`flex items-center gap-2 rounded-md px-2 py-1 transition-colors ${
-                        currentPath.startsWith("/scanners")
-                          ? "bg-[#B1F70B] text-black"
-                          : "hover:bg-[#B1F70B] hover:text-black"
-                      }`}
-                    >
-                      <QrCode size={18} />
-                      <span>Scanner</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              )}
+        {canManageScanner && (
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild>
+              <Link
+                to="/scanners"
+                className={`flex items-center gap-2 rounded-md px-2 py-1 transition-colors ${
+                  currentPath.startsWith("/scanners")
+                    ? "bg-[#B1F70B] text-black"
+                    : "hover:bg-[#B1F70B] hover:text-black"
+                }`}
+              >
+                <QrCode size={18} />
+                <span>Scanner</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        )}
 
         {/* Profile */}
         <SidebarGroup className="mt-auto">
-          <NavUser user={data.user} />
+          {me && (
+          <NavUser user={{
+            name: me.name,
+            email: me.email,
+            avatar: "/avatars/shadcn.jpg",
+          }}
+          />
+        )}
         </SidebarGroup>
       </SidebarContent>
     </Sidebar>

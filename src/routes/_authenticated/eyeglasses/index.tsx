@@ -41,27 +41,11 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import EditGlassesModal from "@/components/modals/EditGlassesModal";
-import { getCookie } from "@/lib/cookie";
+import { getMe } from "@/api/auth";
 
 export const Route = createFileRoute("/_authenticated/eyeglasses/")({
   component: RouteComponent,
 });
-
-/* =========================
-   SIMPLE ROLE EXTRACTION
-   ========================= */
-const getRoleFromToken = (): number | null => {
-  const token = getCookie("access_token");
-  if (!token) return null;
-
-  try {
-    const payload = JSON.parse(atob(token.split(".")[1]));
-    return payload.role ?? null;
-  } catch {
-    return null;
-  }
-};
-
 
 function RouteComponent() {
   const queryClient = useQueryClient();
@@ -70,9 +54,18 @@ function RouteComponent() {
     queryFn: getAllGlasses,
   });
 
-  const role = getRoleFromToken();
-  const canShowDelete = role === 1 || role === 2;
+  const {
+    data: me,
+  } = useQuery({
+    queryKey: ["me"],
+    queryFn: getMe,
+  });
 
+  /* =========================
+     ROLE-BASED PERMISSION
+     ========================= */
+  const canShowDelete =
+    me !== undefined && (me?.role?.ID === 1 || me?.role?.ID === 2);
 
   const [editOpen, setEditOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<Glasses | null>(null);
