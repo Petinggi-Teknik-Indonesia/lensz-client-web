@@ -5,7 +5,7 @@ import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { addDrawer } from "@/api/drawers";
+import { addDrawers } from "@/api/drawers";
 
 type AddDrawerFormProps = {
   onSuccess: () => void;
@@ -17,7 +17,7 @@ const formSchema = z.object({
 });
 
 function AddDrawerForm({ onSuccess, onCancel }: AddDrawerFormProps) {
-  const mutation = useMutation({ mutationFn: addDrawer });
+  const mutation = useMutation({ mutationFn: addDrawers });
 
   const form = useForm({
     defaultValues: { name: "" },
