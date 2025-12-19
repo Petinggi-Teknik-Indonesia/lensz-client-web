@@ -11,7 +11,12 @@ import {
   InputGroupButton,
   InputGroupInput,
 } from "@/components/ui/input-group";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
 import {
@@ -29,7 +34,7 @@ import AddBrandModal from "@/components/modals/AddBrandModal";
 import EditBrandModal from "@/components/modals/EditBrandModal";
 import { formatDate } from "../../lib/helpers";
 import { toast } from "sonner";
-import type { Brands } from "@/types/brands";
+import { getMe } from "@/api/auth";
 
 export const Route = createFileRoute("/_authenticated/brands")({
   component: RouteComponent,
@@ -37,123 +42,173 @@ export const Route = createFileRoute("/_authenticated/brands")({
 
 function RouteComponent() {
   const queryClient = useQueryClient();
-  const { data, isLoading, isError, error } = useQuery<Brands[]>({
+
+  const {
+    data: brands,
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
     queryKey: ["brands"],
     queryFn: getAllBrands,
   });
 
+  const {
+    data: me,
+    isLoading: isMeLoading,
+  } = useQuery({
+    queryKey: ["me"],
+    queryFn: getMe,
+  });
+
+  /* =========================
+     ROLE-BASED PERMISSION
+     ========================= */
+  const canShowDelete =
+    me !== undefined && (me?.role?.ID === 1 || me?.role?.ID === 2);
+
+  /* =========================
+     STATE
+     ========================= */
   const [editOpen, setEditOpen] = useState(false);
-  const [selectedBrand, setSelectedBrand] = useState<{ id: number; name: string; createdAt?:string; updatedAt?: string; } | null>(null);
+  const [selectedBrand, setSelectedBrand] = useState<any>(null);
   const [search, setSearch] = useState("");
 
-    const deleteMutation = useMutation({
+  /* =========================
+     DELETE MUTATION
+     ========================= */
+  const deleteMutation = useMutation({
     mutationFn: (id: number) => deleteBrand(id),
     onSuccess: () => {
       toast.success("Brand deleted successfully!");
       queryClient.invalidateQueries({ queryKey: ["brands"] });
     },
-    onError: () => toast.error("Failed to delete brand"),
+    onError: (err: any) => {
+      if (err?.response?.status === 403) {
+        toast.error("You are not allowed to delete this brand");
+      } else {
+        toast.error("Failed to delete brand");
+      }
+    },
   });
 
+  /* =========================
+     TABLE COLUMNS (IMPORTANT)
+     Memoized so it updates
+     when canShowDelete changes
+     ========================= */
   const columnHelper = createColumnHelper<any>();
-  const columns = [
-    columnHelper.accessor("id", { header: () => "ID" }),
-    columnHelper.accessor("name", { header: () => "Name" }),
-    columnHelper.accessor("createdAt", {
-      header: () => "Created At",
-      cell: (info) => (info.getValue() ? formatDate(info.getValue()) : ""),
-    }),
-    columnHelper.accessor("updatedAt", {
-      header: () => "Updated At",
-      cell: (info) => (info.getValue() ? formatDate(info.getValue()) : ""),
-    }),
-    columnHelper.display({
-      id: "actions",
-      header: "Actions",
-      cell: ({ row }) => {
-        const brand = row.original;
-        return (
-          <ButtonGroup>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon-sm">
-                  <MoreHorizontal />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                {/* Edit */}
-                <DropdownMenuItem
-                  className="text-orange-400"
-                  onClick={() => {
-                    setSelectedBrand(brand);
-                    setEditOpen(true);
-                  }}
-                >
-                  <Edit className="text-orange-400" />
-                  Edit
-                </DropdownMenuItem>
 
-                {/* DELETE */}
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <DropdownMenuItem
-                      className="text-red-600"
-                      onSelect={(e) => e.preventDefault()} // 🧠 prevent dropdown auto-close
-                    >
-                      <Trash2 className="text-red-600" />
-                      Delete
-                    </DropdownMenuItem>
-                  </AlertDialogTrigger>
+  const columns = useMemo(
+    () => [
+      columnHelper.accessor("id", { header: "ID" }),
+      columnHelper.accessor("name", { header: "Name" }),
+      columnHelper.accessor("createdAt", {
+        header: "Created At",
+        cell: (info) => formatDate(info.getValue()),
+      }),
+      columnHelper.accessor("updatedAt", {
+        header: "Updated At",
+        cell: (info) => formatDate(info.getValue()),
+      }),
+      columnHelper.display({
+        id: "actions",
+        header: "Actions",
+        cell: ({ row }) => {
+          const brand = row.original;
 
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>Delete Brand</AlertDialogTitle>
-                      <AlertDialogDescription>
-                        Are you sure you want to delete <b>{brand.name}</b>? This
-                        action cannot be undone.
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>Cancel</AlertDialogCancel>
-                      <AlertDialogAction
-                        onClick={() => {
-                          deleteMutation.mutate(brand.id);
-                          queryClient.invalidateQueries({
-                            queryKey: ["glasses"],
-                          });
-                        }}
-                        className="bg-red-600 hover:bg-red-700"
-                      >
-                        Delete
-                      </AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </ButtonGroup>
-        );
-      },
-    }),
-  ];
+          return (
+            <ButtonGroup>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon-sm">
+                    <MoreHorizontal />
+                  </Button>
+                </DropdownMenuTrigger>
 
+                <DropdownMenuContent align="end">
+                  {/* EDIT */}
+                  <DropdownMenuItem
+                    className="text-orange-400"
+                    onClick={() => {
+                      setSelectedBrand(brand);
+                      setEditOpen(true);
+                    }}
+                  >
+                    <Edit className="text-orange-400" />
+                    Edit
+                  </DropdownMenuItem>
+
+                  {/* DELETE — ROLE 1 & 2 ONLY */}
+                  {canShowDelete && (
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <DropdownMenuItem
+                          className="text-red-600"
+                          onSelect={(e) => e.preventDefault()}
+                        >
+                          <Trash2 className="text-red-600" />
+                          Delete
+                        </DropdownMenuItem>
+                      </AlertDialogTrigger>
+
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Delete Brand</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            Are you sure you want to delete{" "}
+                            <b>{brand.name}</b>? This action cannot be undone.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogAction
+                            className="bg-red-600 hover:bg-red-700"
+                            onClick={() => deleteMutation.mutate(brand.id)}
+                          >
+                            Delete
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  )}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </ButtonGroup>
+          );
+        },
+      }),
+    ],
+    [canShowDelete]
+  );
+
+  /* =========================
+     SEARCH FILTER
+     ========================= */
   const filteredData = useMemo(() => {
-    if (!data) return [];
-    const lower = search.toLowerCase();
-    return data.filter((item) =>
-      [item.id, item.name, item.createdAt, item.updatedAt]
+    if (!brands) return [];
+    const q = search.toLowerCase();
+    return brands.filter((item) =>
+      Object.values(item)
         .filter(Boolean)
-        .some((field) => String(field).toLowerCase().includes(lower))
+        .some((v) => String(v).toLowerCase().includes(q))
     );
-  }, [data, search]);
+  }, [brands, search]);
 
-  if (isLoading) return <p>Loading...</p>;
-  if (isError) return <p>Error: {error.message}</p>;
+  /* =========================
+     LOADING / ERROR
+     ========================= */
+  if (isLoading || isMeLoading) return <p>Loading...</p>;
+  if (isError) return <p>Error: {(error as Error).message}</p>;
 
+  /* =========================
+     RENDER
+     ========================= */
   return (
     <div className="h-full flex flex-col gap-2 mt-2">
-      {/* Search + Add */}
-      <div className="flex flex-row gap-2 justify-end">
+      {/* SEARCH + ADD */}
+      <div className="flex gap-2 justify-end">
         <InputGroup>
           <InputGroupInput
             placeholder="Search..."
@@ -164,28 +219,26 @@ function RouteComponent() {
             <SearchIcon />
           </InputGroupAddon>
           <InputGroupAddon align="inline-end">
-            <InputGroupButton onClick={() => setSearch("")}>Clear</InputGroupButton>
+            <InputGroupButton onClick={() => setSearch("")}>
+              Clear
+            </InputGroupButton>
           </InputGroupAddon>
         </InputGroup>
 
         <AddBrandModal>+ Add Brand</AddBrandModal>
       </div>
 
-      {/* Data Table */}
+      {/* TABLE */}
       <DataTable columns={columns} data={filteredData} />
 
-      {/* Edit Brand Modal */}
-{selectedBrand && (
-<EditBrandModal
-  open={editOpen}
-  onOpenChange={setEditOpen}
-  data={{
-    ...selectedBrand,
-    createdAt: selectedBrand.createdAt ? new Date(selectedBrand.createdAt) : new Date(),
-    updatedAt: selectedBrand.updatedAt ? new Date(selectedBrand.updatedAt) : new Date(),
-  }}
-/>
-)}
+      {/* EDIT MODAL */}
+      {selectedBrand && (
+        <EditBrandModal
+          open={editOpen}
+          onOpenChange={setEditOpen}
+          data={selectedBrand}
+        />
+      )}
     </div>
   );
 }

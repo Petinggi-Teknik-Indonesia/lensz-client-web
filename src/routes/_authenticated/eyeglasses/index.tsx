@@ -41,6 +41,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import EditGlassesModal from "@/components/modals/EditGlassesModal";
+import { getMe } from "@/api/auth";
 
 export const Route = createFileRoute("/_authenticated/eyeglasses/")({
   component: RouteComponent,
@@ -52,6 +53,19 @@ function RouteComponent() {
     queryKey: ["glasses"],
     queryFn: getAllGlasses,
   });
+
+  const {
+    data: me,
+  } = useQuery({
+    queryKey: ["me"],
+    queryFn: getMe,
+  });
+
+  /* =========================
+     ROLE-BASED PERMISSION
+     ========================= */
+  const canShowDelete =
+    me !== undefined && (me?.role?.ID === 1 || me?.role?.ID === 2);
 
   const [editOpen, setEditOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<Glasses | null>(null);
@@ -134,6 +148,7 @@ function RouteComponent() {
                 </DropdownMenuItem>
 
                 {/* DELETE */}
+                {canShowDelete && (
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
                     <DropdownMenuItem
@@ -169,6 +184,7 @@ function RouteComponent() {
                     </AlertDialogFooter>
                   </AlertDialogContent>
                 </AlertDialog>
+                )}
               </DropdownMenuContent>
             </DropdownMenu>
           </ButtonGroup>

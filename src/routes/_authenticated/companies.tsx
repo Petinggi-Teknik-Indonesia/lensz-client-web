@@ -35,7 +35,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import type { Companies } from "@/types/companies";
 import { toast } from "sonner";
-
+import { getMe } from "@/api/auth";
 export const Route = createFileRoute("/_authenticated/companies")({
   component: RouteComponent,
 });
@@ -46,6 +46,20 @@ function RouteComponent() {
     queryKey: ["companies"],
     queryFn: getAllCompanies,
   });
+
+    const {
+      data: me,
+    } = useQuery({
+      queryKey: ["me"],
+      queryFn: getMe,
+    });
+  
+    /* =========================
+       ROLE-BASED PERMISSION
+       ========================= */
+    const canShowDelete =
+      me !== undefined && (me?.role?.ID === 1 || me?.role?.ID === 2);
+
 
   const [editOpen, setEditOpen] = useState(false);
   const [selectedCompany, setSelectedCompany] = useState<Companies | null>(null);
@@ -101,6 +115,7 @@ function RouteComponent() {
                 </DropdownMenuItem>
 
                 {/* 🗑️ Delete */}
+                {canShowDelete && (
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
                     <DropdownMenuItem
@@ -130,6 +145,7 @@ function RouteComponent() {
                     </AlertDialogFooter>
                   </AlertDialogContent>
                 </AlertDialog>
+                )}
               </DropdownMenuContent>
             </DropdownMenu>
           </ButtonGroup>

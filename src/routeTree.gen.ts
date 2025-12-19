@@ -9,13 +9,15 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PreAuthRegisterRouteImport } from './routes/_preAuth/register'
 import { Route as PreAuthLoginRouteImport } from './routes/_preAuth/login'
 import { Route as AuthenticatedTrashRouteImport } from './routes/_authenticated/trash'
 import { Route as AuthenticatedTestRouteImport } from './routes/_authenticated/test'
+import { Route as AuthenticatedScannersRouteImport } from './routes/_authenticated/scanners'
+import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
+import { Route as AuthenticatedOrganizationRouteImport } from './routes/_authenticated/organization'
 import { Route as AuthenticatedLogoutRouteImport } from './routes/_authenticated/logout'
 import { Route as AuthenticatedGlassesTableRouteImport } from './routes/_authenticated/glasses-table'
 import { Route as AuthenticatedGlassesStatusRouteImport } from './routes/_authenticated/glasses-status'
@@ -27,11 +29,6 @@ import { Route as AuthenticatedEyeglassesIndexRouteImport } from './routes/_auth
 import { Route as AuthenticatedEyeglassesGlassesIdRouteImport } from './routes/_authenticated/eyeglasses/$glassesId'
 import { Route as AuthenticatedDrawersDrawerNameRouteImport } from './routes/_authenticated/drawers/$drawerName'
 
-const ProfileRoute = ProfileRouteImport.update({
-  id: '/profile',
-  path: '/profile',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AuthenticatedRoute = AuthenticatedRouteImport.update({
   id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
@@ -61,6 +58,22 @@ const AuthenticatedTestRoute = AuthenticatedTestRouteImport.update({
   path: '/test',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedScannersRoute = AuthenticatedScannersRouteImport.update({
+  id: '/scanners',
+  path: '/scanners',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedProfileRoute = AuthenticatedProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedOrganizationRoute =
+  AuthenticatedOrganizationRouteImport.update({
+    id: '/organization',
+    path: '/organization',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedLogoutRoute = AuthenticatedLogoutRouteImport.update({
   id: '/logout',
   path: '/logout',
@@ -120,7 +133,6 @@ const AuthenticatedDrawersDrawerNameRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/profile': typeof ProfileRoute
   '/brands': typeof AuthenticatedBrandsRoute
   '/companies': typeof AuthenticatedCompaniesRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
@@ -128,6 +140,9 @@ export interface FileRoutesByFullPath {
   '/glasses-status': typeof AuthenticatedGlassesStatusRoute
   '/glasses-table': typeof AuthenticatedGlassesTableRoute
   '/logout': typeof AuthenticatedLogoutRoute
+  '/organization': typeof AuthenticatedOrganizationRoute
+  '/profile': typeof AuthenticatedProfileRoute
+  '/scanners': typeof AuthenticatedScannersRoute
   '/test': typeof AuthenticatedTestRoute
   '/trash': typeof AuthenticatedTrashRoute
   '/login': typeof PreAuthLoginRoute
@@ -138,7 +153,6 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/profile': typeof ProfileRoute
   '/brands': typeof AuthenticatedBrandsRoute
   '/companies': typeof AuthenticatedCompaniesRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
@@ -146,6 +160,9 @@ export interface FileRoutesByTo {
   '/glasses-status': typeof AuthenticatedGlassesStatusRoute
   '/glasses-table': typeof AuthenticatedGlassesTableRoute
   '/logout': typeof AuthenticatedLogoutRoute
+  '/organization': typeof AuthenticatedOrganizationRoute
+  '/profile': typeof AuthenticatedProfileRoute
+  '/scanners': typeof AuthenticatedScannersRoute
   '/test': typeof AuthenticatedTestRoute
   '/trash': typeof AuthenticatedTrashRoute
   '/login': typeof PreAuthLoginRoute
@@ -158,7 +175,6 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteWithChildren
-  '/profile': typeof ProfileRoute
   '/_authenticated/brands': typeof AuthenticatedBrandsRoute
   '/_authenticated/companies': typeof AuthenticatedCompaniesRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
@@ -166,6 +182,9 @@ export interface FileRoutesById {
   '/_authenticated/glasses-status': typeof AuthenticatedGlassesStatusRoute
   '/_authenticated/glasses-table': typeof AuthenticatedGlassesTableRoute
   '/_authenticated/logout': typeof AuthenticatedLogoutRoute
+  '/_authenticated/organization': typeof AuthenticatedOrganizationRoute
+  '/_authenticated/profile': typeof AuthenticatedProfileRoute
+  '/_authenticated/scanners': typeof AuthenticatedScannersRoute
   '/_authenticated/test': typeof AuthenticatedTestRoute
   '/_authenticated/trash': typeof AuthenticatedTrashRoute
   '/_preAuth/login': typeof PreAuthLoginRoute
@@ -178,7 +197,6 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/profile'
     | '/brands'
     | '/companies'
     | '/dashboard'
@@ -186,6 +204,9 @@ export interface FileRouteTypes {
     | '/glasses-status'
     | '/glasses-table'
     | '/logout'
+    | '/organization'
+    | '/profile'
+    | '/scanners'
     | '/test'
     | '/trash'
     | '/login'
@@ -196,7 +217,6 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/profile'
     | '/brands'
     | '/companies'
     | '/dashboard'
@@ -204,6 +224,9 @@ export interface FileRouteTypes {
     | '/glasses-status'
     | '/glasses-table'
     | '/logout'
+    | '/organization'
+    | '/profile'
+    | '/scanners'
     | '/test'
     | '/trash'
     | '/login'
@@ -215,7 +238,6 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/_authenticated'
-    | '/profile'
     | '/_authenticated/brands'
     | '/_authenticated/companies'
     | '/_authenticated/dashboard'
@@ -223,6 +245,9 @@ export interface FileRouteTypes {
     | '/_authenticated/glasses-status'
     | '/_authenticated/glasses-table'
     | '/_authenticated/logout'
+    | '/_authenticated/organization'
+    | '/_authenticated/profile'
+    | '/_authenticated/scanners'
     | '/_authenticated/test'
     | '/_authenticated/trash'
     | '/_preAuth/login'
@@ -235,20 +260,12 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
-  ProfileRoute: typeof ProfileRoute
   PreAuthLoginRoute: typeof PreAuthLoginRoute
   PreAuthRegisterRoute: typeof PreAuthRegisterRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/profile': {
-      id: '/profile'
-      path: '/profile'
-      fullPath: '/profile'
-      preLoaderRoute: typeof ProfileRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/_authenticated': {
       id: '/_authenticated'
       path: ''
@@ -289,6 +306,27 @@ declare module '@tanstack/react-router' {
       path: '/test'
       fullPath: '/test'
       preLoaderRoute: typeof AuthenticatedTestRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/scanners': {
+      id: '/_authenticated/scanners'
+      path: '/scanners'
+      fullPath: '/scanners'
+      preLoaderRoute: typeof AuthenticatedScannersRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/profile': {
+      id: '/_authenticated/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof AuthenticatedProfileRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/organization': {
+      id: '/_authenticated/organization'
+      path: '/organization'
+      fullPath: '/organization'
+      preLoaderRoute: typeof AuthenticatedOrganizationRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/logout': {
@@ -372,6 +410,9 @@ interface AuthenticatedRouteChildren {
   AuthenticatedGlassesStatusRoute: typeof AuthenticatedGlassesStatusRoute
   AuthenticatedGlassesTableRoute: typeof AuthenticatedGlassesTableRoute
   AuthenticatedLogoutRoute: typeof AuthenticatedLogoutRoute
+  AuthenticatedOrganizationRoute: typeof AuthenticatedOrganizationRoute
+  AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
+  AuthenticatedScannersRoute: typeof AuthenticatedScannersRoute
   AuthenticatedTestRoute: typeof AuthenticatedTestRoute
   AuthenticatedTrashRoute: typeof AuthenticatedTrashRoute
   AuthenticatedDrawersDrawerNameRoute: typeof AuthenticatedDrawersDrawerNameRoute
@@ -387,6 +428,9 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedGlassesStatusRoute: AuthenticatedGlassesStatusRoute,
   AuthenticatedGlassesTableRoute: AuthenticatedGlassesTableRoute,
   AuthenticatedLogoutRoute: AuthenticatedLogoutRoute,
+  AuthenticatedOrganizationRoute: AuthenticatedOrganizationRoute,
+  AuthenticatedProfileRoute: AuthenticatedProfileRoute,
+  AuthenticatedScannersRoute: AuthenticatedScannersRoute,
   AuthenticatedTestRoute: AuthenticatedTestRoute,
   AuthenticatedTrashRoute: AuthenticatedTrashRoute,
   AuthenticatedDrawersDrawerNameRoute: AuthenticatedDrawersDrawerNameRoute,
@@ -401,7 +445,6 @@ const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
-  ProfileRoute: ProfileRoute,
   PreAuthLoginRoute: PreAuthLoginRoute,
   PreAuthRegisterRoute: PreAuthRegisterRoute,
 }

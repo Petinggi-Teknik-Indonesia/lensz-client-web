@@ -1,12 +1,11 @@
 import {
-  ArrowLeftIcon,
   Glasses,
   Home,
-  PersonStandingIcon,
   Sheet,
   ChevronRight,
   Tag,
   Factory,
+  QrCode,
 } from "lucide-react";
 
 import {
@@ -30,7 +29,9 @@ import {
 
 import { Link, useRouterState } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { getAllDrawers } from "@/api/drawers";
+import { getAllDrawers } from "@/api/glassesDependencies";
+import { NavUser } from "./UserProfile";
+import { getMe } from "@/api/auth";
 
 const generalItems = [{ title: "Dashboard", url: "/dashboard", icon: Home }];
 
@@ -44,18 +45,24 @@ const managementItems = [
   { title: "Add Drawer", url: "/drawers-table", icon: Sheet },
 ];
 
-const profileItems = [
-  { title: "Profile", url: "/profile", icon: PersonStandingIcon },
-  { title: "Logout", url: "/logout", icon: ArrowLeftIcon },
-  { title: "Test", url: "/test", icon: Sheet },
-];
-
 export function SidebarApp() {
   const routerState = useRouterState();
   const currentPath = routerState.location.pathname;
 
+  const { data: me} = useQuery({
+    queryKey: ["me"],
+    queryFn: getMe,
+  });
+  console.log("ME:", me);
+
+  const canManageScanner = me?.role?.ID === 1 || me?.role?.ID === 2;
+
   // ✅ Fetch drawers dynamically
-  const { data: drawers, isLoading, isError } = useQuery({
+  const {
+    data: drawers,
+    isLoading,
+    isError,
+  } = useQuery({
     queryKey: ["drawers"],
     queryFn: getAllDrawers,
   });
@@ -131,7 +138,9 @@ export function SidebarApp() {
 
         {/* Management */}
         <SidebarGroup>
-          <SidebarGroupLabel className="text-white">Management</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-white">
+            Management
+          </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {/* Collapsible Drawers Section */}
@@ -165,39 +174,37 @@ export function SidebarApp() {
                         </SidebarMenuSubItem>
                       )}
 
-                      {uniqueDrawers.length > 0 ? (
-                        uniqueDrawers.map((drawer: any) => {
-                          const url = `/drawers/${drawer.name
-                            .toLowerCase()
-                            .replace(/\s+/g, "-")}`;
-                          const isActive = currentPath.startsWith(url);
+                      {uniqueDrawers.length > 0
+                        ? uniqueDrawers.map((drawer: any) => {
+                            const url = `/drawers/${drawer.name
+                              .toLowerCase()
+                              .replace(/\s+/g, "-")}`;
+                            const isActive = currentPath.startsWith(url);
 
-                          return (
-                            <SidebarMenuSubItem key={drawer.name}>
-                              <SidebarMenuButton asChild>
-                                <Link
-                                  to={url}
-                                  className={`flex items-center gap-2 rounded-md px-2 py-1 transition-colors ${
-                                    isActive
-                                      ? "bg-[#B1F70B] text-black"
-                                      : "hover:bg-[#B1F70B] hover:text-black"
-                                  } ${isActive ? "pointer-events-none" : ""}`}
-                                >
-                                  <span>{drawer.name}</span>
-                                </Link>
-                              </SidebarMenuButton>
+                            return (
+                              <SidebarMenuSubItem key={drawer.name}>
+                                <SidebarMenuButton asChild>
+                                  <Link
+                                    to={url}
+                                    className={`flex items-center gap-2 rounded-md px-2 py-1 transition-colors ${
+                                      isActive
+                                        ? "bg-[#B1F70B] text-black"
+                                        : "hover:bg-[#B1F70B] hover:text-black"
+                                    } ${isActive ? "pointer-events-none" : ""}`}
+                                  >
+                                    <span>{drawer.name}</span>
+                                  </Link>
+                                </SidebarMenuButton>
+                              </SidebarMenuSubItem>
+                            );
+                          })
+                        : !isLoading && (
+                            <SidebarMenuSubItem>
+                              <span className="px-2 py-1 text-sm opacity-75">
+                                No drawers found
+                              </span>
                             </SidebarMenuSubItem>
-                          );
-                        })
-                      ) : (
-                        !isLoading && (
-                          <SidebarMenuSubItem>
-                            <span className="px-2 py-1 text-sm opacity-75">
-                              No drawers found
-                            </span>
-                          </SidebarMenuSubItem>
-                        )
-                      )}
+                          )}
                     </SidebarMenuSub>
                   </CollapsibleContent>
                 </SidebarMenuItem>
@@ -227,34 +234,34 @@ export function SidebarApp() {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+        {canManageScanner && (
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild>
+              <Link
+                to="/scanners"
+                className={`flex items-center gap-2 rounded-md px-2 py-1 transition-colors ${
+                  currentPath.startsWith("/scanners")
+                    ? "bg-[#B1F70B] text-black"
+                    : "hover:bg-[#B1F70B] hover:text-black"
+                }`}
+              >
+                <QrCode size={18} />
+                <span>Scanner</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        )}
 
         {/* Profile */}
-        <SidebarGroup>
-          <SidebarGroupLabel className="text-white">Profile</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {profileItems.map((item) => {
-                const isActive = currentPath.startsWith(item.url);
-                return (
-                  <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild>
-                      <Link
-                        to={item.url}
-                        className={`flex items-center gap-2 rounded-md px-2 py-1 transition-colors ${
-                          isActive
-                            ? "bg-[#B1F70B] text-black"
-                            : "hover:bg-[#B1F70B] hover:text-black"
-                        } ${isActive ? "pointer-events-none" : ""}`}
-                      >
-                        <item.icon size={18} />
-                        <span>{item.title}</span>
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                );
-              })}
-            </SidebarMenu>
-          </SidebarGroupContent>
+        <SidebarGroup className="mt-auto">
+          {me && (
+          <NavUser user={{
+            name: me.name,
+            email: me.email,
+            avatar: "/avatars/shadcn.jpg",
+          }}
+          />
+        )}
         </SidebarGroup>
       </SidebarContent>
     </Sidebar>
