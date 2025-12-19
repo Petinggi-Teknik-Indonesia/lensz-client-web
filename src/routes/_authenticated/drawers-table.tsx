@@ -36,6 +36,7 @@ import { toast } from "sonner";
 import type { Drawers } from "@/types/drawers";
 import { getMe } from "@/api/auth";
 import { formatDate } from "@/lib/helpers";
+import { getAllDrawers } from "@/api/drawers";
 export const Route = createFileRoute("/_authenticated/drawers-table")({
   component: RouteComponent,
 });
