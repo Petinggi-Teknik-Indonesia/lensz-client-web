@@ -45,7 +45,7 @@ export const getMe = async () => {
     throw new Error("No access token");
   }
 
-  const res = await fetch("/api/auth/me", {
+  const res = await fetch("http://localhost:8080/api/auth/me", {
     headers: {
       Authorization: `Bearer ${token}`,
     },

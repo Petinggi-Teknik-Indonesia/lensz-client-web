@@ -5,6 +5,7 @@ import {
   ChevronRight,
   Tag,
   Factory,
+  QrCode,
 } from "lucide-react";
 
 import {
@@ -30,6 +31,18 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { getAllDrawers } from "@/api/glassesDependencies";
 import { NavUser } from "./UserProfile";
+import { getCookie } from "@/lib/cookie";
+
+const token = getCookie("access_token");
+let role: number | null = null;
+
+if (token) {
+  try {
+    role = JSON.parse(atob(token.split(".")[1])).role;
+  } catch {}
+}
+
+const canManageScanner = role === 1 || role === 2;
 
 const data = {
   user: {
@@ -51,13 +64,16 @@ const managementItems = [
   { title: "Add Drawer", url: "/drawers-table", icon: Sheet },
 ];
 
-
 export function SidebarApp() {
   const routerState = useRouterState();
   const currentPath = routerState.location.pathname;
 
   // ✅ Fetch drawers dynamically
-  const { data: drawers, isLoading, isError } = useQuery({
+  const {
+    data: drawers,
+    isLoading,
+    isError,
+  } = useQuery({
     queryKey: ["drawers"],
     queryFn: getAllDrawers,
   });
@@ -133,7 +149,9 @@ export function SidebarApp() {
 
         {/* Management */}
         <SidebarGroup>
-          <SidebarGroupLabel className="text-white">Management</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-white">
+            Management
+          </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {/* Collapsible Drawers Section */}
@@ -167,39 +185,37 @@ export function SidebarApp() {
                         </SidebarMenuSubItem>
                       )}
 
-                      {uniqueDrawers.length > 0 ? (
-                        uniqueDrawers.map((drawer: any) => {
-                          const url = `/drawers/${drawer.name
-                            .toLowerCase()
-                            .replace(/\s+/g, "-")}`;
-                          const isActive = currentPath.startsWith(url);
+                      {uniqueDrawers.length > 0
+                        ? uniqueDrawers.map((drawer: any) => {
+                            const url = `/drawers/${drawer.name
+                              .toLowerCase()
+                              .replace(/\s+/g, "-")}`;
+                            const isActive = currentPath.startsWith(url);
 
-                          return (
-                            <SidebarMenuSubItem key={drawer.name}>
-                              <SidebarMenuButton asChild>
-                                <Link
-                                  to={url}
-                                  className={`flex items-center gap-2 rounded-md px-2 py-1 transition-colors ${
-                                    isActive
-                                      ? "bg-[#B1F70B] text-black"
-                                      : "hover:bg-[#B1F70B] hover:text-black"
-                                  } ${isActive ? "pointer-events-none" : ""}`}
-                                >
-                                  <span>{drawer.name}</span>
-                                </Link>
-                              </SidebarMenuButton>
+                            return (
+                              <SidebarMenuSubItem key={drawer.name}>
+                                <SidebarMenuButton asChild>
+                                  <Link
+                                    to={url}
+                                    className={`flex items-center gap-2 rounded-md px-2 py-1 transition-colors ${
+                                      isActive
+                                        ? "bg-[#B1F70B] text-black"
+                                        : "hover:bg-[#B1F70B] hover:text-black"
+                                    } ${isActive ? "pointer-events-none" : ""}`}
+                                  >
+                                    <span>{drawer.name}</span>
+                                  </Link>
+                                </SidebarMenuButton>
+                              </SidebarMenuSubItem>
+                            );
+                          })
+                        : !isLoading && (
+                            <SidebarMenuSubItem>
+                              <span className="px-2 py-1 text-sm opacity-75">
+                                No drawers found
+                              </span>
                             </SidebarMenuSubItem>
-                          );
-                        })
-                      ) : (
-                        !isLoading && (
-                          <SidebarMenuSubItem>
-                            <span className="px-2 py-1 text-sm opacity-75">
-                              No drawers found
-                            </span>
-                          </SidebarMenuSubItem>
-                        )
-                      )}
+                          )}
                     </SidebarMenuSub>
                   </CollapsibleContent>
                 </SidebarMenuItem>
@@ -229,6 +245,24 @@ export function SidebarApp() {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+                      {/* Scanner Management - Role 1 & 2 ONLY */}
+              {canManageScanner && (
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild>
+                    <Link
+                      to="/scanners"
+                      className={`flex items-center gap-2 rounded-md px-2 py-1 transition-colors ${
+                        currentPath.startsWith("/scanners")
+                          ? "bg-[#B1F70B] text-black"
+                          : "hover:bg-[#B1F70B] hover:text-black"
+                      }`}
+                    >
+                      <QrCode size={18} />
+                      <span>Scanner</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              )}
 
         {/* Profile */}
         <SidebarGroup className="mt-auto">

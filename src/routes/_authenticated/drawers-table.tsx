@@ -35,10 +35,27 @@ import { ButtonGroup } from "@/components/ui/button-group";
 import { SearchIcon, Edit, MoreHorizontal, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import type { Drawers } from "@/types/drawers";
+import { getCookie } from "@/lib/cookie";
 
 export const Route = createFileRoute("/_authenticated/drawers-table")({
   component: RouteComponent,
 });
+
+/* =========================
+   SIMPLE ROLE EXTRACTION
+   ========================= */
+const getRoleFromToken = (): number | null => {
+  const token = getCookie("access_token");
+  if (!token) return null;
+
+  try {
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    return payload.role ?? null;
+  } catch {
+    return null;
+  }
+};
+
 
 function RouteComponent() {
   const queryClient = useQueryClient();
@@ -46,6 +63,10 @@ function RouteComponent() {
     queryKey: ["drawers"],
     queryFn: getAllDrawers,
   });
+
+  const role = getRoleFromToken();
+  const canShowDelete = role === 1 || role === 2;
+
 
   const [search, setSearch] = useState("");
   const [editOpen, setEditOpen] = useState(false);
@@ -101,6 +122,7 @@ function RouteComponent() {
                 </DropdownMenuItem>
 
                 {/* 🗑️ Delete */}
+                {canShowDelete && (
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
                     <DropdownMenuItem
@@ -131,6 +153,7 @@ function RouteComponent() {
                     </AlertDialogFooter>
                   </AlertDialogContent>
                 </AlertDialog>
+                )}
               </DropdownMenuContent>
             </DropdownMenu>
           </ButtonGroup>

@@ -35,10 +35,27 @@ import {
 } from "@/components/ui/alert-dialog";
 import type { Companies } from "@/types/companies";
 import { toast } from "sonner";
+import { getCookie } from "@/lib/cookie";
 
 export const Route = createFileRoute("/_authenticated/companies")({
   component: RouteComponent,
 });
+
+/* =========================
+   SIMPLE ROLE EXTRACTION
+   ========================= */
+const getRoleFromToken = (): number | null => {
+  const token = getCookie("access_token");
+  if (!token) return null;
+
+  try {
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    return payload.role ?? null;
+  } catch {
+    return null;
+  }
+};
+
 
 function RouteComponent() {
   const queryClient = useQueryClient();
@@ -46,6 +63,9 @@ function RouteComponent() {
     queryKey: ["companies"],
     queryFn: getAllCompanies,
   });
+
+  const role = getRoleFromToken();
+  const canShowDelete = role === 1 || role === 2;
 
   const [editOpen, setEditOpen] = useState(false);
   const [selectedCompany, setSelectedCompany] = useState<Companies | null>(null);
@@ -101,6 +121,7 @@ function RouteComponent() {
                 </DropdownMenuItem>
 
                 {/* 🗑️ Delete */}
+                {canShowDelete && (
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
                     <DropdownMenuItem
@@ -130,6 +151,7 @@ function RouteComponent() {
                     </AlertDialogFooter>
                   </AlertDialogContent>
                 </AlertDialog>
+                )}
               </DropdownMenuContent>
             </DropdownMenu>
           </ButtonGroup>
