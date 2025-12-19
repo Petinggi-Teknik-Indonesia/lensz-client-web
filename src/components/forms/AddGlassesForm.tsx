@@ -1,7 +1,6 @@
 import { useForm } from "@tanstack/react-form";
 import { toast } from "sonner";
 import * as z from "zod";
-
 import { Button } from "@/components/ui/button";
 import {
   Field,
@@ -9,19 +8,24 @@ import {
   FieldGroup,
   FieldLabel,
 } from "@/components/ui/field";
+
 import { Input } from "@/components/ui/input";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { addGlasses } from "@/api/glasses";
-import { Select, SelectContent, SelectItem, SelectTrigger } from "../ui/select";
 import {
-  getAllBrands,
-  getAllCompanies,
-  getAllDrawers,
-} from "@/api/glassesDependencies";
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+} from "@/components/ui/select";
+import { getAllCompanies } from "@/api/companies";
+import { getAllBrands } from "@/api/brands";
+import { getAllDrawers } from "@/api/drawers";
 import type { Brands } from "@/types/brands";
 import type { Companies } from "@/types/companies";
 import type { Drawers } from "@/types/drawers";
 import { Textarea } from "../ui/textarea";
+import ColorPickerComponent from "@/components/ui/color-picker";
 
 type AddGlassesFormProps = {
   onSuccess: () => void;
@@ -55,6 +59,7 @@ function AddGlassesForm(props: AddGlassesFormProps) {
     queryKey: ["brands"],
     queryFn: getAllBrands,
   });
+
   const brands: Brands[] = brandsData ?? [];
 
   const { data: companiesData } = useQuery({
@@ -67,6 +72,7 @@ function AddGlassesForm(props: AddGlassesFormProps) {
     queryKey: ["drawers"],
     queryFn: getAllDrawers,
   });
+
   const drawers: Drawers[] = drawersData ?? [];
 
   const mutation = useMutation({ mutationFn: addGlasses });
@@ -184,16 +190,10 @@ function AddGlassesForm(props: AddGlassesFormProps) {
                   return (
                     <Field data-invalid={isInvalid}>
                       <FieldLabel htmlFor={field.name}>Color</FieldLabel>
-                      <div className={`bg-${field.state.value} size-5`}></div>
-                      <Input
-                        id={field.name}
-                        name={field.name}
+                      <ColorPickerComponent
                         value={field.state.value}
-                        onBlur={field.handleBlur}
-                        onChange={(e) => field.handleChange(e.target.value)}
-                        aria-invalid={isInvalid}
-                        placeholder="Frame color"
-                        autoComplete="off"
+                        defaultValue="#ffffff"
+                        onChange={field.handleChange}
                       />
                       {isInvalid && (
                         <FieldError errors={field.state.meta.errors} />
@@ -484,7 +484,10 @@ function AddGlassesForm(props: AddGlassesFormProps) {
             const isInvalid =
               field.state.meta.isTouched && !field.state.meta.isValid;
             return (
-              <Field data-invalid={isInvalid} className="w-full md:w-[40%] h-full">
+              <Field
+                data-invalid={isInvalid}
+                className="w-full md:w-[40%] h-full"
+              >
                 <FieldLabel htmlFor={field.name}>Description</FieldLabel>
                 <Textarea
                   id={field.name}

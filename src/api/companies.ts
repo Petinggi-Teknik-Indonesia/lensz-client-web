@@ -16,7 +16,7 @@ export const getCompany = async (id: number): Promise<Companies> => {
 export async function addCompany(newCompanies: CompaniesInput) {
   const { data } = await privateApi.post(`/api/companies/`, newCompanies);
   return data;
-}
+};
 
 export async function deleteCompany(id: number) {
   const { data, status } = await privateApi.delete(`/api/companies/${id}`);
