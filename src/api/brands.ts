@@ -1,25 +1,25 @@
 // api/brands.ts
 import type { Brands, BrandsInput } from "@/types/brands";
-import axios from "./axios";
+import privateApi from "./private";
 
 export const getAllBrands = async (): Promise<Brands[]> => {
-  const resp = await axios.get<Brands[]>("/api/brands");
+  const resp = await privateApi.get<Brands[]>("/api/brands");
   console.log(resp.data);
   return resp.data;
 };
 
 export const getBrand = async (id: number): Promise<Brands> => {
-  const { data } = await axios.get<Brands>(`/api/brands/${id}`);
+  const { data } = await privateApi.get<Brands>(`/api/brands/${id}`);
   return data;
 };
 
 export async function addBrand(newBrand: BrandsInput) {
-  const { data } = await axios.post(`/api/brands`, newBrand);
+  const { data } = await privateApi.post(`/api/brands/`, newBrand);
   return data;
-}
+};
 
 export async function deleteBrand(id: number) {
-  const { data, status } = await axios.delete(`/api/brands/${id}`);
+  const { data, status } = await privateApi.delete(`/api/brands/${id}`);
   console.log(status);
   return data;
 }
@@ -32,6 +32,6 @@ export async function updateBrand(id: number, updatedBrand: BrandsInput) {
 
   console.log("Payload for updateBrands:", payload);
 
-  const { data } = await axios.put(`/api/brands/${id}`, payload);
+  const { data } = await privateApi.put(`/api/brands/${id}`, payload);
   return data;
 }

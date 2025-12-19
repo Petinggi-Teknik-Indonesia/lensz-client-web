@@ -1,8 +1,7 @@
 import { useState, useMemo } from "react";
 import AddDrawerModal from "@/components/modals/AddDrawerModal";
 import EditDrawerModal from "@/components/modals/EditDrawerModal"; // ✅ Make sure this exists
-import { getAllDrawers, formatDate } from "@/api/glassesDependencies";
-import { deleteDrawer} from "@/api/drawers";
+import { deleteDrawer, getAllDrawers } from "@/api/drawers";
 import { DataTable } from "@/components/DataTable";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
@@ -35,17 +34,28 @@ import { ButtonGroup } from "@/components/ui/button-group";
 import { SearchIcon, Edit, MoreHorizontal, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import type { Drawers } from "@/types/drawers";
-
+import { getMe } from "@/api/auth";
+import { formatDate } from "@/lib/helpers";
 export const Route = createFileRoute("/_authenticated/drawers-table")({
   component: RouteComponent,
 });
 
 function RouteComponent() {
   const queryClient = useQueryClient();
-  const { data, isLoading, isError, error } = useQuery({
+  const { data, isLoading, isError, error } = useQuery<Drawers[]>({
     queryKey: ["drawers"],
     queryFn: getAllDrawers,
   });
+  const { data: me } = useQuery({
+    queryKey: ["me"],
+    queryFn: getMe,
+  });
+
+  /* =========================
+     ROLE-BASED PERMISSION
+     ========================= */
+  const canShowDelete =
+    me !== undefined && (me?.role?.ID === 1 || me?.role?.ID === 2);
 
   const [search, setSearch] = useState("");
   const [editOpen, setEditOpen] = useState(false);
@@ -67,11 +77,13 @@ function RouteComponent() {
     columnHelper.accessor("name", { header: () => "Name" }),
     columnHelper.accessor("createdAt", {
       header: () => "Created At",
-      cell: (info) => (info.getValue() ? formatDate(info.getValue() as Date) : ""),
+      cell: (info) =>
+        info.getValue() ? formatDate(info.getValue() as Date) : "",
     }),
     columnHelper.accessor("updatedAt", {
       header: () => "Updated At",
-      cell: (info) => (info.getValue() ? formatDate(info.getValue() as Date) : ""),
+      cell: (info) =>
+        info.getValue() ? formatDate(info.getValue() as Date) : "",
     }),
     columnHelper.display({
       id: "actions",
@@ -101,36 +113,38 @@ function RouteComponent() {
                 </DropdownMenuItem>
 
                 {/* 🗑️ Delete */}
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <DropdownMenuItem
-                      className="text-red-600"
-                      onSelect={(e) => e.preventDefault()}
-                    >
-                      <Trash2 className="text-red-600" />
-                      Delete
-                    </DropdownMenuItem>
-                  </AlertDialogTrigger>
-
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>Delete Drawer</AlertDialogTitle>
-                      <AlertDialogDescription>
-                        Are you sure you want to delete <b>{drawer.name}</b>? This action cannot
-                        be undone.
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>Cancel</AlertDialogCancel>
-                      <AlertDialogAction
-                        onClick={() => deleteMutation.mutate(drawer.id)}
-                        className="bg-red-600 hover:bg-red-700"
+                {canShowDelete && (
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <DropdownMenuItem
+                        className="text-red-600"
+                        onSelect={(e) => e.preventDefault()}
                       >
+                        <Trash2 className="text-red-600" />
                         Delete
-                      </AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
+                      </DropdownMenuItem>
+                    </AlertDialogTrigger>
+
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Delete Drawer</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          Are you sure you want to delete <b>{drawer.name}</b>?
+                          This action cannot be undone.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction
+                          onClick={() => deleteMutation.mutate(drawer.id)}
+                          className="bg-red-600 hover:bg-red-700"
+                        >
+                          Delete
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                )}
               </DropdownMenuContent>
             </DropdownMenu>
           </ButtonGroup>
@@ -139,7 +153,7 @@ function RouteComponent() {
     }),
   ];
 
-  // ✅ Filter by search 
+  // ✅ Filter by search
   const filteredData = useMemo(() => {
     if (!data) return [];
     const lower = search.toLowerCase();
@@ -187,8 +201,12 @@ function RouteComponent() {
           onOpenChange={setEditOpen}
           data={{
             ...selectedDrawer,
-            createdAt: selectedDrawer.createdAt ? new Date(selectedDrawer.createdAt) : new Date(),
-            updatedAt: selectedDrawer.updatedAt ? new Date(selectedDrawer.updatedAt) : new Date(),
+            createdAt: selectedDrawer.createdAt
+              ? new Date(selectedDrawer.createdAt)
+              : new Date(),
+            updatedAt: selectedDrawer.updatedAt
+              ? new Date(selectedDrawer.updatedAt)
+              : new Date(),
           }}
         />
       )}

@@ -1,22 +1,22 @@
 // api/users.js
 import type { Drawers, DrawersInput } from "@/types/drawers";
-import axios from "./axios";
+import privateApi from "./private";
 
 export const getAllDrawers = async (): Promise<Drawers[]> => {
-  const resp  = await axios.get<Drawers[]>("/api/drawers");
-  console.log(resp.data)
+  const resp = await privateApi.get<Drawers[]>("/api/drawers");
+  console.log(resp.data);
   return resp.data;
 };
 
 export const getDrawer = async (id: number): Promise<Drawers> => {
-  const { data } = await axios.get<Drawers>(`/api/drawers/${id}`);
+  const { data } = await privateApi.get<Drawers>(`/api/drawers/${id}/`);
   return data;
 };
 
 export async function addDrawers(newDrawers: DrawersInput) {
-  const { data } = await axios.post(`/api/drawers`, newDrawers);
+  const { data } = await privateApi.post(`/api/drawers`, newDrawers);
   return data;
-};
+}
 
 export async function updateDrawers(id: number, updatedDrawer: DrawersInput) {
   // Transform payload if needed, here it's simple
@@ -26,12 +26,12 @@ export async function updateDrawers(id: number, updatedDrawer: DrawersInput) {
 
   console.log("Payload for updateDrawer:", payload);
 
-  const { data } = await axios.put(`/api/drawers/${id}`, payload);
+  const { data } = await privateApi.put(`/api/drawers/${id}`, payload);
   return data;
 }
 
 export async function deleteDrawer(id: number) {
-  const { data, status } = await axios.delete(`/api/drawers/${id}`);
+  const { data, status } = await privateApi.delete(`/api/drawers/${id}`);
   console.log(status);
   return data;
 }

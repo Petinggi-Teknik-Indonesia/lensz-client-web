@@ -1,23 +1,22 @@
 // api/users.js
 import type { Glasses, GlassesHistory, GlassesInput } from "@/types/glasses";
-import axios from "./axios";
+import privateApi from "./private";
 
 export const getAllGlasses = async (): Promise<Glasses[]> => {
-  const resp  = await axios.get<Glasses[]>("/api/glasses");
-  console.log(resp.data)
+  const resp = await privateApi.get<Glasses[]>("/api/glasses");
+  console.log(resp.data);
   return resp.data;
 };
 
 export const getGlasses = async (id: number): Promise<Glasses> => {
-  const { data } = await axios.get<Glasses>(`/api/glasses/${id}`);
+  const { data } = await privateApi.get<Glasses>(`/api/glasses/${id}`);
   return data;
 };
-
 
 export async function addGlasses(newGlasses: GlassesInput) {
-  const { data } = await axios.post(`/api/glasses`, newGlasses);
+  const { data } = await privateApi.post(`/api/glasses`, newGlasses);
   return data;
-};
+}
 
 export async function getGlassesByDrawer(drawerName: string) {
   const allGlasses = await getAllGlasses();
@@ -25,9 +24,9 @@ export async function getGlassesByDrawer(drawerName: string) {
     (g: any) => g.drawer?.toLowerCase() === drawerName.toLowerCase()
   );
 }
-export async function deleteGlasses(id:number){
-  const {data, status} = await axios.delete(`/api/glasses/${id}`);
-  console.log(status)
+export async function deleteGlasses(id: number) {
+  const { data, status } = await privateApi.delete(`/api/glasses/${id}`);
+  console.log(status);
   return data;
 }
 
@@ -44,15 +43,16 @@ export async function updateGlasses(id: number, updatedGlasses: GlassesInput) {
     companyId: updatedGlasses.company?.id,
     brandId: updatedGlasses.brand?.id,
   };
-  console.log("Payload")
-  console.log(payload)
+  console.log("Payload");
+  console.log(payload);
 
-  const { data } = await axios.put(`/api/glasses/${id}`, payload);
+  const { data } = await privateApi.put(`/api/glasses/${id}`, payload);
   return data;
-
 }
 
-export async  function  historyGlasses(id: number):Promise<GlassesHistory[]>{
-  const { data } = await axios.get<GlassesHistory[]>(`/api/glasses/${id}/history`);
+export async function historyGlasses(id: number): Promise<GlassesHistory[]> {
+  const { data } = await privateApi.get<GlassesHistory[]>(
+    `/api/glasses/${id}/history`
+  );
   return data;
 }
