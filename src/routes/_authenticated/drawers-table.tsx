@@ -1,7 +1,6 @@
 import { useState, useMemo } from "react";
 import AddDrawerModal from "@/components/modals/AddDrawerModal";
 import EditDrawerModal from "@/components/modals/EditDrawerModal"; // ✅ Make sure this exists
-import { getAllDrawers, formatDate } from "@/api/glassesDependencies";
 import { deleteDrawer } from "@/api/drawers";
 import { DataTable } from "@/components/DataTable";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";

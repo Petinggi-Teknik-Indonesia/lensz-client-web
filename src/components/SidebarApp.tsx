@@ -29,9 +29,10 @@ import {
 
 import { Link, useRouterState } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
+import { getAllDrawers } from "@/api/drawers";
 import { NavUser } from "./UserProfile";
 import { getMe } from "@/api/auth";
-import { getAllDrawers } from "@/api/drawers";
+
 
 const generalItems = [{ title: "Dashboard", url: "/dashboard", icon: Home }];
 
@@ -49,13 +50,12 @@ export function SidebarApp() {
   const routerState = useRouterState();
   const currentPath = routerState.location.pathname;
 
-  const { data: me} = useQuery({
+  const { data: me } = useQuery({
     queryKey: ["me"],
     queryFn: getMe,
   });
-  console.log("ME:", me);
 
-  const canManageScanner = me?.role?.ID === 1 || me?.role?.ID === 2;
+  const canManageScanner = me?.role?.id === 1 || me?.role?.id === 2;
 
   // ✅ Fetch drawers dynamically
   const {
@@ -254,14 +254,11 @@ export function SidebarApp() {
 
         {/* Profile */}
         <SidebarGroup className="mt-auto">
-          {me && (
           <NavUser user={{
-            name: me.name,
-            email: me.email,
+            name: me?.name || "User",
+            email: me?.email || "",
             avatar: "/avatars/shadcn.jpg",
-          }}
-          />
-        )}
+          }} />
         </SidebarGroup>
       </SidebarContent>
     </Sidebar>

@@ -2,7 +2,7 @@ import axios from "axios";
 import { getCookie } from "@/lib/cookie";
 
 const privateApi = axios.create({
-  baseURL: import.meta.env.VITE_BASE_URL,
+  baseURL: "http://localhost:8080",
   withCredentials: true,
 });
 

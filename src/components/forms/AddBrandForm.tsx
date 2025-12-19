@@ -6,13 +6,13 @@ import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { addBrand } from "@/api/brands";
 
 type AddBrandFormProps = {
   onSuccess: () => void;
   onCancel: () => void;
 };
 
+// ✅ Validate only "name"
 const formSchema = z.object({
   name: z.string().min(1, "Name cannot be empty"),
 });
@@ -53,6 +53,7 @@ function AddBrandForm({ onSuccess, onCancel }: AddBrandFormProps) {
         form.handleSubmit();
       }}
     >
+      {/* 🏷️ Brand Name Field */}
       <form.Field
         name="name"
         children={(field) => {
