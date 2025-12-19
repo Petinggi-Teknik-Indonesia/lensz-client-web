@@ -13,6 +13,8 @@ import { useMutation } from "@tanstack/react-query";
 import { webSocketCompleteRegistration } from "@/api/glassesEvents";
 import notification from "@/assets/sounds/notification.mp3";
 
+
+
 export function AddGlassesWebSocket() {
   const [open, setOpen] = useState(false);
   const [scannedRFID, setScannedRFID] = useState<string | null>(null);
@@ -20,7 +22,7 @@ export function AddGlassesWebSocket() {
 
   useWebSocket((msg) => {
     console.log("📩 Received message:", msg);
-    if (msg.type === "rfid_scanned") {
+    if (msg.type === "registration_started" || msg.type === "registration_waiting") {
       const rfid = msg.payload?.rfid || "Unknown RFID";
             const audio = new Audio(notification);
       audio.volume = 1; // optional: set lower volume
@@ -48,6 +50,7 @@ export function AddGlassesWebSocket() {
     }
     toast.success("Form submitted successfully!");
   };
+  
 
 
   return (

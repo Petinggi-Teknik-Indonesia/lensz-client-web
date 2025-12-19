@@ -1,8 +1,7 @@
 import { useState, useMemo } from "react";
 import AddDrawerModal from "@/components/modals/AddDrawerModal";
 import EditDrawerModal from "@/components/modals/EditDrawerModal"; // ✅ Make sure this exists
-import { getAllDrawers, formatDate } from "@/api/glassesDependencies";
-import { deleteDrawer } from "@/api/drawers";
+import { deleteDrawer, getAllDrawers } from "@/api/drawers";
 import { DataTable } from "@/components/DataTable";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
@@ -36,6 +35,7 @@ import { SearchIcon, Edit, MoreHorizontal, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import type { Drawers } from "@/types/drawers";
 import { getMe } from "@/api/auth";
+import { formatDate } from "@/lib/helpers";
 export const Route = createFileRoute("/_authenticated/drawers-table")({
   component: RouteComponent,
 });

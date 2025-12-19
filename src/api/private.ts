@@ -1,8 +1,9 @@
 import axios from "axios";
 import { getCookie } from "@/lib/cookie";
+import instance from "./axios";
 
 const privateApi = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL,
+  baseURL: import.meta.env.VITE_BASE_URL,
   withCredentials: true,
 });
 
@@ -37,7 +38,7 @@ privateApi.interceptors.response.use(
       }
 
       try {
-        const res = await axios.post(
+        const res = await instance.post(
           "/api/auth/refresh",
           {},
           {
